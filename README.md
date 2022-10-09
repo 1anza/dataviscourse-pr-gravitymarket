@@ -44,3 +44,14 @@ For nodes that have been removed from the nodes data, you remove them from the s
 Relevant example code: https://observablehq.com/@ben-tanen/a-tutorial-to-using-d3-force-from-someone-who-just-learned-ho
 
 Another code example of how to spawn new nodes: https://stackoverflow.com/questions/40018270/d3js-v4-add-nodes-to-force-directed-graph
+
+
+### Another possible idea:
+
+Instead of using $r$ nodes and detaching the nodes based on their market cap, we could detach companies from the aggregate node based on their max change. So for any given $r$ level, you would have the $r-1$ nodes with the largest difference in their percent change from the percent change of the entire sector. That way, outliers would be the nodes which appear as you increase the number of nodes being rendered. 
+
+Some cons to this: the nodes will all become very spread out, and the nodes that detach will have large percent change, but may have a small radius (small market cap) and might be hard to see. Also, this method would require more rendering power - at each timestep you must compute which companies in a sector have the largest percent change, and then if so, refresh the simulation contraints. 
+
+Some pros to this: The outliers are probably what you'd care about in a stock visualization. Big movers, even if their market cap is small, can be very interesting to show. 
+
+Since it is hard to figure out a criteria for which $r-1$ nodes should be rendered, maybe we should leave this section of the code modular. Have a function that takes a single node data point, and returns a number, higher numbers indicating higher priority to split. If splitting by market cap then: f(x) => x.market_cap. 
