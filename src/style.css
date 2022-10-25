@@ -1,0 +1,60 @@
+body {
+  margin: 0;
+  background-color: #f7fafb;
+  font-family: Georgia, Helvetica, sans-serif;
+}
+
+.yAxis,
+.xAxis {
+  font-size: 1.5em;
+}
+
+.container {
+  margin-left: 3.5em;
+}
+
+.title {
+  font-size: 4em;
+}
+
+.tl {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 30%;
+    bottom: 10%;
+    background: white;
+    border: solid #000;
+    border-width: 0 10px 10px 0;
+}
+
+.tr {
+    position: absolute;
+    top: 0;
+    left: 70%;
+    right: 0;
+    bottom: 30%;
+    background: navy;
+    border: solid #000;
+    border-width: 0 0 10px 0;
+}
+
+.bl {
+    position: absolute;
+    top: 90%;
+    left: 0;
+    right: 30%;
+    bottom: 0;
+    background: gray;
+    border: solid #000;
+    border-width: 0 10px 0 0;
+}
+
+.br {
+    position: absolute;
+    top: 70%;
+    left: 70%;
+    right: 0;
+    bottom: 0;
+    background: red;
+} 
