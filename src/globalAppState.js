@@ -64,15 +64,16 @@ class GlobalAppState {
 		/// entire data series to be iterated through. 
 		///
 		/// For now, when the animationUpdateSpeed changes, the playback will pause
-		this.addEventValueToGlobalAppState("playbackSpeed", 10.0, [e => {
+		this.addEventValueToGlobalAppState("playbackSpeed", null, [e => {
 			let time_for_playback = e.detail;
 			// EX: If there are 30 datapoints and we want the
 			// playback to play from start to finish in 10 seconds,
 			// there should be 0.3333 seconds between each index
 			// increment. 
-			let frequency = time_for_animation / this.data.length;
+			let frequency = time_for_playback / this.data.length * 1000;
 			this._frequency = frequency;
 		}]);
+		this.set_playbackSpeed(15.0);
 		this.addEventValueToGlobalAppState("playing", false, [(e) => {
 			if(e.detail === true) {
 				// Playback has started

@@ -4,8 +4,7 @@ function main() {
 		console.log(data)
 
 		let gas = new GlobalAppState(data);
-		gas.set_index(10);
-		console.log(gas.index);
+		gas.set_playing(true);
 	});
 }
 
