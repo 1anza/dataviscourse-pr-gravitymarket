@@ -1,0 +1,98 @@
+/*
+ * Global app events are contained here. Also, logic for controlling the ticking of the data index.
+ */
+
+class GlobalAppState {
+	constructor(data) {
+		this.initializeEvents(data);
+	}
+
+	/*
+	 * https://stackoverflow.com/questions/2490825/how-to-trigger-event-in-javascript
+	 * Note to future readers, detail is a property of the Event, so assign any data you want to access at the other end to it and access by event.detail. +1 – /
+	 *
+	 * Create and add an event to this GlobalAppState
+	 * The GlobalAppState will contain a field with valueName, and a set_valueName function.
+	 * 	Also, an event listener will be added to the document called on_valueNameChange
+	 *
+	 * Please don't mutate the fields added to the GlobalAppState. Instead use set_valueName.
+	 *
+	 *
+	 * functions_to_add are all added as events with the parameters being the event e.
+	 */
+	addEventValueToGlobalAppState(valueName, default_value=null, functions_to_add=[], shouldLog=true) {
+		this[valueName] = default_value;
+		this["set_" + valueName] = value => {
+			this[valueName] = value;
+			let _event = new CustomEvent("on_" + valueName + "Change", {"detail": value});
+			document.dispatchEvent(_event);
+		}
+		if (shouldLog) {
+			document.addEventListener("on_" + valueName + "Change", e => {
+				let value = e.detail;
+				console.log("Event happened.", valueName, "Changed to: ", value);
+			});
+		}
+		for (let f of functions_to_add) {
+			document.addEventListener("on_" + valueName + "Change", e => {
+				f(e);
+			});
+		}
+	}
+
+	addEventListenerToEvent(eventName, f) {
+		document.addEventListener(eventName, e => f(e));
+	}
+
+	initializeEvents(data) {
+		this.addEventValueToGlobalAppState("data", data);
+
+		/*  ----------------Data bounds---------------------    */
+		// TODO is it called ticker?
+		this.addEventValueToGlobalAppState("yValueToPlot", "ticker")
+		
+		let range = d3.range(this.data, d => d[this.yValueToPlot]);
+		this.yDataRange = range;
+		this.addEventValueToGlobalAppState("yValueDataRange", range);
+
+		/*  -----------Time series and tick controls--------    */
+		this.addEventValueToGlobalAppState("index", 0);
+		// When the playhead moves, this will store its estimated current speed. 
+		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
+		this.addEventValueToGlobalAppState("date");
+		/// This is in units of seconds, and measures how long it would take for the
+		/// entire data series to be iterated through. 
+		///
+		/// For now, when the animationUpdateSpeed changes, the playback will pause
+		this.addEventValueToGlobalAppState("playbackSpeed", 10.0, [e => {
+			let time_for_playback = e.detail;
+			// EX: If there are 30 datapoints and we want the
+			// playback to play from start to finish in 10 seconds,
+			// there should be 0.3333 seconds between each index
+			// increment. 
+			let frequency = time_for_animation / this.data.length;
+			this._frequency = frequency;
+		}]);
+		this.addEventValueToGlobalAppState("playing", false, [(e) => {
+			if(e.detail === true) {
+				// Playback has started
+				this.__interval_id = setInterval(() => this.updateIndex(), this._frequency);
+			} else {
+				// Playback has stopped
+				clearInterval(this.__interval_id);
+			}
+		}]);
+
+		/*  ----------------Group By Controls---------------    */
+		this.addEventValueToGlobalAppState("selectedCompanies", false);
+		this.addEventValueToGlobalAppState("selectedSectors", false);
+	}
+
+	updateIndex() {
+		if (this.index > this.data.length) {
+			this.set_index(0);
+		} else {
+			this.set_index(this.index + 1);
+		}
+	}
+}

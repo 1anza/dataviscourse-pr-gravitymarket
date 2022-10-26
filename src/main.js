@@ -1,0 +1,12 @@
+function main() {
+	d3.json("/data/data.json").then(data => {
+		console.log("Loaded data.");
+		console.log(data)
+
+		let gas = new GlobalAppState(data);
+		gas.set_index(10);
+		console.log(gas.index);
+	});
+}
+
+main()
