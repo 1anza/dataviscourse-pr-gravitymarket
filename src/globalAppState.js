@@ -56,10 +56,14 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("yValueDataRange", range);
 
 		/*  -----------Time series and tick controls--------    */
-		this.addEventValueToGlobalAppState("index", 0);
+		this.addEventValueToGlobalAppState("date", null);
+		this.addEventValueToGlobalAppState("index", null, [e => {
+			// TODO Set date to what the date in the data is at this index
+			this.set_date(Date("1900-1-1"));
+		}]);
+		this.set_index(0);
 		// When the playhead moves, this will store its estimated current speed. 
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
-		this.addEventValueToGlobalAppState("date");
 		/// This is in units of seconds, and measures how long it would take for the
 		/// entire data series to be iterated through. 
 		///
@@ -89,6 +93,7 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("selectedSectors", false);
 	}
 
+	// Will loop by default.
 	updateIndex() {
 		if (this.index > this.data.length) {
 			this.set_index(0);
