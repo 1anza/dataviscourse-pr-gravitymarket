@@ -5,7 +5,6 @@ function main() {
 
 		let gas = new GlobalAppState(data);
 
-		//gas.set_playing(true);
 		createPlaybackControls(gas);
 	});
 }

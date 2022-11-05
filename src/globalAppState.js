@@ -64,12 +64,18 @@ class GlobalAppState {
 
 		/*  -----------Time series and tick controls--------    */
 		this.addEventValueToGlobalAppState("date", null);
-		this.addEventValueToGlobalAppState("index", null, [
-			(e) => {
-				// TODO Set date to what the date in the data is at this index
-				this.set_date(Date("1900-1-1"));
-			},
-		]);
+		this.addEventValueToGlobalAppState(
+			"index",
+			null,
+			[
+				(e) => {
+					let datarow = this.data[0].chart[this.index];
+					let datestring = `${datarow.date}T${datarow.minute}`;
+					this.set_date(new Date(datestring));
+				},
+			],
+			false
+		);
 		this.set_index(0);
 		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
@@ -111,7 +117,7 @@ class GlobalAppState {
 
 	// Will loop by default.
 	updateIndex() {
-		if (this.index > this.data.length) {
+		if (this.index >= this.data[0].length) {
 			this.set_index(0);
 		} else {
 			this.set_index(this.index + 1);
