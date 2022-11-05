@@ -4,16 +4,56 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="src/style.css" />
+
+    <!-- How to use these icons: https://fontawesome.com -->
+    <script src="https://kit.fontawesome.com/02ee6d355a.js" crossorigin="anonymous"></script>   
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-quadtree@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-timer@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-force@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-format@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-ease@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-selection@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-timer@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-drag@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-transition@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-brush@3"></script>
+
     <script src="src/globalAppState.js"></script>
+    <script src="src/playbackControls.js"></script>
     <script src="src/main.js"></script>
     <title>Swarm Chart</title>
 </head>
   <body>
-      <div class="tl"></div>
-      <div class="tr"></div>
-      <div class="bl"></div>
+      <div class="tl" id="beeswarm">
+	      <svg id="beeswarm-vis">
+		      <g id="y-axis">
+		      <g id="swarm">
+	      </svg>
+      </div>
+      <div class="tr" id="linechart">
+	      <svg id="linechart-vis">
+		      <g id="lines">
+		      <g id="y-axis">
+		      <g id="x-axis">
+	      </svg>
+      </div>
+      <div class="bl" id="playback-div">
+	      <button id="playpause">
+		      <i class="fa-solid fa-play" id="play"></i>
+		      <i class="fa-solid fa-pause" id ="pause" style="display:none"></i>
+	      </button>
+      </div>
       <div class="br"></div>
   </body>
 </html>

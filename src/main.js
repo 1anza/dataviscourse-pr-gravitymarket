@@ -4,7 +4,9 @@ function main() {
 		console.log(data)
 
 		let gas = new GlobalAppState(data);
-		gas.set_playing(true);
+
+		//gas.set_playing(true);
+		createPlaybackControls(gas);
 	});
 }
 
