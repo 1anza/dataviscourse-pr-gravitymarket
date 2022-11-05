@@ -58,3 +58,11 @@ body {
     bottom: 0;
     background: red;
 } 
+
+.playback-button{
+    padding: 15px 32px;
+    border-radius: 2px;
+}
+.playback-button:hover{
+  background-color: grey;
+}

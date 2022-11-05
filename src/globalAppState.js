@@ -20,28 +20,35 @@ class GlobalAppState {
 	 *
 	 * functions_to_add are all added as events with the parameters being the event e.
 	 */
-	addEventValueToGlobalAppState(valueName, default_value=null, functions_to_add=[], shouldLog=true) {
+	addEventValueToGlobalAppState(
+		valueName,
+		default_value = null,
+		functions_to_add = [],
+		shouldLog = true
+	) {
 		this[valueName] = default_value;
-		this["set_" + valueName] = value => {
+		this["set_" + valueName] = (value) => {
 			this[valueName] = value;
-			let _event = new CustomEvent("on_" + valueName + "Change", {"detail": value});
+			let _event = new CustomEvent("on_" + valueName + "Change", {
+				detail: value,
+			});
 			document.dispatchEvent(_event);
-		}
+		};
 		if (shouldLog) {
-			document.addEventListener("on_" + valueName + "Change", e => {
+			document.addEventListener("on_" + valueName + "Change", (e) => {
 				let value = e.detail;
 				console.log("Event happened.", valueName, "Changed to: ", value);
 			});
 		}
 		for (let f of functions_to_add) {
-			document.addEventListener("on_" + valueName + "Change", e => {
+			document.addEventListener("on_" + valueName + "Change", (e) => {
 				f(e);
 			});
 		}
 	}
 
 	addEventListenerToEvent(eventName, f) {
-		document.addEventListener("on_" + eventName + "Change", e => f(e));
+		document.addEventListener("on_" + eventName + "Change", (e) => f(e));
 	}
 
 	initializeEvents(data) {
@@ -49,44 +56,53 @@ class GlobalAppState {
 
 		/*  ----------------Data bounds---------------------    */
 		// TODO is it called ticker?
-		this.addEventValueToGlobalAppState("yValueToPlot", "ticker")
-		
-		let range = d3.range(this.data, d => d[this.yValueToPlot]);
+		this.addEventValueToGlobalAppState("yValueToPlot", "ticker");
+
+		let range = d3.range(this.data, (d) => d[this.yValueToPlot]);
 		this.yDataRange = range;
 		this.addEventValueToGlobalAppState("yValueDataRange", range);
 
 		/*  -----------Time series and tick controls--------    */
 		this.addEventValueToGlobalAppState("date", null);
-		this.addEventValueToGlobalAppState("index", null, [e => {
-			// TODO Set date to what the date in the data is at this index
-			this.set_date(Date("1900-1-1"));
-		}]);
+		this.addEventValueToGlobalAppState("index", null, [
+			(e) => {
+				// TODO Set date to what the date in the data is at this index
+				this.set_date(Date("1900-1-1"));
+			},
+		]);
 		this.set_index(0);
-		// When the playhead moves, this will store its estimated current speed. 
+		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
 		/// This is in units of seconds, and measures how long it would take for the
-		/// entire data series to be iterated through. 
+		/// entire data series to be iterated through.
 		///
 		/// For now, when the animationUpdateSpeed changes, the playback will pause
-		this.addEventValueToGlobalAppState("playbackSpeed", null, [e => {
-			let time_for_playback = e.detail;
-			// EX: If there are 30 datapoints and we want the
-			// playback to play from start to finish in 10 seconds,
-			// there should be 0.3333 seconds between each index
-			// increment. 
-			let frequency = time_for_playback / this.data.length * 1000;
-			this._frequency = frequency;
-		}]);
+		this.addEventValueToGlobalAppState("playbackSpeed", null, [
+			(e) => {
+				let time_for_playback = e.detail;
+				// EX: If there are 30 datapoints and we want the
+				// playback to play from start to finish in 10 seconds,
+				// there should be 0.3333 seconds between each index
+				// increment.
+				let frequency = (time_for_playback / this.data.length) * 1000;
+				this._frequency = frequency;
+			},
+		]);
 		this.set_playbackSpeed(15.0);
-		this.addEventValueToGlobalAppState("playing", false, [(e) => {
-			if(e.detail === true) {
-				// Playback has started
-				this.__interval_id = setInterval(() => this.updateIndex(), this._frequency);
-			} else {
-				// Playback has stopped
-				clearInterval(this.__interval_id);
-			}
-		}]);
+		this.addEventValueToGlobalAppState("playing", false, [
+			(e) => {
+				if (e.detail === true) {
+					// Playback has started
+					this.__interval_id = setInterval(
+						() => this.updateIndex(),
+						this._frequency
+					);
+				} else {
+					// Playback has stopped
+					clearInterval(this.__interval_id);
+				}
+			},
+		]);
 
 		/*  ----------------Group By Controls---------------    */
 		this.addEventValueToGlobalAppState("selectedCompanies", false);
