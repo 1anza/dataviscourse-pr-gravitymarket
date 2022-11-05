@@ -41,7 +41,7 @@ class GlobalAppState {
 	}
 
 	addEventListenerToEvent(eventName, f) {
-		document.addEventListener(eventName, e => f(e));
+		document.addEventListener("on_" + eventName + "Change", e => f(e));
 	}
 
 	initializeEvents(data) {
