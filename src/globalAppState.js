@@ -63,7 +63,9 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("zValueDataRange", null);
 		this.addEventValueToGlobalAppState("zValueName", "marketCap", [
 			(_) => {
-				this.set_zValueDataRange(d3.extent(this.data, d => d[this.zValueName]));
+				this.set_zValueDataRange(
+					d3.extent(this.data, (d) => d[this.zValueName])
+				);
 			},
 		]);
 		console.log(this.zValueDataRange);
