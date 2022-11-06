@@ -36,6 +36,13 @@ function createPlaybackControls(gas) {
 		}
 	});
 	gas.set_playbackSpeed(+playback_speed._groups[0][0].value);
+	
+	// Sets up the rewind button
+	playbackdiv.select("button#go-to-start")
+		.on("click", _ => {
+			gas.set_playing(false);
+			gas.set_index(0);
+		})
 }
 
 function updatePlayButton(button, gas) {

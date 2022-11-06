@@ -122,11 +122,11 @@ class GlobalAppState {
 
 		/*  ----------------Group By Controls---------------    */
 
-		/// This is a function that colors a row of data.
-		/// It takes as input the sector and returns a color.
 		let domain = [...new Set(this.data.map((d) => d.sector))];
 		let map = Object.assign({}, ...domain.map((d, i) => ({ [d]: i })));
 		let color_func = d3.interpolateRainbow;
+		/// This is a function that colors a row of data.
+		/// It takes as input the sector and returns a color.
 		this.addEventValueToGlobalAppState(
 			"colorFunc",
 			(sector) => color_func(map[sector] / domain.length),
