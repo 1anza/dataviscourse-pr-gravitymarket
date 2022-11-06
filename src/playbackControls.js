@@ -10,6 +10,7 @@ function createPlaybackControls(gas) {
 		updatePlayButton(button, gas);
 	});
 	updatePlayButton(button, gas);
+	gas.addEventListenerToEvent("playing", _ => updatePlayButton(button, gas));
 
 	// Sets up the speed controls
 	let n_speed_options = 9;

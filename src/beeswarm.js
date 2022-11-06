@@ -8,6 +8,9 @@ class Beeswarm {
 			maxY: 1000,
 		};
 
+		// TODO Test setting sectors
+		//this.gas.set_selectedSectors(["Health Care", "Industrials"]);
+
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
 		this.updateScaleX();
 		this.updateScaleY();
@@ -20,12 +23,13 @@ class Beeswarm {
 
 		this.simulationSettings = {
 			globalForceScale: 1,
-			forceXScale: 0.1,
+			forceXScale: 0.01,
 			forceYScale: 0.1,
-			collisionStrength: 0.7,
+			collisionStrength: 1.0,
 		}
 
 		this.startSimulation();
+		this.gas.addEventListenerToEvent("index", _ => this.updateSimulationY());
 	}
 
 	getPercChange(row) {
@@ -178,7 +182,7 @@ class Beeswarm {
 	updateSimulationY() {
 		this.simulation
 			.force(
-				"x",
+				"y",
 				d3
 					.forceY()
 					.y((d) => this.scaleY(this.getPercChange(d)))
