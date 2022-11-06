@@ -9,6 +9,16 @@ body {
 	stroke-width: 2px;
 }
 
+#beeswarm-tooltip {
+	background-color: white;
+	border: solid;
+	border-width: 2px;
+	border-radius: 5px;
+	padding: 5px;
+	display: block;
+	position: absolute;
+}
+
 .yAxis,
 .xAxis {
   font-size: 1.5em;

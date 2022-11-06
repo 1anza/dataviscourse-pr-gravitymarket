@@ -19,6 +19,7 @@ class Beeswarm {
 		this.drawYAxis();
 		this.drawXAxis();
 
+		this.initTooltip();
 		this.drawCircles();
 
 		this.simulationSettings = {
@@ -129,7 +130,19 @@ class Beeswarm {
 			.text((d) => d);
 	}
 
+	initTooltip() {
+		this.tooltip = d3
+			.select("div#beeswarm")
+			.append("div")
+			.attr("id", "beeswarm-tooltip")
+			.attr("class", "tooltip")
+			.style("opacity", 0)
+			.style("pointer-events", "none");
+	}
+
+
 	drawCircles() {
+		let tooltip = this.tooltip;
 		this.circles = d3
 			.select("svg#beeswarm-vis")
 			.select("g#swarm")
@@ -140,7 +153,27 @@ class Beeswarm {
 			.join("circle")
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
-			.classed("swarm-circ", true);
+			.classed("swarm-circ", true)
+			.on("mouseover", function (_) {
+				let hovered = d3.select(this);
+				let _data = hovered._groups[0][0].__data__;
+				let sector = `${_data.sector}`;
+				let html = `Ticker: "${_data.ticker}" Sector: ${sector}`;
+				// Sets tooltip to be visible
+				tooltip.style("opacity", 1).html(html);
+				hovered.classed("hovered-swarm-circ", true);
+			})
+			.on("mousemove", (e) => {
+				console.log(tooltip);
+				tooltip
+					.style("left", `${e.pageX + 10}px`)
+					.style("top", `${e.pageY + 10}px`);
+			})
+			.on("mouseleave", function (_) {
+				let hovered = d3.select(this);
+				tooltip.style("opacity", 0);
+				hovered.classed("hovered-swarm-circ", false);
+			});
 	}
 
 	/*  ----------------Simulation----------------------    */
