@@ -55,12 +55,19 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("data", data);
 
 		/*  ----------------Data bounds---------------------    */
-		// TODO is it called ticker?
-		this.addEventValueToGlobalAppState("yValueToPlot", "ticker");
-
-		let range = d3.range(this.data, (d) => d[this.yValueToPlot]);
-		this.yDataRange = range;
-		this.addEventValueToGlobalAppState("yValueDataRange", range);
+		this.addEventValueToGlobalAppState("yValueDataRange", null);
+		this.addEventValueToGlobalAppState("yValueName", "marketClose", [
+			_ => {
+				let range = [
+					d3.min(this.data, x => d3.min(x.chart, y => y[this.yValueName])),
+					d3.max(this.data, x => d3.max(x.chart, y => y[this.yValueName]))
+				]
+				console.log("Data range: ", range);
+				this.set_yValueDataRange(range);
+			}
+		]);
+		// Hacky way to get the range to update
+		this.set_yValueName("marketClose");
 
 		/*  -----------Time series and tick controls--------    */
 		this.addEventValueToGlobalAppState("date", null, [], true);
@@ -115,6 +122,10 @@ class GlobalAppState {
 		/*  ----------------Group By Controls---------------    */
 		this.addEventValueToGlobalAppState("selectedCompanies", false);
 		this.addEventValueToGlobalAppState("selectedSectors", false);
+		
+		/// This is a function that colors a row of data.
+		this.addEventValueToGlobalAppState("colorFunc", null, [], true); 
+		this.addEventListenerToEvent("yValueDataRange", )
 	}
 
 	// Will loop by default.
