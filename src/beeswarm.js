@@ -1,8 +1,12 @@
 class Beeswarm {
 	constructor(gas) {
 		this.gas = gas;
-
-		// Circle radius
+		this.bounds = {
+			minX: 20,
+			maxX: 600,
+			minY: 20,
+			maxY: 600,
+		};
 
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
 		this.updateScaleX();
@@ -10,8 +14,8 @@ class Beeswarm {
 		this.updateScaleRadius();
 
 		this.drawYAxis();
+		this.drawXAxis();
 	}
-
 
 	/*  ----------------Data scales---------------------    */
 
@@ -22,47 +26,87 @@ class Beeswarm {
 			.range([minRadius, maxRadius]);
 	}
 
-	updateScaleX(minX = 20, maxX = 600) {
-		let x_range = d3.range(minX, maxX + 0.001, this.gas.selectedSectors.length);
-		let x_domain_map = Object.assign(
-			{},
-			...this.gas.selectedSectors.map((d, i) => ({ [d]: i }))
-		);
-		// This is a function sector => coordinate
-		this.scaleX = (sector) => x_range[x_domain_map[sector]];
+	updateScaleX() {
+		if (this.gas.groupingBySector) {
+			let x_range = d3.range(
+				this.bounds.minX,
+				this.bounds.maxX + 0.001,
+				this.gas.selectedSectors.length
+			);
+			let x_domain_map = Object.assign(
+				{},
+				...this.gas.selectedSectors.map((d, i) => ({ [d]: i }))
+			);
+			// This is a function sector => coordinate
+			this.scaleX = (sector) => x_range[x_domain_map[sector]];
+		} else {
+			this.scaleX = _ => (this.bounds.maxX - this.bounds.minX) / 2
+		}
 	}
 
-	updateScaleY(minY = 20, maxY = 600) {
+	updateScaleY() {
 		this.scaleY = d3
 			.scaleLinear()
 			.domain([-60, 100])
-			.range([minY, maxY]);
+			.range([this.bounds.maxY, this.bounds.minY]);
 	}
 
 	/*  ----------------Rendering-----------------------    */
 
-	// Draws the horizontal lines and the axis labels
 	drawYAxis() {
 		// Hardcoded ticks
-		// this can be made to be dynamic - just base 
+		// this can be made to be dynamic - just base
 		// these ticks on the extent of the percentages in the data at
 		// the current index.
 		let ticks = d3.range(-60, 100.01, 20);
 
-		let lines = d3
-			.select("svg#beeswarm-vis")
-			.select("g#grid")
-			.selectAll("line#horizontal")
-			.data(ticks);
+		let grid = d3.select("svg#beeswarm-vis").select("g#grid");
+
+		let lines = grid.selectAll("line#horizontal").data(ticks);
 		lines.exit().remove();
-		lines.join("line").attr("id", "horizontal").attr("x1", 0)
+		lines
+			.join("line")
+			.attr("id", "horizontal")
+			.attr("x1", this.bounds.minX)
 			.classed("beeswarm-gridline", true)
-			.attr("x2", 1000)
-			.attr("y1", d => this.scaleY(d))
-			.attr("y2", d => this.scaleY(d));
+			.attr("x2", this.bounds.maxX)
+			.attr("y1", (d) => this.scaleY(d))
+			.attr("y2", (d) => this.scaleY(d));
+
+		let axis_labels = grid.selectAll("text#axis-label-y").data(ticks);
+		axis_labels.exit().remove();
+		axis_labels
+			.join("text")
+			.attr("id", "axis-label-y")
+			.attr("x", this.bounds.maxY)
+			.attr("y", (d) => this.scaleY(d))
+			.text((d) => d);
 	}
 
-	drawGridVertical(selectedSectors) {}
-
-	drawAxes() {}
+	drawXAxis() {
+		let grid = d3.select("svg#beeswarm-vis").select("g#grid");
+		let data_to_bind;
+		if (this.gas.groupingBySector) {
+			data_to_bind = this.gas.selectedSectors;
+		} else {
+			data_to_bind = [""];
+		}
+		let lines = grid.selectAll("line#vertical").data(data_to_bind);
+		lines.exit().remove();
+		lines.join("line")
+			.attr("id", "vertical")
+			.attr("x1", d => this.scaleX(d))
+			.attr("x2", d => this.scaleX(d))
+			.attr("y1", this.bounds.minY)
+			.attr("y2", this.bounds.maxY)
+			.classed("beeswarm-gridline", true);
+		let text = grid.selectAll("text#axis-label-x")
+			.data(data_to_bind);
+		text.exit().remove();
+		text.join("text")
+			.attr("id", "axis-label-x")
+			.attr("x", d => this.scaleX(d))
+			.attr("y", this.bounds.maxY)
+			.text(d => d);
+	}
 }
