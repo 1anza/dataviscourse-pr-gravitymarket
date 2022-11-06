@@ -63,7 +63,7 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("yValueDataRange", range);
 
 		/*  -----------Time series and tick controls--------    */
-		this.addEventValueToGlobalAppState("date", null);
+		this.addEventValueToGlobalAppState("date", null, [], true);
 		this.addEventValueToGlobalAppState(
 			"index",
 			null,
@@ -119,7 +119,7 @@ class GlobalAppState {
 
 	// Will loop by default.
 	updateIndex() {
-		if (this.index >= this.data[0].length) {
+		if (this.index === this.data[0].chart.length - 1) {
 			this.set_index(0);
 		} else {
 			this.set_index(this.index + 1);
