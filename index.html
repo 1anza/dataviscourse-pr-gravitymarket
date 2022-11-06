@@ -49,10 +49,17 @@
 	      </svg>
       </div>
       <div class="bl" id="playback-div">
-	      <button id="playpause" class="playback-button">
-		      <i class="fa-solid fa-play" id="play"></i>
-		      <i class="fa-solid fa-pause" id ="pause" style="display:none"></i>
-	      </button>
+        <div class="playback-control">
+          <button id="playpause" class="playback-button">
+            <i class="fa-solid fa-play" id="play"></i>
+            <i class="fa-solid fa-pause" id ="pause" style="display:none"></i>
+          </button>
+        </div>
+        <div class="playback-control">
+          Playback speed (Seconds):
+          <select class="playback-select" id="playback-speed">
+          </select>
+        </div>
       </div>
       <div class="br"></div>
   </body>

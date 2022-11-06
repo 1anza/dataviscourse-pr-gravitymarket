@@ -79,22 +79,6 @@ class GlobalAppState {
 		this.set_index(0);
 		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
-		/// This is in units of seconds, and measures how long it would take for the
-		/// entire data series to be iterated through.
-		///
-		/// For now, when the animationUpdateSpeed changes, the playback will pause
-		this.addEventValueToGlobalAppState("playbackSpeed", null, [
-			(e) => {
-				let time_for_playback = e.detail;
-				// EX: If there are 30 datapoints and we want the
-				// playback to play from start to finish in 10 seconds,
-				// there should be 0.3333 seconds between each index
-				// increment.
-				let frequency = (time_for_playback / this.data.length) * 1000;
-				this._frequency = frequency;
-			},
-		]);
-		this.set_playbackSpeed(15.0);
 		this.addEventValueToGlobalAppState("playing", false, [
 			(e) => {
 				if (e.detail === true) {
@@ -109,6 +93,24 @@ class GlobalAppState {
 				}
 			},
 		]);
+
+		/// This is in units of seconds, and measures how long it would take for the
+		/// entire data series to be iterated through.
+		///
+		/// For now, when the animationUpdateSpeed changes, the playback will pause
+		this.addEventValueToGlobalAppState("playbackSpeed", null, [
+			(e) => {
+				let time_for_playback = e.detail;
+				// EX: If there are 30 datapoints and we want the
+				// playback to play from start to finish in 10 seconds,
+				// there should be 0.3333 seconds between each index
+				// increment.
+				let frequency = (time_for_playback / this.data.length) * 1000;
+				this._frequency = frequency;
+				this.set_playing(false);
+			},
+		]);
+		this.set_playbackSpeed(10.0);
 
 		/*  ----------------Group By Controls---------------    */
 		this.addEventValueToGlobalAppState("selectedCompanies", false);
