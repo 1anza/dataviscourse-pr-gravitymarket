@@ -26,7 +26,6 @@ class GlobalAppState {
 		functions_to_add = [],
 		shouldLog = true
 	) {
-		this[valueName] = default_value;
 		this["set_" + valueName] = (value) => {
 			this[valueName] = value;
 			let _event = new CustomEvent("on_" + valueName + "Change", {
@@ -45,6 +44,10 @@ class GlobalAppState {
 				f(e);
 			});
 		}
+
+		if (default_value !== null) {
+			this["set_" + valueName](default_value);
+		}
 	}
 
 	addEventListenerToEvent(eventName, f) {
@@ -57,17 +60,15 @@ class GlobalAppState {
 		/*  ----------------Data bounds---------------------    */
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
 		this.addEventValueToGlobalAppState("yValueName", "marketClose", [
-			_ => {
+			(_) => {
 				let range = [
-					d3.min(this.data, x => d3.min(x.chart, y => y[this.yValueName])),
-					d3.max(this.data, x => d3.max(x.chart, y => y[this.yValueName]))
-				]
+					d3.min(this.data, (x) => d3.min(x.chart, (y) => y[this.yValueName])),
+					d3.max(this.data, (x) => d3.max(x.chart, (y) => y[this.yValueName])),
+				];
 				console.log("Data range: ", range);
 				this.set_yValueDataRange(range);
-			}
+			},
 		]);
-		// Hacky way to get the range to update
-		this.set_yValueName("marketClose");
 
 		/*  -----------Time series and tick controls--------    */
 		this.addEventValueToGlobalAppState("date", null, [], true);
@@ -120,12 +121,21 @@ class GlobalAppState {
 		this.set_playbackSpeed(10.0);
 
 		/*  ----------------Group By Controls---------------    */
-		this.addEventValueToGlobalAppState("selectedCompanies", false);
-		this.addEventValueToGlobalAppState("selectedSectors", false);
-		
+
 		/// This is a function that colors a row of data.
-		this.addEventValueToGlobalAppState("colorFunc", null, [], true); 
-		this.addEventListenerToEvent("yValueDataRange", )
+		/// It takes as input the sector and returns a color.
+		let domain = [...new Set(this.data.map((d) => d.sector))];
+		let map = Object.assign({}, ...domain.map((d, i) => ({ [d]: i })));
+		let color_func = d3.interpolateRainbow;
+		this.addEventValueToGlobalAppState(
+			"colorFunc",
+			(sector) => color_func(map[sector] / domain.length),
+			[],
+			true
+		);
+
+		this.addEventValueToGlobalAppState("selectedSectors", []);
+		this.addEventValueToGlobalAppState("groupingBySector", false);
 	}
 
 	// Will loop by default.
