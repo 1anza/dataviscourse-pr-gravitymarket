@@ -6,6 +6,7 @@ function main() {
 		let gas = new GlobalAppState(data);
 
 		createPlaybackControls(gas);
+		let beeswarm = new Beeswarm(gas);
 	});
 }
 

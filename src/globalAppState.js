@@ -58,6 +58,15 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("data", data);
 
 		/*  ----------------Data bounds---------------------    */
+		// The zValue is the marketCap, which determines the radius in the beeswarm
+		// This zValue is local to the first list dimension, (the ticker)
+		this.addEventValueToGlobalAppState("zValueDataRange", null);
+		this.addEventValueToGlobalAppState("zValueName", "marketCap", [
+			(_) => {
+				this.set_zValueDataRange(d3.extent(this.data, d => d[this.zValueName]));
+			},
+		]);
+		console.log(this.zValueDataRange);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
 		this.addEventValueToGlobalAppState("yValueName", "marketClose", [
 			(_) => {
