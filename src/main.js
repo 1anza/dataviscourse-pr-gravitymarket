@@ -8,6 +8,9 @@ function main() {
 		createPlaybackControls(gas);
 
 		let beeswarm = new Beeswarm(gas);
+
+		// TODO Test setting sectors
+		gas.set_selectedSectors(new Set(["Health Care", "Industrials"]));
 	});
 }
 

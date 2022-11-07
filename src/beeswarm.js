@@ -8,9 +8,6 @@ class Beeswarm {
 			maxY: 1000,
 		};
 
-		// TODO Test setting sectors
-		//this.gas.set_selectedSectors(["Health Care", "Industrials"]);
-
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
 		this.updateScaleX();
 		this.updateScaleY();
@@ -31,6 +28,15 @@ class Beeswarm {
 
 		this.startSimulation();
 		this.gas.addEventListenerToEvent("index", _ => this.updateSimulationY());
+		
+		this.gas.addEventListenerToEvent("selectedSectors", _ => {
+			this.updateScaleX();
+			this.drawXAxis();
+			this.circles = this.circles.filter(d => this.gas.selectedSectors.has(d.sector));
+			console.log(this.circles);
+			//this.drawCircles();
+			this.updateSimulationX();
+		});
 	}
 
 	getPercChange(row) {
@@ -48,17 +54,24 @@ class Beeswarm {
 
 	updateScaleX() {
 		if (this.gas.groupingBySector) {
+			let step = (this.bounds.maxX - this.bounds.minX) / (this.gas.selectedSectors.size+1);
 			let x_range = d3.range(
-				this.bounds.minX,
-				this.bounds.maxX + 0.001,
-				this.gas.selectedSectors.length
+				this.bounds.minX + step,
+				this.bounds.maxX + step + 0.001,
+				step,
 			);
-			let x_domain_map = Object.assign(
-				{},
-				...this.gas.selectedSectors.map((d, i) => ({ [d]: i }))
-			);
+			let x_domain_map = {};
+			// Hacky way to get a dict of {sector: index}
+			let i = 0;
+			for (let sec of this.gas.selectedSectors.keys()) {
+				x_domain_map[sec] = i;
+				i += 1;
+			}
+			console.log(x_domain_map);
+			console.log(x_range);
 			// This is a function sector => coordinate
 			this.scaleX = (sector) => x_range[x_domain_map[sector]];
+			console.log(this.scaleX("Health Care"));
 		} else {
 			this.scaleX = (_) => (this.bounds.maxX - this.bounds.minX) / 2;
 		}
@@ -140,14 +153,13 @@ class Beeswarm {
 			.style("pointer-events", "none");
 	}
 
-
 	drawCircles() {
 		let tooltip = this.tooltip;
 		this.circles = d3
 			.select("svg#beeswarm-vis")
 			.select("g#swarm")
 			.selectAll("circle")
-			.data(this.gas.data);
+			.data(this.gas.data)
 		this.circles.exit().remove();
 		this.circles = this.circles
 			.join("circle")
@@ -164,7 +176,6 @@ class Beeswarm {
 				hovered.classed("hovered-swarm-circ", true);
 			})
 			.on("mousemove", (e) => {
-				console.log(tooltip);
 				tooltip
 					.style("left", `${e.pageX + 10}px`)
 					.style("top", `${e.pageY + 10}px`);

@@ -146,6 +146,7 @@ class GlobalAppState {
 		);
 
 		this.addEventValueToGlobalAppState("groupingBySector", false);
+		/// selectedSectors is a set of the selectedSectors
 		this.addEventValueToGlobalAppState(
 			"selectedSectors",
 			[],
