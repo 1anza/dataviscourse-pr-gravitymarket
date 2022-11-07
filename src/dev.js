@@ -2,7 +2,8 @@
 
 function addDevTools(gas) {
 	d3.select("div#playback-div")
-		.append("html", "toggle grouping")
+		.append("div")
+		.text("toggle grouping")
 		.append("input")
 		.attr("type", "checkbox")
 		.on("change", e => {

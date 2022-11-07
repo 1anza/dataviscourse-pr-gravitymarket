@@ -33,13 +33,14 @@ class Beeswarm {
 			this.updateScaleX();
 			this.drawXAxis();
 			if (this.gas.groupingBySector) {
-				this.circles = this.circles.filter((d) =>
-					this.gas.selectedSectors.has(d.sector)
+				this.circles = this.circles.filter(
+					d => this.gas.selectedSectors.has(d.sector)
 				);
+				console.log(this.circles.exit());
+				this.circles.exit().attr("visibility", "hidden")//.remove();
 			} else {
-				this.drawCircles();
+				this.circles.attr("visibility", "visible");
 			}
-			console.log(this.circles);
 			//this.drawCircles();
 			this.updateSimulationX();
 		});
@@ -83,7 +84,14 @@ class Beeswarm {
 			console.log(x_domain_map);
 			console.log(x_range);
 			// This is a function sector => coordinate
-			this.scaleX = (sector) => x_range[x_domain_map[sector]];
+			this.scaleX = (sector) => {
+				let index = x_domain_map[sector];
+				if (index != null) {
+					return x_range[index];
+				} else {
+					this.bounds.minX;
+				}
+			};
 			console.log(this.scaleX("Health Care"));
 		} else {
 			this.scaleX = (_) => (this.bounds.maxX - this.bounds.minX) / 2;
