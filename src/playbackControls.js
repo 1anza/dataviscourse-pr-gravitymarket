@@ -10,7 +10,7 @@ function createPlaybackControls(gas) {
 		updatePlayButton(button, gas);
 	});
 	updatePlayButton(button, gas);
-	gas.addEventListenerToEvent("playing", _ => updatePlayButton(button, gas));
+	gas.addEventListenerToEvent("playing", (_) => updatePlayButton(button, gas));
 
 	// Sets up the speed controls
 	let n_speed_options = 9;
@@ -45,9 +45,9 @@ function createPlaybackControls(gas) {
 	});
 
 	// Sets up the date monitor
-	let updateDate = _ => playbackdiv.select("div#current-date").html(gas.date);
+	let updateDate = (_) => playbackdiv.select("div#current-date").html(gas.date);
 	updateDate();
-	gas.addEventListenerToEvent("date", e => {
+	gas.addEventListenerToEvent("date", (e) => {
 		updateDate();
 	});
 }

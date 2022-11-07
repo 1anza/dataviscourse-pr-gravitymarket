@@ -149,10 +149,10 @@ class GlobalAppState {
 		/// selectedSectors is a set of the selectedSectors
 		this.addEventValueToGlobalAppState(
 			"selectedSectors",
-			[],
+			new Set(),
 			[
 				(e) => {
-					if (e.detail.length === 0) {
+					if (e.detail.size === 0) {
 						this.set_groupingBySector(false);
 					} else {
 						this.set_groupingBySector(true);

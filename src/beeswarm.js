@@ -24,15 +24,21 @@ class Beeswarm {
 			forceXScale: 0.01,
 			forceYScale: 0.1,
 			collisionStrength: 1.0,
-		}
+		};
 
 		this.startSimulation();
-		this.gas.addEventListenerToEvent("index", _ => this.updateSimulationY());
-		
-		this.gas.addEventListenerToEvent("selectedSectors", _ => {
+		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
+
+		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
 			this.updateScaleX();
 			this.drawXAxis();
-			this.circles = this.circles.filter(d => this.gas.selectedSectors.has(d.sector));
+			if (this.gas.groupingBySector) {
+				this.circles = this.circles.filter((d) =>
+					this.gas.selectedSectors.has(d.sector)
+				);
+			} else {
+				this.drawCircles();
+			}
 			console.log(this.circles);
 			//this.drawCircles();
 			this.updateSimulationX();
@@ -40,12 +46,17 @@ class Beeswarm {
 	}
 
 	getPercChange(row) {
-		return (row.chart[this.gas.index][this.gas.yValueName] / row.chart[0][this.gas.yValueName] - 1) * 100
+		return (
+			(row.chart[this.gas.index][this.gas.yValueName] /
+				row.chart[0][this.gas.yValueName] -
+				1) *
+			100
+		);
 	}
 
 	/*  ----------------Data scales---------------------    */
 
-	updateScaleRadius(minRadius = 5, maxRadius = 20) {
+	updateScaleRadius(minRadius = 5, maxRadius = 50) {
 		this.scaleRadius = d3
 			.scaleLinear()
 			.domain(this.gas.zValueDataRange)
@@ -54,11 +65,13 @@ class Beeswarm {
 
 	updateScaleX() {
 		if (this.gas.groupingBySector) {
-			let step = (this.bounds.maxX - this.bounds.minX) / (this.gas.selectedSectors.size+1);
+			let step =
+				(this.bounds.maxX - this.bounds.minX) /
+				(this.gas.selectedSectors.size + 1);
 			let x_range = d3.range(
 				this.bounds.minX + step,
 				this.bounds.maxX + step + 0.001,
-				step,
+				step
 			);
 			let x_domain_map = {};
 			// Hacky way to get a dict of {sector: index}
@@ -159,7 +172,7 @@ class Beeswarm {
 			.select("svg#beeswarm-vis")
 			.select("g#swarm")
 			.selectAll("circle")
-			.data(this.gas.data)
+			.data(this.gas.data);
 		this.circles.exit().remove();
 		this.circles = this.circles
 			.join("circle")
@@ -190,7 +203,8 @@ class Beeswarm {
 	/*  ----------------Simulation----------------------    */
 
 	startSimulation() {
-		this.simulation = d3.forceSimulation(this.gas.data)
+		this.simulation = d3
+			.forceSimulation(this.gas.data)
 			.alphaTarget(0.1)
 			.velocityDecay(0.1)
 			.force(
@@ -204,33 +218,41 @@ class Beeswarm {
 			.on("tick", (_) => {
 				this.circles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 			});
-		
+
 		// Sets the starting locations
-		this.circles.datum(d => {d.x = this.scaleX(d.sector); d.y = this.scaleY(this.getPercChange(d)); return d});
+		this.circles.datum((d) => {
+			d.x = this.scaleX(d.sector);
+			//d.y = this.scaleY(this.getPercChange(d));
+			return d;
+		});
 
 		this.updateSimulationX();
 		this.updateSimulationY();
 	}
 
 	updateSimulationX() {
-		this.simulation
-			.force(
-				"x",
-				d3
-					.forceX()
-					.x((d) => this.scaleX(d.sector))
-					.strength(this.simulationSettings.globalForceScale * this.simulationSettings.forceXScale)
-			)
+		this.simulation.force(
+			"x",
+			d3
+				.forceX()
+				.x((d) => this.scaleX(d.sector))
+				.strength(
+					this.simulationSettings.globalForceScale *
+						this.simulationSettings.forceXScale
+				)
+		);
 	}
 
 	updateSimulationY() {
-		this.simulation
-			.force(
-				"y",
-				d3
-					.forceY()
-					.y((d) => this.scaleY(this.getPercChange(d)))
-					.strength(this.simulationSettings.globalForceScale * this.simulationSettings.forceYScale)
-			)
+		this.simulation.force(
+			"y",
+			d3
+				.forceY()
+				.y((d) => this.scaleY(this.getPercChange(d)))
+				.strength(
+					this.simulationSettings.globalForceScale *
+						this.simulationSettings.forceYScale
+				)
+		);
 	}
 }
