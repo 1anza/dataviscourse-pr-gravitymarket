@@ -43,6 +43,13 @@ function createPlaybackControls(gas) {
 		gas.set_playing(false);
 		gas.set_index(0);
 	});
+
+	// Sets up the date monitor
+	let updateDate = _ => playbackdiv.select("div#current-date").html(gas.date);
+	updateDate();
+	gas.addEventListenerToEvent("date", e => {
+		updateDate();
+	});
 }
 
 function updatePlayButton(button, gas) {

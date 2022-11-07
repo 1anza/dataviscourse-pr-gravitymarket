@@ -9,6 +9,11 @@ body {
 	stroke-width: 2px;
 }
 
+#playback-div {
+	display: flex;
+	flex-direction: row;
+}
+
 #beeswarm-tooltip {
 	background-color: white;
 	border: solid;
