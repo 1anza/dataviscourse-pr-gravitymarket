@@ -30,18 +30,17 @@ class Beeswarm {
 		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
 
 		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
+			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
+			if (this.gas.groupingBySector) {
+				this.circles
+					.attr("visibility", d => this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden");
+			} else {
+				this.circles
+					.attr("visibility", "visible");
+			}
 			this.updateScaleX();
 			this.drawXAxis();
-			if (this.gas.groupingBySector) {
-				this.circles = this.circles.filter(
-					d => this.gas.selectedSectors.has(d.sector)
-				);
-				console.log(this.circles.exit());
-				this.circles.exit().attr("visibility", "hidden")//.remove();
-			} else {
-				this.circles.attr("visibility", "visible");
-			}
-			//this.drawCircles();
+			this.updateCollisions();
 			this.updateSimulationX();
 		});
 	}
@@ -84,14 +83,7 @@ class Beeswarm {
 			console.log(x_domain_map);
 			console.log(x_range);
 			// This is a function sector => coordinate
-			this.scaleX = (sector) => {
-				let index = x_domain_map[sector];
-				if (index != null) {
-					return x_range[index];
-				} else {
-					this.bounds.minX;
-				}
-			};
+			this.scaleX = (sector) => x_range[x_domain_map[sector]];
 			console.log(this.scaleX("Health Care"));
 		} else {
 			this.scaleX = (_) => (this.bounds.maxX - this.bounds.minX) / 2;
@@ -215,14 +207,6 @@ class Beeswarm {
 			.forceSimulation(this.gas.data)
 			.alphaTarget(0.1)
 			.velocityDecay(0.1)
-			.force(
-				"collide",
-				d3
-					.forceCollide()
-					.radius((d) => this.scaleRadius(d[this.gas.zValueName]))
-					.iterations(2)
-					.strength(this.simulationSettings.collisionStrength)
-			)
 			.on("tick", (_) => {
 				this.circles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 			});
@@ -234,16 +218,48 @@ class Beeswarm {
 			return d;
 		});
 
+		this.updateCollisions();
 		this.updateSimulationX();
 		this.updateSimulationY();
+		console.log(this.simulation);
 	}
 
+	/*
+	 * Enables collisions only for datapoints that are in the selectedSectors
+	 */
+	updateCollisions() {
+		this.simulation
+			.force(
+				"collide",
+				d3
+					.forceCollide()
+					.radius((d) => {
+						if (this.gas.groupingBySector) {
+							return this.gas.selectedSectors.has(d.sector) ? this.scaleRadius(d[this.gas.zValueName]) : 0;
+						} else {
+							return this.scaleRadius(d[this.gas.zValueName])
+						}
+					})
+					.iterations(2)
+					.strength(this.simulationSettings.collisionStrength)
+			)
+	}
+
+	/*
+	 * Sets an X force, only for datapoints that are in the selectedSectors
+	 */
 	updateSimulationX() {
 		this.simulation.force(
 			"x",
 			d3
 				.forceX()
-				.x((d) => this.scaleX(d.sector))
+				.x((d) => {
+						if (this.gas.groupingBySector && !this.gas.selectedSectors.has(d.sector)) {
+							return 0;
+						} else {
+							return this.scaleX(d.sector)
+						}
+				})
 				.strength(
 					this.simulationSettings.globalForceScale *
 						this.simulationSettings.forceXScale
