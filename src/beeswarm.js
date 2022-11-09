@@ -13,6 +13,8 @@ class Beeswarm {
 		this.updateScaleY();
 		this.updateScaleRadius();
 
+		this.updateRadiusKey();
+
 		this.drawYAxis();
 		this.drawXAxis();
 
@@ -56,11 +58,45 @@ class Beeswarm {
 
 	/*  ----------------Data scales---------------------    */
 
+	/*
+	 * Sets this.scaleRadius to a function that maps the z value range as an area into a radius
+	 */
 	updateScaleRadius(minRadius = 5, maxRadius = 50) {
-		this.scaleRadius = d3
+		let zValueRadiusRange = this.gas.zValueDataRange.map(x => Math.pow(x / Math.PI, 0.5));
+		let areaScale = d3
 			.scaleLinear()
-			.domain(this.gas.zValueDataRange)
-			.range([minRadius, maxRadius]);
+			.domain(zValueRadiusRange)
+			.range([minRadius, maxRadius])
+		this.scaleRadius = x => areaScale(Math.pow(x / Math.PI, 0.5));
+	}
+
+	/*
+	 * Draws a key for the radius
+	 */
+	updateRadiusKey() {
+		// By default, the two values plotted are the min and max of the data
+		let ticks = this.gas.zValueDataRange;
+		let rad_key_offset = [20,40]
+		let rad_key = d3.select("g#radius-key");
+		rad_key
+			.attr("transform", `translate(${this.bounds.maxX + rad_key_offset[0]} ${this.bounds.maxY + rad_key_offset[1]})`)
+			.selectAll("circle")
+			.data(ticks)
+			.join("circle")
+			.attr("r", d => this.scaleRadius(d))
+			.attr("id", "beeswarm-key-circle");
+
+		// Angle in radians
+		let theta = Math.PI / 4;
+		let format = d3.format(",.1f");
+		rad_key
+			.selectAll("text")
+			.data(ticks)
+			.join("text")
+			.attr("x", d => this.scaleRadius(d) * Math.cos(theta))
+			.attr("y", d => this.scaleRadius(d) * Math.sin(theta))
+			.text(d => `$${format(d / 1e9)}B`)
+			.attr("id", "beeswarm-key-text");
 	}
 
 	updateScaleX() {

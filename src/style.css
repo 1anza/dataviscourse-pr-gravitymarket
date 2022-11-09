@@ -24,6 +24,12 @@ body {
 	position: absolute;
 }
 
+#beeswarm-key-circle {
+	stroke: gray;
+	stroke-width: 2;
+	fill: none;
+}
+
 .yAxis,
 .xAxis {
   font-size: 1.5em;
