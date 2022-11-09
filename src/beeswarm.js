@@ -58,15 +58,6 @@ class Beeswarm {
 		});
 	}
 
-	getPercChange(row) {
-		return (
-			(row.chart[this.gas.index][this.gas.yValueName] /
-				row.chart[0][this.gas.yValueName] -
-				1) *
-			100
-		);
-	}
-
 	/*  ----------------Data scales---------------------    */
 
 	/*
@@ -265,7 +256,6 @@ class Beeswarm {
 		// Sets the starting locations
 		this.circles.datum((d) => {
 			d.x = this.scaleX(d.sector);
-			//d.y = this.scaleY(this.getPercChange(d));
 			return d;
 		});
 
@@ -327,7 +317,7 @@ class Beeswarm {
 			"y",
 			d3
 				.forceY()
-				.y((d) => this.scaleY(this.getPercChange(d)))
+				.y((d) => this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName)))
 				.strength(
 					this.simulationSettings.globalForceScale *
 						this.simulationSettings.forceYScale
@@ -347,7 +337,7 @@ class Beeswarm {
 				(this.bounds.maxX - this.bounds.minX) / 30
 			);
 			d.x = this.scaleX(d.sector) + spread();
-			d.y = this.scaleY(this.getPercChange(d));
+			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
 			return d;
 		});
 	}

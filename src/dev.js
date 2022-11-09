@@ -13,14 +13,17 @@ function addDevTools(gas) {
 		"Real Estate",
 		"Consumer Staples",
 		"Utilities",
+		"Index",
 	];
 
 	d3.select("div#playback-div")
 		.append("div")
 		.text("toggle grouping:")
-		.selectAll("input")
+		.selectAll("g")
 		.data(sectors)
 		.enter()
+		.append("g")
+		.html(d => d)
 		.append("input")
 		.attr("type", "checkbox")
 		.on("change", (e) => {
