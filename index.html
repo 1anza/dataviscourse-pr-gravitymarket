@@ -31,6 +31,7 @@
     <script src="https://cdn.jsdelivr.net/npm/d3-brush@3"></script>
 
     <script src="src/globalAppState.js"></script>
+    <script src="src/linechart.js"></script>
     <script src="src/playbackControls.js"></script>
     <script src="src/beeswarm.js"></script>
     <script src="src/dev.js"></script>
@@ -47,8 +48,9 @@
 	      </svg>
       </div>
       <div class="tr" id="linechart">
-	      <svg id="linechart-vis">
+	      <svg id="linechart-vis" height="100%" width="100%">
 		      <g id="lines">
+		      <g id="key">
 		      <g id="y-axis">
 		      <g id="x-axis">
 	      </svg>

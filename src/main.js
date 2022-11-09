@@ -8,6 +8,7 @@ function main() {
 		createPlaybackControls(gas);
 
 		let beeswarm = new Beeswarm(gas);
+		let linechart = new Linechart(gas);
 
 		// TODO Test setting sectors
 		addDevTools(gas);

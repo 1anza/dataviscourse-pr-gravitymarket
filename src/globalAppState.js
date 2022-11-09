@@ -55,7 +55,15 @@ class GlobalAppState {
 	}
 
 	initializeEvents(data) {
-		this.addEventValueToGlobalAppState("data", data);
+		this.addEventValueToGlobalAppState("dateValueRange", null);
+		this.addEventValueToGlobalAppState("data", data, [e => {
+			// looks at all of the dates of the first value in data
+			this.set_dateValueRange(d3.extent(e.detail[0].chart, d => {
+					let datestring = `${d.date}T${d.minute}`;
+					return new Date(datestring);
+			}));
+			console.log(this.dateValueRange);
+		}]);
 
 		/*  ----------------Data bounds---------------------    */
 		// The zValue is the marketCap, which determines the radius in the beeswarm
