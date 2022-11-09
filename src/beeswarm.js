@@ -48,9 +48,13 @@ class Beeswarm {
 			this.updateSimulationX();
 			// previousSelectedSectors' union selectedSectors
 			let newlyAdded = new Set();
-			this.gas.selectedSectors.forEach(sector => this.previousSelectedSectors.has(sector) ? _ : newlyAdded.add(sector));
+			this.gas.selectedSectors.forEach((sector) =>
+				this.previousSelectedSectors.has(sector) ? _ : newlyAdded.add(sector)
+			);
 			this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
-			this.teleportCircles(this.circles.filter(d=> newlyAdded.has(d.sector)));
+			this.teleportCircles(
+				this.circles.filter((d) => newlyAdded.has(d.sector))
+			);
 		});
 	}
 
@@ -336,13 +340,15 @@ class Beeswarm {
 	 * their data
 	 */
 	teleportCircles(circles) {
-		circles.datum(
-			d => {
-				// Puts them with some random x values
-				let spread = d3.randomNormal(0, (this.bounds.maxX - this.bounds.minX)/30)
-				d.x = this.scaleX(d.sector) + spread();
-				d.y = this.scaleY(this.getPercChange(d));
-				return d;
-		})
+		circles.datum((d) => {
+			// Puts them with some random x values
+			let spread = d3.randomNormal(
+				0,
+				(this.bounds.maxX - this.bounds.minX) / 30
+			);
+			d.x = this.scaleX(d.sector) + spread();
+			d.y = this.scaleY(this.getPercChange(d));
+			return d;
+		});
 	}
 }
