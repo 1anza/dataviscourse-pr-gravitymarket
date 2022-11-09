@@ -1,8 +1,6 @@
 // attaches dev elements
 
 function addDevTools(gas) {
-
-
 	let sectors = [
 		"Industrials",
 		"Health Care",
@@ -17,7 +15,6 @@ function addDevTools(gas) {
 		"Utilities",
 	];
 
-
 	d3.select("div#playback-div")
 		.append("div")
 		.text("toggle grouping:")
@@ -26,7 +23,7 @@ function addDevTools(gas) {
 		.enter()
 		.append("input")
 		.attr("type", "checkbox")
-		.on("change", e => {
+		.on("change", (e) => {
 			let sector = e.target.__data__;
 			if (e.target.checked) {
 				gas.selectedSectors.add(sector);

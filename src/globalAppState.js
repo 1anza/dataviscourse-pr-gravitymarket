@@ -147,19 +147,15 @@ class GlobalAppState {
 
 		this.addEventValueToGlobalAppState("groupingBySector", false);
 		/// selectedSectors is a set of the selectedSectors
-		this.addEventValueToGlobalAppState(
-			"selectedSectors",
-			new Set(),
-			[
-				(e) => {
-					if (e.detail.size === 0) {
-						this.set_groupingBySector(false);
-					} else {
-						this.set_groupingBySector(true);
-					}
-				},
-			]
-		);
+		this.addEventValueToGlobalAppState("selectedSectors", new Set(), [
+			(e) => {
+				if (e.detail.size === 0) {
+					this.set_groupingBySector(false);
+				} else {
+					this.set_groupingBySector(true);
+				}
+			},
+		]);
 	}
 
 	// Will loop by default.

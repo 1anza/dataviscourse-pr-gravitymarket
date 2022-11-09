@@ -31,19 +31,26 @@ class Beeswarm {
 		this.startSimulation();
 		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
 
+		// We keep track of the previousSelectedSectors so that we know what was just added
+		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
 		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
 			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
 			if (this.gas.groupingBySector) {
-				this.circles
-					.attr("visibility", d => this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden");
+				this.circles.attr("visibility", (d) =>
+					this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
+				);
 			} else {
-				this.circles
-					.attr("visibility", "visible");
+				this.circles.attr("visibility", "visible");
 			}
 			this.updateScaleX();
 			this.drawXAxis();
 			this.updateCollisions();
 			this.updateSimulationX();
+			// previousSelectedSectors' union selectedSectors
+			let newlyAdded = new Set();
+			this.gas.selectedSectors.forEach(sector => this.previousSelectedSectors.has(sector) ? _ : newlyAdded.add(sector));
+			this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
+			this.teleportCircles(this.circles.filter(d=> newlyAdded.has(d.sector)));
 		});
 	}
 
@@ -61,13 +68,15 @@ class Beeswarm {
 	/*
 	 * Sets this.scaleRadius to a function that maps the z value range as an area into a radius
 	 */
-	updateScaleRadius(minRadius = 5, maxRadius = 50) {
-		let zValueRadiusRange = this.gas.zValueDataRange.map(x => Math.pow(x / Math.PI, 0.5));
+	updateScaleRadius(minRadius = 3, maxRadius = 25) {
+		let zValueRadiusRange = this.gas.zValueDataRange.map((x) =>
+			Math.pow(x / Math.PI, 0.5)
+		);
 		let areaScale = d3
 			.scaleLinear()
 			.domain(zValueRadiusRange)
-			.range([minRadius, maxRadius])
-		this.scaleRadius = x => areaScale(Math.pow(x / Math.PI, 0.5));
+			.range([minRadius, maxRadius]);
+		this.scaleRadius = (x) => areaScale(Math.pow(x / Math.PI, 0.5));
 	}
 
 	/*
@@ -76,14 +85,19 @@ class Beeswarm {
 	updateRadiusKey() {
 		// By default, the two values plotted are the min and max of the data
 		let ticks = this.gas.zValueDataRange;
-		let rad_key_offset = [20,40]
+		let rad_key_offset = [20, 40];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
-			.attr("transform", `translate(${this.bounds.maxX + rad_key_offset[0]} ${this.bounds.maxY + rad_key_offset[1]})`)
+			.attr(
+				"transform",
+				`translate(${this.bounds.maxX + rad_key_offset[0]} ${
+					this.bounds.maxY + rad_key_offset[1]
+				})`
+			)
 			.selectAll("circle")
 			.data(ticks)
 			.join("circle")
-			.attr("r", d => this.scaleRadius(d))
+			.attr("r", (d) => this.scaleRadius(d))
 			.attr("id", "beeswarm-key-circle");
 
 		// Angle in radians
@@ -93,9 +107,9 @@ class Beeswarm {
 			.selectAll("text")
 			.data(ticks)
 			.join("text")
-			.attr("x", d => this.scaleRadius(d) * Math.cos(theta))
-			.attr("y", d => this.scaleRadius(d) * Math.sin(theta))
-			.text(d => `$${format(d / 1e9)}B`)
+			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta))
+			.attr("y", (d) => this.scaleRadius(d) * Math.sin(theta))
+			.text((d) => `$${format(d / 1e9)}B`)
 			.attr("id", "beeswarm-key-text");
 	}
 
@@ -116,11 +130,8 @@ class Beeswarm {
 				x_domain_map[sec] = i;
 				i += 1;
 			}
-			console.log(x_domain_map);
-			console.log(x_range);
 			// This is a function sector => coordinate
 			this.scaleX = (sector) => x_range[x_domain_map[sector]];
-			console.log(this.scaleX("Health Care"));
 		} else {
 			this.scaleX = (_) => (this.bounds.maxX - this.bounds.minX) / 2;
 		}
@@ -264,21 +275,22 @@ class Beeswarm {
 	 * Enables collisions only for datapoints that are in the selectedSectors
 	 */
 	updateCollisions() {
-		this.simulation
-			.force(
-				"collide",
-				d3
-					.forceCollide()
-					.radius((d) => {
-						if (this.gas.groupingBySector) {
-							return this.gas.selectedSectors.has(d.sector) ? this.scaleRadius(d[this.gas.zValueName]) : 0;
-						} else {
-							return this.scaleRadius(d[this.gas.zValueName])
-						}
-					})
-					.iterations(2)
-					.strength(this.simulationSettings.collisionStrength)
-			)
+		this.simulation.force(
+			"collide",
+			d3
+				.forceCollide()
+				.radius((d) => {
+					if (this.gas.groupingBySector) {
+						return this.gas.selectedSectors.has(d.sector)
+							? this.scaleRadius(d[this.gas.zValueName])
+							: 0;
+					} else {
+						return this.scaleRadius(d[this.gas.zValueName]);
+					}
+				})
+				.iterations(2)
+				.strength(this.simulationSettings.collisionStrength)
+		);
 	}
 
 	/*
@@ -290,11 +302,14 @@ class Beeswarm {
 			d3
 				.forceX()
 				.x((d) => {
-						if (this.gas.groupingBySector && !this.gas.selectedSectors.has(d.sector)) {
-							return 0;
-						} else {
-							return this.scaleX(d.sector)
-						}
+					if (
+						this.gas.groupingBySector &&
+						!this.gas.selectedSectors.has(d.sector)
+					) {
+						return 0;
+					} else {
+						return this.scaleX(d.sector);
+					}
 				})
 				.strength(
 					this.simulationSettings.globalForceScale *
@@ -314,5 +329,20 @@ class Beeswarm {
 						this.simulationSettings.forceYScale
 				)
 		);
+	}
+
+	/*
+	 * Takes a selection of circles, and sets their x and y values based on
+	 * their data
+	 */
+	teleportCircles(circles) {
+		circles.datum(
+			d => {
+				// Puts them with some random x values
+				let spread = d3.randomNormal(0, (this.bounds.maxX - this.bounds.minX)/30)
+				d.x = this.scaleX(d.sector) + spread();
+				d.y = this.scaleY(this.getPercChange(d));
+				return d;
+		})
 	}
 }
