@@ -24,14 +24,9 @@ class Linechart {
 	 * updates this.scaleX which takes a date and maps it to the x position
 	 */
 	updateScaleX() {
-		let domain = this.gas.dateValueRange;
-		//let domain = this.gas.data[0].chart.map(d => dateMinuteToDate(d.date, d.minute));
+		let domain = this.gas.data[0].chart.map(d => dateMinuteToDate(d.date, d.minute));
 		let range = [this.bounds.minX, this.bounds.maxX];
-		this.scaleX = d3.scaleTime().domain(domain).range(range);
-		//this.scaleX = d3.scaleOrdinal().domain(domain).range(range);
-
-		//let testrow = this.gas.data[0].chart[0];
-		//console.log(this.scaleX(dateMinuteToDate(testrow.date, testrow.minute)))
+		this.scaleX = d3.scalePoint().domain(domain).range(range);
 	}
 
 	/*
@@ -67,10 +62,8 @@ class Linechart {
 			.attr("stroke", d => this.gas.colorFunc(d.sector))
 			.classed("linechart-path", true)
 			.attr("d", d => {
-				//console.log(d);
 				return d3.line()
 				.x(d_m => this.scaleX(dateMinuteToDate(d_m.date, d_m.minute)))
-				//.y(d => this.scaleY(d.marketClose))
 				.y((_, i) => this.scaleY(getPercChange(d, i, this.gas.yValueName)))
 				(d.chart)
 			}
