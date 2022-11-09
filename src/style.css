@@ -4,6 +4,11 @@ body {
   font-family: Georgia, Helvetica, sans-serif;
 }
 
+.linechart-path {
+	fill: none;
+	stroke-width: 1.5;
+}
+
 .beeswarm-gridline {
 	stroke: black;
 	stroke-width: 2px;
@@ -60,7 +65,7 @@ body {
     left: 70%;
     right: 0;
     bottom: 30%;
-    background: navy;
+    background: lightblue;
     border: solid #000;
     border-width: 0 0 10px 0;
 }
