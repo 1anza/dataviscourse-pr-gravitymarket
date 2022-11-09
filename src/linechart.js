@@ -25,15 +25,20 @@ class Linechart {
 	 */
 	updateScaleX() {
 		let domain = this.gas.dateValueRange;
+		//let domain = this.gas.data[0].chart.map(d => dateMinuteToDate(d.date, d.minute));
 		let range = [this.bounds.minX, this.bounds.maxX];
 		this.scaleX = d3.scaleTime().domain(domain).range(range);
+		//this.scaleX = d3.scaleOrdinal().domain(domain).range(range);
 
 		//let testrow = this.gas.data[0].chart[0];
 		//console.log(this.scaleX(dateMinuteToDate(testrow.date, testrow.minute)))
 	}
 
+	/*
+	 * updates this.scaleY which takes a percent change and maps it to a y position
+	 */
 	updateScaleY() {
-		let domain = this.gas.yValueDataRange;
+		let domain = this.gas.percentYValueRange;
 		let range = [this.bounds.maxY, this.bounds.minY];
 		this.scaleY = d3.scaleLinear().domain(domain).range(range);
 	}
@@ -64,8 +69,9 @@ class Linechart {
 			.attr("d", d => {
 				//console.log(d);
 				return d3.line()
-				.x(d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
-				.y(d => this.scaleY(d.marketClose))
+				.x(d_m => this.scaleX(dateMinuteToDate(d_m.date, d_m.minute)))
+				//.y(d => this.scaleY(d.marketClose))
+				.y((_, i) => this.scaleY(getPercChange(d, i, this.gas.yValueName)))
 				(d.chart)
 			}
 			)
