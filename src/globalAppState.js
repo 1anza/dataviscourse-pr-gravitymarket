@@ -59,10 +59,8 @@ class GlobalAppState {
 		this.addEventValueToGlobalAppState("data", data, [e => {
 			// looks at all of the dates of the first value in data
 			this.set_dateValueRange(d3.extent(e.detail[0].chart, d => {
-					let datestring = `${d.date}T${d.minute}`;
-					return new Date(datestring);
+					return dateMinuteToDate(d.date, d.minute);
 			}));
-			console.log(this.dateValueRange);
 		}]);
 
 		/*  ----------------Data bounds---------------------    */
