@@ -1,5 +1,5 @@
 function main() {
-	d3.json("/data/data.json").then((data) => {
+	d3.json("data/data.json").then((data) => {
 		console.log("Loaded data.");
 
 		let gas = new GlobalAppState(data);
@@ -8,6 +8,7 @@ function main() {
 
 		let beeswarm = new Beeswarm(gas);
 		let linechart = new Linechart(gas);
+		let ohlc = new ohlc(gas);
 
 		// TODO Test setting sectors
 		addDevTools(gas);

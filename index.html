@@ -33,6 +33,7 @@
     <script src="src/globalAppState.js"></script>
     <script src="src/util.js"></script>
     <script src="src/linechart.js"></script>
+    <script scr="scr/ohlc.js"></script>
     <script src="src/playbackControls.js"></script>
     <script src="src/beeswarm.js"></script>
     <script src="src/dev.js"></script>
@@ -76,6 +77,11 @@
 	<div class="playback-monitor" id="current-date">
 	</div>
       </div>
-      <div class="br"></div>
+      <div class="br" id=" = "ohlc">
+          <svg id="ohlc-vis" height="100%" width="100%">
+              <g id="y-axis"></g>
+              <g id="x-axis"></g>
+          </svg>"
+      </div>
   </body>
 </html>
