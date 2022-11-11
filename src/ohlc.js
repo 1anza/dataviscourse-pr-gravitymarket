@@ -53,12 +53,6 @@ class Ohlc {
     }
 
     updateOhlcChart(selected) {
-        selection.each(function (data) {
-            // Generate ohlc bars here.
-            series = d3.select(this.svg).selectAll('.ohlc-series').data([data]);
-            series.enter().append('g').classed('ohlc-series', true);
-            //... 
-        });   
     }
 
 }

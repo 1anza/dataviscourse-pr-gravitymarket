@@ -15,6 +15,7 @@ function addDevTools(gas) {
 		"Utilities",
 		"Index",
 	];
+	console.log(d3.select("div#playback-div"));
 
 	d3.select("div#playback-div")
 		.append("div")

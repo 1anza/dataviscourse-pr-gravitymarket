@@ -18,6 +18,22 @@ class Linechart {
 		// The motherline should be the first value in the data
 		this.persistentLineDataIndex = 0;
 		this.updateLines()
+
+		this.updatePlayheadLine();
+		this.gas.addEventListenerToEvent("date", _ => this.updatePlayheadLine());
+	}
+
+	/*
+	 * Moves the playhead line to the this.gas.date
+	 */
+	updatePlayheadLine() {
+		this.svg.select("g#playback-follow")
+			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`)
+			.select("line#playback-line")
+			.attr("x1", 0)
+			.attr("x2", 0)
+			.attr("y1", this.bounds.minY)
+			.attr("y2", this.bounds.maxY)
 	}
 
 	/*

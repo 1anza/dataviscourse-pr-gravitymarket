@@ -104,3 +104,8 @@ body {
 .playback-button:hover{
   background-color: grey;
 }
+
+.playback-line {
+	stroke-width: 2;
+	stroke: black;
+}
