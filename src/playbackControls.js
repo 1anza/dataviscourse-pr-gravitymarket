@@ -1,4 +1,4 @@
-function createPlaybackControls(gas) {
+export function createPlaybackControls(gas) {
 	console.log("createPlaybackControls()");
 
 	let playbackdiv = d3.select("div#playback-div");

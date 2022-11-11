@@ -1,8 +1,10 @@
+import {dateMinuteToDate, getPercChange} from "./util.js";
+
 /*
  * Global app events are contained here. Also, logic for controlling the ticking of the data index.
  */
 
-class GlobalAppState {
+export class GlobalAppState {
 	constructor(data) {
 		this.initializeEvents(data);
 	}

@@ -1,4 +1,7 @@
-class Ohlc {
+import {dateMinuteToDate, getPercChange} from "./util.js";
+
+
+export class Ohlc {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#ohlc-vis");

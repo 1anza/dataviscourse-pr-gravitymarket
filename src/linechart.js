@@ -1,4 +1,6 @@
-class Linechart {
+import {dateMinuteToDate, getPercChange} from "./util.js";
+
+export class Linechart {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#linechart-vis");

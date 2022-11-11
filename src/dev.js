@@ -1,6 +1,6 @@
 // attaches dev elements
 
-function addDevTools(gas) {
+export function addDevTools(gas) {
 	let sectors = [
 		"Industrials",
 		"Health Care",

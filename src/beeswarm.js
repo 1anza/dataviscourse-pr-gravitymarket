@@ -1,4 +1,6 @@
-class Beeswarm {
+import {dateMinuteToDate, getPercChange} from "./util.js";
+
+export class Beeswarm {
 	constructor(gas) {
 		this.gas = gas;
 		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
