@@ -15,7 +15,7 @@ class Ohlc {
         this.updateXAxis();
         this.updateYAxis();
 
-        this.updateOhlcChart();
+        this.gas.addEventListenerToEvent("selectedSingleCompany", _ => this.updateOhlcChart(gas.selectedSingleCompany));
 
     }
 
@@ -53,12 +53,16 @@ class Ohlc {
     }
 
     updateOhlcChart(selected) {
-        selection.each(function (data) {
-            // Generate ohlc bars here.
-            series = d3.select(this.svg).selectAll('.ohlc-series').data([data]);
-            series.enter().append('g').classed('ohlc-series', true);
-            //... 
-        });   
+
+        let domain = this.gas.yValueDataRange;
+        let range = [this.bounds.maxY, this.bounds.minY];
+        this.scaleY = d3.scaleLinear().domain(domain).range(range);
+
+        this.updateYAxis();
+
+
+
+
     }
 
 }

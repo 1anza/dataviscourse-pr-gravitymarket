@@ -216,6 +216,7 @@ class Beeswarm {
 			.selectAll("circle")
 			.data(this.gas.data);
 		this.circles.exit().remove();
+		let that = this;
 		this.circles = this.circles
 			.join("circle")
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
@@ -241,11 +242,12 @@ class Beeswarm {
 				hovered.classed("hovered-swarm-circ", false);
 			})
 			/////////////////////////////////////////////////////////////////////
-			.on("mouseclick", function () {
+			.on("click", function () {
 				let clicked = d3.select(this);
-				hovered.classed("clicked-swarm-circ", true);
-				debugger;
-				ohlc.updateOhlcChart(clicked);
+				let clicked_ = clicked._groups[0][0].__data__;
+				clicked.classed("clicked-swarm-circ", true);
+				console.log(clicked_);
+				that.gas.set_selectedSingleCompany(clicked_);
 			});
 	}
 
