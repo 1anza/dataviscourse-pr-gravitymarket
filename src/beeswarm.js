@@ -1,11 +1,13 @@
 class Beeswarm {
 	constructor(gas) {
 		this.gas = gas;
+		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
+		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));
 		this.bounds = {
 			minX: 20,
-			maxX: 1000,
+			maxX: svg_width - 90,
 			minY: 20,
-			maxY: 1000,
+			maxY: svg_height - 80,
 		};
 
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
@@ -324,7 +326,9 @@ class Beeswarm {
 			"y",
 			d3
 				.forceY()
-				.y((d) => this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName)))
+				.y((d) =>
+					this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName))
+				)
 				.strength(
 					this.simulationSettings.globalForceScale *
 						this.simulationSettings.forceYScale

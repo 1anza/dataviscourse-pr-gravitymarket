@@ -24,7 +24,7 @@ function addDevTools(gas) {
 		.data(sectors)
 		.enter()
 		.append("g")
-		.html(d => d)
+		.html((d) => d)
 		.append("input")
 		.attr("type", "checkbox")
 		.on("change", (e) => {

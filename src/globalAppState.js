@@ -57,13 +57,16 @@ class GlobalAppState {
 	initializeEvents(data) {
 		/*  ------------Data and bounds---------------------    */
 		this.addEventValueToGlobalAppState("dateValueRange", null);
-		this.addEventValueToGlobalAppState("data", data, [e => {
-			// looks at all of the dates of the first value in data
-			this.set_dateValueRange(d3.extent(e.detail[0].chart, d => {
-					return dateMinuteToDate(d.date, d.minute);
-			}));
-
-		}]);
+		this.addEventValueToGlobalAppState("data", data, [
+			(e) => {
+				// looks at all of the dates of the first value in data
+				this.set_dateValueRange(
+					d3.extent(e.detail[0].chart, (d) => {
+						return dateMinuteToDate(d.date, d.minute);
+					})
+				);
+			},
+		]);
 
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
@@ -77,12 +80,20 @@ class GlobalAppState {
 				this.set_yValueDataRange(range);
 			},
 		]);
-		let update_percentYValueRange = _ => {
-			let perc_min = d3.min(this.data, d => d3.min(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
-			let perc_max = d3.max(this.data, d => d3.max(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
+		let update_percentYValueRange = (_) => {
+			let perc_min = d3.min(this.data, (d) =>
+				d3.min(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
+			let perc_max = d3.max(this.data, (d) =>
+				d3.max(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
 			this.set_percentYValueRange([perc_min, perc_max]);
 		};
-		this.addEventListenerToEvent("data", _ => update_percentYValueRange())
+		this.addEventListenerToEvent("data", (_) => update_percentYValueRange());
 		update_percentYValueRange();
 		// The zValue is the marketCap, which determines the radius in the beeswarm
 		// This zValue is local to the first list dimension, (the ticker)
