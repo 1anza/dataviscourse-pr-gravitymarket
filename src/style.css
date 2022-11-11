@@ -14,6 +14,11 @@ body {
 	stroke-width: 2px;
 }
 
+.candlestick {
+    fill: none;
+    stroke-width: 1.5pt;
+}
+
 #playback-div {
 	display: flex;
 	flex-direction: row;
@@ -88,6 +93,8 @@ body {
     right: 0;
     bottom: 0;
     background: lavender;
+    border: solid #000;
+    border-width: 0 3px 3px 0;
 } 
 
 .playback-button{

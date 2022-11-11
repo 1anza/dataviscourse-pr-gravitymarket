@@ -239,6 +239,12 @@ class Beeswarm {
 				let hovered = d3.select(this);
 				tooltip.style("opacity", 0);
 				hovered.classed("hovered-swarm-circ", false);
+			})
+			/////////////////////////////////////////////////////////////////////
+			.on("mouseclick", function () {
+				let clicked = d3.select(this);
+				hovered.classed("clicked-swarm-circ", true);
+				ohlc.updateCandlesticks(clicked);
 			});
 	}
 

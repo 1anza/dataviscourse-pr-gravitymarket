@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="src/style.css" />
 
     <!-- How to use these icons: https://fontawesome.com -->
-    <script src="https://kit.fontawesome.com/02ee6d355a.js" crossorigin="anonymous"></script>   
+    <script src="https://kit.fontawesome.com/02ee6d355a.js" crossorigin="anonymous"></script>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-random@3"></script>
@@ -33,55 +33,57 @@
     <script src="src/globalAppState.js"></script>
     <script src="src/util.js"></script>
     <script src="src/linechart.js"></script>
-    <script scr="scr/ohlc.js"></script>
+    <script src="src/ohlc.js"></script>
     <script src="src/playbackControls.js"></script>
     <script src="src/beeswarm.js"></script>
     <script src="src/dev.js"></script>
     <script src="src/main.js"></script>
     <title>Swarm Chart</title>
 </head>
-  <body>
-      <div class="tl" id="beeswarm">
-	      <svg id="beeswarm-vis" height="100%" width="100%">
-		      <g id="radius-key"></g>
-		      <g id="grid"></g>
-	  	      <g id="title"></g>
-		      <g id="swarm"></g>
-	      </svg>
-      </div>
-      <div class="tr" id="linechart">
-	      <svg id="linechart-vis" height="100%" width="100%">
-		      <g id="lines"></g>
-		      <g id="key"></g>
-		      <g id="y-axis"></g>
-		      <g id="x-axis"></g>
-	      </svg>
-      </div>
-      <div class="bl" id="playback-div">
+<body>
+    <div class="tl" id="beeswarm">
+        <svg id="beeswarm-vis" height="100%" width="100%">
+            <g id="radius-key"></g>
+            <g id="grid"></g>
+            <g id="title"></g>
+            <g id="swarm"></g>
+        </svg>
+    </div>
+    <div class="tr" id="linechart">
+        <svg id="linechart-vis" height="100%" width="100%">
+            <g id="lines"></g>
+            <g id="key"></g>
+            <g id="y-axis"></g>
+            <g id="x-axis"></g>
+        </svg>
+    </div>
+    <div class="bl" id="playback-div">
         <div class="playback-control">
-          <button id="go-to-start" class="playback-button">
-            <i class="fa-solid fa-backward-step"></i>
-          </button>
+            <button id="go-to-start" class="playback-button">
+                <i class="fa-solid fa-backward-step"></i>
+            </button>
         </div>
         <div class="playback-control">
-          <button id="playpause" class="playback-button">
-            <i class="fa-solid fa-play" id="play"></i>
-            <i class="fa-solid fa-pause" id ="pause" style="display:none"></i>
-          </button>
+            <button id="playpause" class="playback-button">
+                <i class="fa-solid fa-play" id="play"></i>
+                <i class="fa-solid fa-pause" id="pause" style="display:none"></i>
+            </button>
         </div>
         <div class="playback-control">
-          Playback speed (Seconds):
-          <select class="playback-select" id="playback-speed">
-          </select>
+            Playback speed (Seconds):
+            <select class="playback-select" id="playback-speed">
+            </select>
         </div>
-	<div class="playback-monitor" id="current-date">
-	</div>
-      </div>
-      <div class="br" id=" = "ohlc">
-          <svg id="ohlc-vis" height="100%" width="100%">
-              <g id="y-axis"></g>
-              <g id="x-axis"></g>
-          </svg>"
-      </div>
-  </body>
+        <div class="playback-monitor" id="current-date">
+
+        </div>
+    </div>
+    <div class="br" id=" = " ohlc">
+        <svg id="ohlc-vis" height="100%" width="100%">
+            <g id="candlesticks"></g>
+            <g id="y-axis"></g>
+            <g id="x-axis"></g>
+        </svg>
+    </div>
+</body>
 </html>

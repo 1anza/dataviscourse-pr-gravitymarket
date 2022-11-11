@@ -6,9 +6,12 @@ function main() {
 
 		createPlaybackControls(gas);
 
+		debugger;
+
 		let beeswarm = new Beeswarm(gas);
 		let linechart = new Linechart(gas);
-		let ohlc = new ohlc(gas);
+		let ohlc = new Ohlc(gas);
+
 
 		// TODO Test setting sectors
 		addDevTools(gas);

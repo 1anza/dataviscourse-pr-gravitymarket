@@ -1,26 +1,29 @@
-class ohlc {
-
+class Ohlc {
     constructor(gas) {
         this.gas = gas;
         this.svg = d3.select("svg#ohlc-vis");
+        this.bounds = {
+            minX: 50,
+            maxX: 475,
+            minY: 10,
+            maxY: 200,
+        };
 
 
-        this.updateScaleX();
-        this.updateScaleY();
-        this.updateAxisX();
-        this.updateAxisY();
+        this.updateXScale();
+        this.updateYScale();
+        this.updateXAxis();
+        this.updateYAxis();
 
-        // The motherline should be the first value in the data
-        this.persistentLineDataIndex = 0;
-        this.updateLines()
+       // this.updateCandlestick()
 
     }
 
 
-  /*  *//*
- * updates this.scaleX which takes a date and maps it to the x position
- *//*
-    updateScaleX() {
+    /*    
+     * updates this.scaleX which takes a date and maps it to the x position*/
+
+    updateXScale() {
         let domain = this.gas.dateValueRange;
         let range = [this.bounds.minX, this.bounds.maxX];
         this.scaleX = d3.scaleTime().domain(domain).range(range);
@@ -29,36 +32,35 @@ class ohlc {
         //console.log(this.scaleX(dateMinuteToDate(testrow.date, testrow.minute)))
     }
 
-    updateScaleY() {
+    updateYScale() {
         let domain = this.gas.yValueDataRange;
         let range = [this.bounds.maxY, this.bounds.minY];
         this.scaleY = d3.scaleLinear().domain(domain).range(range);
     }
 
-    updateAxisX() {
+    updateXAxis() {
         let axisG = this.svg.select("g#x-axis")
             .attr("transform", `translate(0 ${this.bounds.maxY})`);
         let xAxis = d3.axisBottom(this.scaleX);
         axisG.call(xAxis);
     }
 
-    updateAxisY() {
+    updateYAxis() {
         let axisG = this.svg.select("g#y-axis")
             .attr("transform", `translate(${this.bounds.minX} 0)`);
-
         let yAxis = d3.axisLeft(this.scaleY);
         axisG.call(yAxis);
     }
 
 
-    updateLines() {
-        let paths = this.svg.select("g#lines")
+    updateCandlesticks(selected) {
+        let paths = this.svg.select("g#candlesticks")
             .selectAll("path")
             .data(this.gas.data)
         paths
             .join("path")
             .attr("stroke", d => this.gas.colorFunc(d.sector))
-            .classed("linechart-path", true)
+            .classed("candlestick", true)
             .attr("d", d => {
                 //console.log(d);
                 return d3.line()
@@ -67,7 +69,6 @@ class ohlc {
                     (d.chart)
             }
             )
-    }*/
-
+    }
 
 }
