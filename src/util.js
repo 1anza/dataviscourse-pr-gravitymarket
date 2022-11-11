@@ -6,10 +6,5 @@ function dateMinuteToDate(date, minute) {
 }
 
 function getPercChange(row, index, yValueName) {
-	return (
-		(row.chart[index][yValueName] /
-			row.chart[0][yValueName] -
-			1) *
-		100
-	);
+	return (row.chart[index][yValueName] / row.chart[0][yValueName] - 1) * 100;
 }

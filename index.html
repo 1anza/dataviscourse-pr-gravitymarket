@@ -41,49 +41,57 @@
     <title>Swarm Chart</title>
 </head>
 <body>
-    <div class="tl" id="beeswarm">
-        <svg id="beeswarm-vis" height="100%" width="100%">
-            <g id="radius-key"></g>
-            <g id="grid"></g>
-            <g id="title"></g>
-            <g id="swarm"></g>
-        </svg>
-    </div>
-    <div class="tr" id="linechart">
-        <svg id="linechart-vis" height="100%" width="100%">
-            <g id="lines"></g>
-            <g id="key"></g>
-            <g id="y-axis"></g>
-            <g id="x-axis"></g>
-        </svg>
-    </div>
-    <div class="bl" id="playback-div">
-        <div class="playback-control">
-            <button id="go-to-start" class="playback-button">
-                <i class="fa-solid fa-backward-step"></i>
-            </button>
-        </div>
-        <div class="playback-control">
-            <button id="playpause" class="playback-button">
-                <i class="fa-solid fa-play" id="play"></i>
-                <i class="fa-solid fa-pause" id="pause" style="display:none"></i>
-            </button>
-        </div>
-        <div class="playback-control">
-            Playback speed (Seconds):
-            <select class="playback-select" id="playback-speed">
-            </select>
-        </div>
-        <div class="playback-monitor" id="current-date">
-
-        </div>
-    </div>
-    <div class="br" id="ohlc">
-        <svg id="ohlc-vis" height="100%" width="100%">
-            <g class="ohlc-series"></g>
-            <g id="y-axis"></g>
-            <g id="x-axis"></g>
-        </svg>
+    <div class="column-box">
+	    <div class="row-box">
+		    <div class="table-div boxitem" id="table">
+		    </div>
+		    <div class="linechart-div boxitem" id="linechart">
+			<svg id="linechart-vis" height="220px" width="100%">
+			    <g id="lines"></g>
+			    <g id="key"></g>
+			    <g id="y-axis"></g>
+			    <g id="x-axis"></g>
+			    <g id="playback-follow">
+			       <line id="playback-line" class="playback-line">
+			       </line>
+			    </g>
+			</svg>
+		    </div>
+		    <div class="ohlc-div boxitem" id="ohlc">
+			<svg id="ohlc-vis" height="100%" width="100%">
+			    <g id="y-axis"></g>
+			    <g id="x-axis"></g>
+			</svg>
+		    </div>
+	    </div>
+	    <div class="beeswarm-div boxitem" id="beeswarm">
+		<svg id="beeswarm-vis" height="425px" width="100%">
+		    <g id="radius-key"></g>
+		    <g id="grid"></g>
+		    <g id="title"></g>
+		    <g id="swarm"></g>
+		</svg>
+	    </div>
+	    <div class="playback-div boxitem" id="playback-div">
+		<div class="playback-control">
+		    <button id="go-to-start" class="playback-button">
+			<i class="fa-solid fa-backward-step"></i>
+		    </button>
+		</div>
+		<div class="playback-control">
+		    <button id="playpause" class="playback-button">
+			<i class="fa-solid fa-play" id="play"></i>
+			<i class="fa-solid fa-pause" id="pause" style="display:none"></i>
+		    </button>
+		</div>
+		<div class="playback-control">
+		    Playback speed (Seconds):
+		    <select class="playback-select" id="playback-speed">
+		    </select>
+		</div>
+		<div class="playback-monitor" id="current-date">
+		</div>
+	    </div>
     </div>
 </body>
 </html>

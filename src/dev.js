@@ -15,6 +15,7 @@ function addDevTools(gas) {
 		"Utilities",
 		"Index",
 	];
+	console.log(d3.select("div#playback-div"));
 
 	d3.select("div#playback-div")
 		.append("div")
@@ -23,7 +24,7 @@ function addDevTools(gas) {
 		.data(sectors)
 		.enter()
 		.append("g")
-		.html(d => d)
+		.html((d) => d)
 		.append("input")
 		.attr("type", "checkbox")
 		.on("change", (e) => {

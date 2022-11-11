@@ -4,6 +4,47 @@ body {
   font-family: Georgia, Helvetica, sans-serif;
 }
 
+.column-box {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+    align-items: stretch;
+    align-content: center;
+}
+
+.row-box {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+    align-items: stretch;
+    align-content: center;
+}
+
+.boxitem {
+  margin: 5px;
+  padding: 5px;
+}
+
+.beeswarm-div {
+}
+
+.table-div {
+}
+
+.playback-div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.ohlc-div {
+}
+
+
+
 .linechart-path {
 	fill: none;
 	stroke-width: 1.5pt;
@@ -53,54 +94,15 @@ body {
   font-size: 4em;
 }
 
-.tl {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 30%;
-    bottom: 10%;
-    background: white;
-    border: solid #000;
-    border-width: 0 10px 10px 0;
-}
-
-.tr {
-    position: absolute;
-    top: 0;
-    left: 70%;
-    right: 0;
-    bottom: 30%;
-    background: lightblue;
-    border: solid #000;
-    border-width: 0 0 10px 0;
-}
-
-.bl {
-    position: absolute;
-    top: 90%;
-    left: 0;
-    right: 30%;
-    bottom: 0;
-    background: gray;
-    border: solid #000;
-    border-width: 0 10px 0 0;
-}
-
-.br {
-    position: absolute;
-    top: 70%;
-    left: 70%;
-    right: 0;
-    bottom: 0;
-    background: lavender;
-    border: solid #000;
-    border-width: 0 3px 3px 0;
-} 
-
 .playback-button{
-    padding: 15px 32px;
-    border-radius: 2px;
+    padding: 0px 32px;
+    border-radius: 9px;
 }
 .playback-button:hover{
   background-color: grey;
+}
+
+.playback-line {
+	stroke-width: 2;
+	stroke: black;
 }
