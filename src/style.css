@@ -31,13 +31,14 @@ body {
 .table-div {
 }
 
-.playback-div {
+#playback-div {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-content: space-around;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: baseline;
+
 }
 
 .ohlc-div {
@@ -58,11 +59,6 @@ body {
 .candlestick {
     fill: none;
     stroke-width: 1.5pt;
-}
-
-#playback-div {
-	display: flex;
-	flex-direction: row;
 }
 
 #beeswarm-tooltip {

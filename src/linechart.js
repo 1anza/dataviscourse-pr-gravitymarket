@@ -62,7 +62,7 @@ class Linechart {
 		let axisG = this.svg
 			.select("g#x-axis")
 			.attr("transform", `translate(0 ${this.bounds.maxY})`);
-		let xAxis = d3.axisBottom(this.scaleX);
+		let xAxis = d3.axisBottom().scale(this.scaleX).tickValues(this.scaleX.domain().filter((d, i) => i % 25 === 0)).tickFormat(d3.timeFormat("%B %d, %Y"));
 		axisG.call(xAxis);
 	}
 
