@@ -67,12 +67,13 @@ export class Ohlc {
 
         this.updateYAxis();
 
-
         let series = this.svg.selectAll('.ohlc-series').append('g').classed('ohlc-series', true);
         series.selectAll("g.ohlc-bar")
             .data(company.chart)
             .join("g")
             .classed("ohlc-bar", true);
+
+	    //console.log(series)
 
        
 
