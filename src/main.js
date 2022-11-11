@@ -1,5 +1,5 @@
 function main() {
-	d3.json("data/fromMay2022.json").then((data) => {
+	d3.json("data/Nov2021-Nov2022.json").then((data) => {
 		console.log("Loaded data.");
 
 		let gas = new GlobalAppState(data);
