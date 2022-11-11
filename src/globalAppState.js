@@ -67,7 +67,7 @@ class GlobalAppState {
 
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
-		this.addEventValueToGlobalAppState("yValueName", "marketClose", [
+		this.addEventValueToGlobalAppState("yValueName", "close", [
 			(_) => {
 				let range = [
 					d3.min(this.data, (x) => d3.min(x.chart, (y) => y[this.yValueName])),
@@ -87,7 +87,7 @@ class GlobalAppState {
 		// The zValue is the marketCap, which determines the radius in the beeswarm
 		// This zValue is local to the first list dimension, (the ticker)
 		this.addEventValueToGlobalAppState("zValueDataRange", null);
-		this.addEventValueToGlobalAppState("zValueName", "marketCap", [
+		this.addEventValueToGlobalAppState("zValueName", "marketcap", [
 			(_) => {
 				this.set_zValueDataRange(
 					d3.extent(this.data, (d) => d[this.zValueName])
@@ -104,8 +104,7 @@ class GlobalAppState {
 			[
 				(e) => {
 					let datarow = this.data[0].chart[this.index];
-					let datestring = `${datarow.date}T${datarow.minute}`;
-					this.set_date(new Date(datestring));
+					this.set_date(dateMinuteToDate(datarow.date, datarow.minute));
 				},
 			],
 			false
