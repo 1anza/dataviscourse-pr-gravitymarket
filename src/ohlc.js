@@ -15,7 +15,7 @@ class Ohlc {
         this.updateXAxis();
         this.updateYAxis();
 
-        this.updateOhlcChart();
+        this.gas.addEventListenerToEvent("selectedSingleCompany", _ => this.updateOhlcChart(gas.selectedSingleCompany));
 
     }
 
@@ -52,13 +52,47 @@ class Ohlc {
         axisG.call(yAxis);
     }
 
-    updateOhlcChart(selected) {
-        selection.each(function (data) {
-            // Generate ohlc bars here.
-            series = d3.select(this.svg).selectAll('.ohlc-series').data([data]);
-            series.enter().append('g').classed('ohlc-series', true);
-            //... 
-        });   
+    updateOhlcChart(company) {
+
+        console.log(company.chart);
+
+        let domain = d3.extent(company.chart, d => d[this.gas.yValueName]);
+        let range = [this.bounds.maxY, this.bounds.minY];
+        this.scaleY = d3.scaleLinear().domain(domain).range(range);
+
+        this.updateYAxis();
+
+        let series = this.svg.selectAll('.ohlc-series').append('g').classed('ohlc-series', true);
+        series.selectAll("g.ohlc-bar")
+            .data(company.chart)
+            .join("g")
+            .classed("ohlc-bar", true);
+
+
+        let bars = series.selectAll('.ohlc-bar')
+            .data(company.chart, function (d) {
+                return d.date;
+            });
+
+        bars.enter()
+            .append('open-close-line')
+            .classed('bar', true);
+
+
+        let lines = bars
+            .selectAll('.open-close-line')
+            .data(function (d) {
+                return [d];
+            });
+
+        lines.enter().append('line')
+            .attr("stroke", "black")
+            .attr("stroke-width", "1")
+            .attr("x1", d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
+            .attr("y1", d => this.scaleY(d.open))
+            .attr("x2", d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
+            .attr("y2", d => this.scaleY(d.close));
+
     }
 
 }

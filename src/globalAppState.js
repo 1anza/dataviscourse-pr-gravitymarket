@@ -64,7 +64,7 @@ class GlobalAppState {
 			}));
 
 		}]);
-
+		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
 		this.addEventValueToGlobalAppState("yValueName", "close", [
