@@ -54,6 +54,7 @@ class Ohlc {
 
     updateOhlcChart(company) {
 
+
         console.log(company.chart);
 
         let domain = d3.extent(company.chart, d => d[this.gas.yValueName]);
@@ -62,12 +63,14 @@ class Ohlc {
 
         this.updateYAxis();
 
+
         let series = this.svg.selectAll('.ohlc-series').append('g').classed('ohlc-series', true);
         series.selectAll("g.ohlc-bar")
             .data(company.chart)
             .join("g")
             .classed("ohlc-bar", true);
 
+       
 
         let bars = series.selectAll('.ohlc-bar')
             .data(company.chart, function (d) {
@@ -78,8 +81,7 @@ class Ohlc {
             .append('open-close-line')
             .classed('bar', true);
 
-
-        let lines = bars
+        var lines = bars
             .selectAll('.open-close-line')
             .data(function (d) {
                 return [d];
