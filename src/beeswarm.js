@@ -244,7 +244,8 @@ class Beeswarm {
 			.on("mouseclick", function () {
 				let clicked = d3.select(this);
 				hovered.classed("clicked-swarm-circ", true);
-				ohlc.updateCandlesticks(clicked);
+				debugger;
+				ohlc.updateOhlcChart(clicked);
 			});
 	}
 

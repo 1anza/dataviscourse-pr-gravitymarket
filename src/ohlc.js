@@ -15,7 +15,7 @@ class Ohlc {
         this.updateXAxis();
         this.updateYAxis();
 
-       // this.updateCandlestick()
+        this.updateOhlcChart();
 
     }
 
@@ -52,23 +52,13 @@ class Ohlc {
         axisG.call(yAxis);
     }
 
-
-    updateCandlesticks(selected) {
-        let paths = this.svg.select("g#candlesticks")
-            .selectAll("path")
-            .data(this.gas.data)
-        paths
-            .join("path")
-            .attr("stroke", d => this.gas.colorFunc(d.sector))
-            .classed("candlestick", true)
-            .attr("d", d => {
-                //console.log(d);
-                return d3.line()
-                    .x(d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
-                    .y(d => this.scaleY(d.marketClose))
-                    (d.chart)
-            }
-            )
+    updateOhlcChart(selected) {
+        selection.each(function (data) {
+            // Generate ohlc bars here.
+            series = d3.select(this.svg).selectAll('.ohlc-series').data([data]);
+            series.enter().append('g').classed('ohlc-series', true);
+            //... 
+        });   
     }
 
 }
