@@ -1,4 +1,5 @@
 // attaches dev elements
+import * as d3 from "d3";
 
 export function addDevTools(gas) {
 	let sectors = [

@@ -1,6 +1,12 @@
-import {dateMinuteToDate, getPercChange} from "./util.js";
+import * as d3 from "d3";
+import {dateMinuteToDate, getPercChange} from "./util";
+import {GlobalAppState} from "./globalAppState";
 
 export class Beeswarm {
+	gas: GlobalApplicationState;
+	simulationSettings;
+
+
 	constructor(gas) {
 		this.gas = gas;
 		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
@@ -223,6 +229,7 @@ export class Beeswarm {
 		let that = this;
 		this.circles = this.circles
 			.join("circle")
+			.attr("fill", (d) => console.log(this.gas.colorFunc(d.sector)))
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)

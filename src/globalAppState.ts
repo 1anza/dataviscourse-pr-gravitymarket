@@ -1,4 +1,5 @@
-import {dateMinuteToDate, getPercChange} from "./util.js";
+import {dateMinuteToDate, getPercChange} from "./util";
+import * as d3 from "d3";
 
 /*
  * Global app events are contained here. Also, logic for controlling the ticking of the data index.
@@ -23,12 +24,12 @@ export class GlobalAppState {
 	 * functions_to_add are all added as events with the parameters being the event e.
 	 */
 	addEventValueToGlobalAppState(
-		valueName,
+		valueName: string,
 		default_value = null,
-		functions_to_add = [],
+		functions_to_add: { (e: CustomEvent): void } [] = [],
 		shouldLog = true
 	) {
-		this["set_" + valueName] = (value) => {
+		this["set_" + valueName] = (value: any) => {
 			this[valueName] = value;
 			let _event = new CustomEvent("on_" + valueName + "Change", {
 				detail: value,
@@ -37,13 +38,13 @@ export class GlobalAppState {
 		};
 		if (shouldLog) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				let value = e.detail;
+				let value = (<CustomEvent>e).detail;
 				console.log("Event happened.", valueName, "Changed to: ", value);
 			});
 		}
 		for (let f of functions_to_add) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				f(e);
+				f((<CustomEvent>e));
 			});
 		}
 
@@ -52,8 +53,8 @@ export class GlobalAppState {
 		}
 	}
 
-	addEventListenerToEvent(eventName, f) {
-		document.addEventListener("on_" + eventName + "Change", (e) => f(e));
+	addEventListenerToEvent(eventName: string, f: { (e: CustomEvent) }) {
+		document.addEventListener("on_" + eventName + "Change", (e) => f(<CustomEvent>e));
 	}
 
 	initializeEvents(data) {
@@ -79,12 +80,12 @@ export class GlobalAppState {
 				this.set_yValueDataRange(range);
 			},
 		]);
-		let update_percentYValueRange = _ => {
+		let update_percentYValueRange = () => {
 			let perc_min = d3.min(this.data, d => d3.min(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
 			let perc_max = d3.max(this.data, d => d3.max(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
 			this.set_percentYValueRange([perc_min, perc_max]);
 		};
-		this.addEventListenerToEvent("data", _ => update_percentYValueRange())
+		this.addEventListenerToEvent("data", _ => update_percentYValueRange(_))
 		update_percentYValueRange();
 		// The zValue is the marketCap, which determines the radius in the beeswarm
 		// This zValue is local to the first list dimension, (the ticker)
@@ -150,13 +151,14 @@ export class GlobalAppState {
 		/*  ----------------Group By Controls---------------    */
 
 		let domain = [...new Set(this.data.map((d) => d.sector))];
-		let map = Object.assign({}, ...domain.map((d, i) => ({ [d]: i })));
+		let map = Object.assign({}, ...domain.map((d, i) => ({ [<string>d]: i })));
 		let color_func = d3.interpolateRainbow;
 		/// This is a function that colors a row of data.
 		/// It takes as input the sector and returns a color.
+		console.log("domain", domain);
 		this.addEventValueToGlobalAppState(
 			"colorFunc",
-			(sector) => color_func(map[sector] / domain.length),
+			(sector: string) => color_func(map[sector] / domain.length),
 			[],
 			true
 		);

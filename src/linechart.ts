@@ -1,4 +1,4 @@
-import {dateMinuteToDate, getPercChange} from "./util.js";
+import {dateMinuteToDate, getPercChange} from "./util";
 
 export class Linechart {
 	constructor(gas) {
