@@ -7,7 +7,7 @@ import {addDevTools} from './dev';
 import * as d3 from "d3";
 
 function main() {
-	d3.json("fromMay2022.json").then((data) => {
+	d3.json("Nov2021-Nov2022.json").then((data) => {
 		console.log("---- Loaded data ----");
 
 		let gas = new GlobalAppState(data);

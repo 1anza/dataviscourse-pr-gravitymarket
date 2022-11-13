@@ -5,6 +5,11 @@ export class Linechart {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#linechart-vis");
+
+		// These indeces indicate the index funds in the data; these are plotted as a 
+		// special case if no gas.selectedSectors have been picked
+		this.motherlineDataIndexRange = [0, 12];
+
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
@@ -19,8 +24,6 @@ export class Linechart {
 		this.updateAxisX();
 		this.updateAxisY();
 
-		// The motherline should be the first value in the data
-		this.persistentLineDataIndex = 0;
 		this.updateLines();
 
 		this.updatePlayheadLine();
@@ -56,7 +59,15 @@ export class Linechart {
 	 * updates this.scaleY which takes a percent change and maps it to a y position
 	 */
 	updateScaleY() {
-		let domain = this.gas.percentYValueRange;
+		let data_to_get_range;
+		if (this.gas.groupingBySector) {
+			data_to_get_range = this.gas.data.filter(d => this.gas.selectedSectors.has(d.sector));
+		} else {
+			data_to_get_range = this.gas.data.slice(this.motherlineDataIndexRange[0], this.motherlineDataIndexRange[1]);
+		}
+		let perc_min = d3.min(data_to_get_range, d => d3.min(d3.range(d.chart.length), i => getPercChange(d, i, this.gas.yValueName)));
+		let perc_max = d3.max(data_to_get_range, d => d3.max(d3.range(d.chart.length), i => getPercChange(d, i, this.gas.yValueName)));
+		let domain = [perc_min, perc_max];
 		let range = [this.bounds.maxY, this.bounds.minY];
 		this.scaleY = d3.scaleLinear().domain(domain).range(range);
 	}
@@ -79,10 +90,16 @@ export class Linechart {
 	}
 
 	updateLines() {
+		let datatoplot;
+		if (this.gas.groupingBySector) {
+			datatoplot = this.gas.data.filter(d => this.gas.selectedSectors.has(d.sector));
+		} else {
+			datatoplot = this.gas.data.slice(this.motherlineDataIndexRange[0], this.motherlineDataIndexRange[1]);
+		}
 		let paths = this.svg
 			.select("g#lines")
 			.selectAll("path")
-			.data(this.gas.data);
+			.data(datatoplot);
 		paths
 			.join("path")
 			.attr("stroke", (d) => this.gas.colorFunc(d.sector))

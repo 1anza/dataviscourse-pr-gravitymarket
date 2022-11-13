@@ -75,8 +75,6 @@ export class Ohlc {
             .data(function (d) {
                 return [d];
             });
-	console.log(lines);
-	//lines.exit().remove();
         lines.join('line')
 	    .classed("open-close-line", true)
             .attr("stroke", "black")
@@ -85,8 +83,6 @@ export class Ohlc {
             .attr("y1", d => this.scaleY(d.open))
             .attr("x2", d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
             .attr("y2", d => this.scaleY(d.close));
-
-
     }
 
 }

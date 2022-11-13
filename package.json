@@ -1,7 +1,7 @@
 {
   "staticFiles": {
     "staticPath": [
-      "data/fromMay2022.json"
+      "data/Nov2021-Nov2022.json"
     ]
   },
   "type": "module",
