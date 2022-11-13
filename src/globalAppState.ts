@@ -151,6 +151,8 @@ export class GlobalAppState {
 		/*  ----------------Group By Controls---------------    */
 
 		let domain = [...new Set(this.data.map((d) => d.sector))];
+		/// This is a list of all of the sectors
+		this.addEventValueToGlobalAppState("allSectors", [...domain.keys()]);
 		let map = Object.assign({}, ...domain.map((d, i) => ({ [<string>d]: i })));
 		let color_func = d3.interpolateRainbow;
 		/// This is a function that colors a row of data.

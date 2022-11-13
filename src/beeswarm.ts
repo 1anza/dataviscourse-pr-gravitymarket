@@ -6,8 +6,7 @@ export class Beeswarm {
 	gas: GlobalApplicationState;
 	simulationSettings;
 
-
-	constructor(gas) {
+	constructor(gas: GlobalAppState) {
 		this.gas = gas;
 		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
 		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));
@@ -66,6 +65,8 @@ export class Beeswarm {
 				this.circles.filter((d) => newlyAdded.has(d.sector))
 			);
 		});
+
+		this.updateSectorControls();
 	}
 
 	/*  ----------------Data scales---------------------    */
@@ -361,5 +362,18 @@ export class Beeswarm {
 			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
 			return d;
 		});
+	}
+
+	/*
+	 * **********************Controls for the group by bar***********************
+	 */
+	updateSectorControls() {
+		let sector_bars = d3.select("svg#beeswarm-vis").select("g#sector-controls")
+			.selectAll("g#sector-bar")
+			.data(this.gas.allSectors);
+		sector_bars.enter().append("g")
+			.attr("id", "sector-bar")
+
+		sector_bars
 	}
 }
