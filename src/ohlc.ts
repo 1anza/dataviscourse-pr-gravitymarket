@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import {dateMinuteToDate, getPercChange} from "./util.js";
+import {dateMinuteToDate, getPercChange} from "./util";
 
 export class Ohlc {
 	constructor(gas) {

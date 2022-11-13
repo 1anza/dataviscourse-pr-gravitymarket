@@ -1,4 +1,4 @@
-function dateMinuteToDate(date, minute) {
+function dateMinuteToDate(date: string, minute: string) {
 	//let datestring = `${date}T0${minute}`;
 	// Back hack for now. Hardcoded minutes
 	let datestring = `${date}T09:30`;
