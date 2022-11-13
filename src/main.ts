@@ -1,9 +1,10 @@
-import {GlobalAppState} from './globalAppState.ts';
-import {createPlaybackControls} from './playbackControls.ts';
-import {Beeswarm} from './beeswarm.ts';
-import {Linechart} from './linechart.ts';
-import {Ohlc} from './ohlc.ts';
-import {addDevTools} from './dev.ts';
+import {GlobalAppState} from './globalAppState';
+import {createPlaybackControls} from './playbackControls';
+import {Beeswarm} from './beeswarm';
+import {Linechart} from './linechart';
+import {Ohlc} from './ohlc';
+import {addDevTools} from './dev';
+import * as d3 from "d3";
 
 function main() {
 	d3.json("fromMay2022.json").then((data) => {

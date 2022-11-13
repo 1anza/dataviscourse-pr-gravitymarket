@@ -1,3 +1,4 @@
+import * as d3 from "d3";
 import {dateMinuteToDate, getPercChange} from "./util.js";
 
 export class Ohlc {
