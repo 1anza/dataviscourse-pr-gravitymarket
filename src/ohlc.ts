@@ -73,7 +73,6 @@ export class Ohlc {
         let lines = bars
             .selectAll('line.open-close-line')
             .data(function (d) {
-		console.log("DATA", d);
                 return [d];
             });
 	console.log(lines);
