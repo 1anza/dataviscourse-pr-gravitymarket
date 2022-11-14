@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import {dateMinuteToDate, getPercChange} from "./util";
+import { dateMinuteToDate, getPercChange } from "./util";
 
 export class Ohlc {
 	constructor(gas) {
@@ -13,76 +13,81 @@ export class Ohlc {
 			minY: 20,
 			maxY: svg_height - 50,
 		};
+		this.textRotation = 45;
 
+		this.updateXScale();
+		this.updateYScale();
+		this.updateXAxis();
+		this.updateYAxis();
 
-        this.updateXScale();
-        this.updateYScale();
-        this.updateXAxis();
-        this.updateYAxis();
+		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) =>
+			this.updateOhlcChart(gas.selectedSingleCompany)
+		);
+	}
 
-        this.gas.addEventListenerToEvent("selectedSingleCompany", _ => this.updateOhlcChart(gas.selectedSingleCompany));
+	/*
+	 * updates this.scaleX which takes a date and maps it to the x position*/
 
-    }
+	updateXScale() {
+		let scale = this.gas.dateDomain;
+		let range = [this.bounds.minX, this.bounds.maxX];
+		this.scaleX = scale.range(range);
+	}
 
+	updateYScale() {
+		let domain = this.gas.yValueDataRange;
+		let range = [this.bounds.maxY, this.bounds.minY];
+		this.scaleY = d3.scaleLinear().domain(domain).range(range);
+	}
 
-    /*    
-     * updates this.scaleX which takes a date and maps it to the x position*/
+	updateXAxis() {
+		let axisG = this.svg
+			.select("g#x-axis")
+			.attr("transform", `translate(0 ${this.bounds.maxY})`);
+		let xAxis = d3
+			.axisBottom()
+			.scale(this.scaleX)
+			.ticks(10)
+			.tickFormat(d3.timeFormat("%b %Y"));
+		axisG
+			.call(xAxis)
+			.selectAll("text")
+			.attr("y", 15)
+			.attr("x", 25)
+			.attr("transform", `rotate(${this.textRotation})`)
+			.classed(".dateaxis-text", true);
+	}
 
-    updateXScale() {
-        let domain = this.gas.dateValueRange;
-        let range = [this.bounds.minX, this.bounds.maxX];
-        this.scaleX = d3.scaleTime().domain(domain).range(range);
+	updateYAxis() {
+		let axisG = this.svg
+			.select("g#y-axis")
+			.attr("transform", `translate(${this.bounds.minX} 0)`);
+		let yAxis = d3.axisLeft(this.scaleY);
+		axisG.call(yAxis);
+	}
 
-        //let testrow = this.gas.data[0].chart[0];
-        //console.log(this.scaleX(dateMinuteToDate(testrow.date, testrow.minute)))
-    }
+	updateOhlcChart(company) {
+		let domain = d3.extent(company.chart, (d) => d[this.gas.yValueName]);
+		let range = [this.bounds.maxY, this.bounds.minY];
+		this.scaleY = d3.scaleLinear().domain(domain).range(range);
 
-    updateYScale() {
-        let domain = this.gas.yValueDataRange;
-        let range = [this.bounds.maxY, this.bounds.minY];
-        this.scaleY = d3.scaleLinear().domain(domain).range(range);
-    }
+		this.updateYAxis();
 
-    updateXAxis() {
-        let axisG = this.svg.select("g#x-axis")
-            .attr("transform", `translate(0 ${this.bounds.maxY})`);
-        let xAxis = d3.axisBottom(this.scaleX);
-        axisG.call(xAxis);
-    }
+		let series = this.svg.select("g.ohlc-series");
+		let bars = series.selectAll("g.ohlc-bar").data(company.chart);
+		bars = bars.join("g").classed("ohlc-bar", true);
 
-    updateYAxis() {
-        let axisG = this.svg.select("g#y-axis")
-            .attr("transform", `translate(${this.bounds.minX} 0)`);
-        let yAxis = d3.axisLeft(this.scaleY);
-        axisG.call(yAxis);
-    }
-
-    updateOhlcChart(company) {
-        let domain = d3.extent(company.chart, d => d[this.gas.yValueName]);
-        let range = [this.bounds.maxY, this.bounds.minY];
-        this.scaleY = d3.scaleLinear().domain(domain).range(range);
-
-        this.updateYAxis();
-
-        let series = this.svg.select('g.ohlc-series');
-        let bars = series.selectAll("g.ohlc-bar")
-            .data(company.chart);
-	bars = bars.join("g")
-            .classed("ohlc-bar", true);
-
-        let lines = bars
-            .selectAll('line.open-close-line')
-            .data(function (d) {
-                return [d];
-            });
-        lines.join('line')
-	    .classed("open-close-line", true)
-            .attr("stroke", "black")
-            .attr("stroke-width", "1")
-            .attr("x1", d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
-            .attr("y1", d => this.scaleY(d.open))
-            .attr("x2", d => this.scaleX(dateMinuteToDate(d.date, d.minute)))
-            .attr("y2", d => this.scaleY(d.close));
-    }
-
+		let lines = bars.selectAll("line.open-close-line").data(function (d) {
+			return [d];
+		});
+		lines
+			.join("line")
+			.classed("open-close-line", true)
+			.attr("stroke", "black")
+			.attr("stroke-width", "1")
+			.attr("x1", (d) => this.scaleX(dateMinuteToDate(d.date, d.minute)))
+			.attr("y1", (d) => this.scaleY(d.open))
+			.attr("x2", (d) => this.scaleX(dateMinuteToDate(d.date, d.minute)))
+			.attr("y2", (d) => this.scaleY(d.close));
+	}
 }

@@ -61,6 +61,10 @@ body {
     stroke-width: 1.5pt;
 }
 
+.dateaxis-text {
+	text-anchor: start;
+}
+
 #beeswarm-tooltip {
 	background-color: white;
 	border: solid;

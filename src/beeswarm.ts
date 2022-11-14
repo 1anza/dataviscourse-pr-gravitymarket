@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import {dateMinuteToDate, getPercChange} from "./util";
-import {GlobalAppState} from "./globalAppState";
+import { dateMinuteToDate, getPercChange } from "./util";
+import { GlobalAppState } from "./globalAppState";
 
 export class Beeswarm {
 	gas: GlobalApplicationState;
@@ -368,12 +368,13 @@ export class Beeswarm {
 	 * **********************Controls for the group by bar***********************
 	 */
 	updateSectorControls() {
-		let sector_bars = d3.select("svg#beeswarm-vis").select("g#sector-controls")
+		let sector_bars = d3
+			.select("svg#beeswarm-vis")
+			.select("g#sector-controls")
 			.selectAll("g#sector-bar")
 			.data(this.gas.allSectors);
-		sector_bars.enter().append("g")
-			.attr("id", "sector-bar")
+		sector_bars.enter().append("g").attr("id", "sector-bar");
 
-		sector_bars
+		sector_bars;
 	}
 }

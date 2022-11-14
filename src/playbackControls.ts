@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 
-
 export function createPlaybackControls(gas) {
 	console.log("createPlaybackControls()");
 

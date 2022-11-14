@@ -1,4 +1,9 @@
-import {dateMinuteToDate, getPercChange} from "./util";
+import { dateMinuteToDate, getPercChange } from "./util";
+import {
+	scaleDiscontinuous,
+	discontinuitySkipWeekends,
+	discontinuityProvider,
+} from "d3fc-discontinuous-scale";
 import * as d3 from "d3";
 
 /*
@@ -26,7 +31,7 @@ export class GlobalAppState {
 	addEventValueToGlobalAppState(
 		valueName: string,
 		default_value = null,
-		functions_to_add: { (e: CustomEvent): void } [] = [],
+		functions_to_add: { (e: CustomEvent): void }[] = [],
 		shouldLog = true
 	) {
 		this["set_" + valueName] = (value: any) => {
@@ -44,7 +49,7 @@ export class GlobalAppState {
 		}
 		for (let f of functions_to_add) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				f((<CustomEvent>e));
+				f(<CustomEvent>e);
 			});
 		}
 
@@ -54,19 +59,24 @@ export class GlobalAppState {
 	}
 
 	addEventListenerToEvent(eventName: string, f: { (e: CustomEvent) }) {
-		document.addEventListener("on_" + eventName + "Change", (e) => f(<CustomEvent>e));
+		document.addEventListener("on_" + eventName + "Change", (e) =>
+			f(<CustomEvent>e)
+		);
 	}
 
 	initializeEvents(data) {
 		/*  ------------Data and bounds---------------------    */
 		this.addEventValueToGlobalAppState("dateValueRange", null);
-		this.addEventValueToGlobalAppState("data", data, [e => {
-			// looks at all of the dates of the first value in data
-			this.set_dateValueRange(d3.extent(e.detail[0].chart, d => {
-					return dateMinuteToDate(d.date, d.minute);
-			}));
-
-		}]);
+		this.addEventValueToGlobalAppState("data", data, [
+			(e) => {
+				// looks at all of the dates of the first value in data
+				this.set_dateValueRange(
+					d3.extent(e.detail[0].chart, (d) => {
+						return dateMinuteToDate(d.date, d.minute);
+					})
+				);
+			},
+		]);
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
@@ -81,11 +91,19 @@ export class GlobalAppState {
 			},
 		]);
 		let update_percentYValueRange = () => {
-			let perc_min = d3.min(this.data, d => d3.min(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
-			let perc_max = d3.max(this.data, d => d3.max(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
+			let perc_min = d3.min(this.data, (d) =>
+				d3.min(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
+			let perc_max = d3.max(this.data, (d) =>
+				d3.max(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
 			this.set_percentYValueRange([perc_min, perc_max]);
 		};
-		this.addEventListenerToEvent("data", _ => update_percentYValueRange(_))
+		this.addEventListenerToEvent("data", (_) => update_percentYValueRange(_));
 		update_percentYValueRange();
 		// The zValue is the marketCap, which determines the radius in the beeswarm
 		// This zValue is local to the first list dimension, (the ticker)
@@ -113,6 +131,27 @@ export class GlobalAppState {
 			false
 		);
 		this.set_index(0);
+
+		let calculate_date_domain = () => {
+			let start_date = dateMinuteToDate(
+				this.data[0].chart[0].date,
+				this.data[0].chart[0].minute
+			);
+			let chart_length = this.data[0].chart.length;
+			let end_date = dateMinuteToDate(
+				this.data[0].chart[chart_length - 1].date,
+				this.data[0].chart[chart_length - 1].minute
+			);
+			console.log("Start date", start_date, "End date", end_date);
+			return scaleDiscontinuous(d3.scaleTime())
+				.discontinuityProvider(discontinuitySkipWeekends())
+				.domain([start_date, end_date]);
+		};
+		this.addEventValueToGlobalAppState("dateDomain", calculate_date_domain());
+		this.addEventListenerToEvent(
+			"data",
+			this.set_dateDomain(calculate_date_domain())
+		);
 		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
 		this.addEventValueToGlobalAppState("playing", false, [

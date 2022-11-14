@@ -1,12 +1,12 @@
 import * as d3 from "d3";
-import {dateMinuteToDate, getPercChange} from "./util";
+import { dateMinuteToDate, getPercChange } from "./util";
 
 export class Linechart {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#linechart-vis");
 
-		// These indeces indicate the index funds in the data; these are plotted as a 
+		// These indeces indicate the index funds in the data; these are plotted as a
 		// special case if no gas.selectedSectors have been picked
 		this.motherlineDataIndexRange = [0, 12];
 
@@ -19,6 +19,8 @@ export class Linechart {
 			maxY: svg_height - 50,
 		};
 
+		this.textRotation = 45;
+
 		this.updateScaleX();
 		this.updateScaleY();
 		this.updateAxisX();
@@ -28,6 +30,12 @@ export class Linechart {
 
 		this.updatePlayheadLine();
 		this.gas.addEventListenerToEvent("date", (_) => this.updatePlayheadLine());
+
+		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
+			this.updateScaleY();
+			this.updateAxisY();
+			this.updateLines();
+		});
 	}
 
 	/*
@@ -48,11 +56,9 @@ export class Linechart {
 	 * updates this.scaleX which takes a date and maps it to the x position
 	 */
 	updateScaleX() {
-		let domain = this.gas.data[0].chart.map((d) =>
-			dateMinuteToDate(d.date, d.minute)
-		);
+		let scale = this.gas.dateDomain;
 		let range = [this.bounds.minX, this.bounds.maxX];
-		this.scaleX = d3.scalePoint().domain(domain).range(range);
+		this.scaleX = scale.range(range);
 	}
 
 	/*
@@ -61,12 +67,25 @@ export class Linechart {
 	updateScaleY() {
 		let data_to_get_range;
 		if (this.gas.groupingBySector) {
-			data_to_get_range = this.gas.data.filter(d => this.gas.selectedSectors.has(d.sector));
+			data_to_get_range = this.gas.data.filter((d) =>
+				this.gas.selectedSectors.has(d.sector)
+			);
 		} else {
-			data_to_get_range = this.gas.data.slice(this.motherlineDataIndexRange[0], this.motherlineDataIndexRange[1]);
+			data_to_get_range = this.gas.data.slice(
+				this.motherlineDataIndexRange[0],
+				this.motherlineDataIndexRange[1]
+			);
 		}
-		let perc_min = d3.min(data_to_get_range, d => d3.min(d3.range(d.chart.length), i => getPercChange(d, i, this.gas.yValueName)));
-		let perc_max = d3.max(data_to_get_range, d => d3.max(d3.range(d.chart.length), i => getPercChange(d, i, this.gas.yValueName)));
+		let perc_min = d3.min(data_to_get_range, (d) =>
+			d3.min(d3.range(d.chart.length), (i) =>
+				getPercChange(d, i, this.gas.yValueName)
+			)
+		);
+		let perc_max = d3.max(data_to_get_range, (d) =>
+			d3.max(d3.range(d.chart.length), (i) =>
+				getPercChange(d, i, this.gas.yValueName)
+			)
+		);
 		let domain = [perc_min, perc_max];
 		let range = [this.bounds.maxY, this.bounds.minY];
 		this.scaleY = d3.scaleLinear().domain(domain).range(range);
@@ -76,8 +95,18 @@ export class Linechart {
 		let axisG = this.svg
 			.select("g#x-axis")
 			.attr("transform", `translate(0 ${this.bounds.maxY})`);
-		let xAxis = d3.axisBottom().scale(this.scaleX).tickValues(this.scaleX.domain().filter((d, i) => i % 25 === 0)).tickFormat(d3.timeFormat("%B %d, %Y"));
-		axisG.call(xAxis);
+		let xAxis = d3
+			.axisBottom()
+			.scale(this.scaleX)
+			.ticks(24)
+			.tickFormat(d3.timeFormat("%b %Y"));
+		axisG
+			.call(xAxis)
+			.selectAll("text")
+			.attr("y", 15)
+			.attr("x", 25)
+			.attr("transform", `rotate(${this.textRotation})`)
+			.classed(".dateaxis-text", true);
 	}
 
 	updateAxisY() {
@@ -92,14 +121,16 @@ export class Linechart {
 	updateLines() {
 		let datatoplot;
 		if (this.gas.groupingBySector) {
-			datatoplot = this.gas.data.filter(d => this.gas.selectedSectors.has(d.sector));
+			datatoplot = this.gas.data.filter((d) =>
+				this.gas.selectedSectors.has(d.sector)
+			);
 		} else {
-			datatoplot = this.gas.data.slice(this.motherlineDataIndexRange[0], this.motherlineDataIndexRange[1]);
+			datatoplot = this.gas.data.slice(
+				this.motherlineDataIndexRange[0],
+				this.motherlineDataIndexRange[1]
+			);
 		}
-		let paths = this.svg
-			.select("g#lines")
-			.selectAll("path")
-			.data(datatoplot);
+		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);
 		paths
 			.join("path")
 			.attr("stroke", (d) => this.gas.colorFunc(d.sector))
