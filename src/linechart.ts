@@ -1,6 +1,11 @@
 import * as d3 from "d3";
 import { dateMinuteToDate, getPercChange } from "./util";
 
+/*
+ * If nothing is selected in selectedSectors, only data[0] the S&P 500 line, will be shown.
+ *
+ * If any sectors are specified in selectedSectors, then those sectors will be shown
+ */
 export class Linechart {
 	constructor(gas) {
 		this.gas = gas;

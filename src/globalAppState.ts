@@ -11,8 +11,8 @@ import * as d3 from "d3";
  */
 
 export class GlobalAppState {
-	constructor(data) {
-		this.initializeEvents(data);
+	constructor(companyData, sp500Data, sectorData) {
+		this.initializeEvents(companyData, sp500Data, sectorData);
 	}
 
 	/*
@@ -64,10 +64,10 @@ export class GlobalAppState {
 		);
 	}
 
-	initializeEvents(data) {
+	initializeEvents(companyData, sp500Data, sectorData) {
 		/*  ------------Data and bounds---------------------    */
 		this.addEventValueToGlobalAppState("dateValueRange", null);
-		this.addEventValueToGlobalAppState("data", data, [
+		this.addEventValueToGlobalAppState("data", companyData, [
 			(e) => {
 				// looks at all of the dates of the first value in data
 				this.set_dateValueRange(
@@ -77,6 +77,14 @@ export class GlobalAppState {
 				);
 			},
 		]);
+		this.addEventValueToGlobalAppState("sp500Data", sp500Data);
+		this.addEventValueToGlobalAppState("sectorDataDict", null);
+		this.addEventValueToGlobalAppState("sectorData", sectorData, [_ => {
+			let sector_data_dict = {};
+			this.sectorData.forEach(d => sector_data_dict[d.company.replace(/^(Vanguard ETF )/, "")] = d);
+			this.set_sectorDataDict(sector_data_dict)
+		}]);
+
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
