@@ -9,4 +9,8 @@ function getPercChange(row, index, yValueName) {
 	return (row.chart[index][yValueName] / row.chart[0][yValueName] - 1) * 100;
 }
 
-export { dateMinuteToDate, getPercChange };
+function removeVanguardPrefixFromSector(stringName: string) {
+	return stringName.replace(/^(Vanguard ETF )/, "");
+}
+
+export { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector };

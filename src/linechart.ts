@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { dateMinuteToDate, getPercChange } from "./util";
+import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util";
 
 /*
  * If nothing is selected in selectedSectors, only data[0] the S&P 500 line, will be shown.
@@ -10,10 +10,6 @@ export class Linechart {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#linechart-vis");
-
-		// These indeces indicate the index funds in the data; these are plotted as a
-		// special case if no gas.selectedSectors have been picked
-		this.motherlineDataIndexRange = [0, 12];
 
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
@@ -72,14 +68,11 @@ export class Linechart {
 	updateScaleY() {
 		let data_to_get_range;
 		if (this.gas.groupingBySector) {
-			data_to_get_range = this.gas.data.filter((d) =>
-				this.gas.selectedSectors.has(d.sector)
+			data_to_get_range = this.gas.sectorData.filter((d) =>
+				this.gas.selectedSectors.has(removeVanguardPrefixFromSector(d.company))
 			);
 		} else {
-			data_to_get_range = this.gas.data.slice(
-				this.motherlineDataIndexRange[0],
-				this.motherlineDataIndexRange[1]
-			);
+			data_to_get_range = [this.gas.sp500Data];
 		}
 		let perc_min = d3.min(data_to_get_range, (d) =>
 			d3.min(d3.range(d.chart.length), (i) =>
@@ -126,15 +119,14 @@ export class Linechart {
 	updateLines() {
 		let datatoplot;
 		if (this.gas.groupingBySector) {
-			datatoplot = this.gas.data.filter((d) =>
-				this.gas.selectedSectors.has(d.sector)
+			datatoplot = this.gas.sectorData.filter((d) => {
+				return this.gas.selectedSectors.has(removeVanguardPrefixFromSector(d.company));
+			}
 			);
 		} else {
-			datatoplot = this.gas.data.slice(
-				this.motherlineDataIndexRange[0],
-				this.motherlineDataIndexRange[1]
-			);
+			datatoplot = [this.gas.sp500Data];
 		}
+		console.log(datatoplot);
 		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);
 		paths
 			.join("path")

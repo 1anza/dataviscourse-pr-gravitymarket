@@ -1,9 +1,10 @@
-import { dateMinuteToDate, getPercChange } from "./util";
+import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util";
 import {
 	scaleDiscontinuous,
 	discontinuitySkipWeekends,
 	discontinuityProvider,
 } from "d3fc-discontinuous-scale";
+
 import * as d3 from "d3";
 
 /*
@@ -81,7 +82,7 @@ export class GlobalAppState {
 		this.addEventValueToGlobalAppState("sectorDataDict", null);
 		this.addEventValueToGlobalAppState("sectorData", sectorData, [_ => {
 			let sector_data_dict = {};
-			this.sectorData.forEach(d => sector_data_dict[d.company.replace(/^(Vanguard ETF )/, "")] = d);
+			this.sectorData.forEach(d => sector_data_dict[removeVanguardPrefixFromSector(d.company)] = d);
 			this.set_sectorDataDict(sector_data_dict)
 		}]);
 
@@ -207,7 +208,13 @@ export class GlobalAppState {
 		console.log("domain", domain);
 		this.addEventValueToGlobalAppState(
 			"colorFunc",
-			(sector: string) => color_func(map[sector] / domain.length),
+			(sector: string) => {
+				if (sector === "Index") {
+					return color_func(0.5);
+				} else {
+					return color_func(map[sector] / domain.length);
+				}
+			},
 			[],
 			true
 		);
