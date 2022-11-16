@@ -1,4 +1,4 @@
-import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util";
+import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util.js";
 import {
 	scaleDiscontinuous,
 	discontinuitySkipWeekends,
@@ -30,12 +30,12 @@ export class GlobalAppState {
 	 * functions_to_add are all added as events with the parameters being the event e.
 	 */
 	addEventValueToGlobalAppState(
-		valueName: string,
+		valueName,
 		default_value = null,
-		functions_to_add: { (e: CustomEvent): void }[] = [],
+		functions_to_add = [],
 		shouldLog = true
 	) {
-		this["set_" + valueName] = (value: any) => {
+		this["set_" + valueName] = (value) => {
 			this[valueName] = value;
 			let _event = new CustomEvent("on_" + valueName + "Change", {
 				detail: value,
@@ -44,13 +44,13 @@ export class GlobalAppState {
 		};
 		if (shouldLog) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				let value = (<CustomEvent>e).detail;
+				let value = e.detail;
 				console.log("Event happened.", valueName, "Changed to: ", value);
 			});
 		}
 		for (let f of functions_to_add) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				f(<CustomEvent>e);
+				f(e);
 			});
 		}
 
@@ -59,9 +59,9 @@ export class GlobalAppState {
 		}
 	}
 
-	addEventListenerToEvent(eventName: string, f: { (e: CustomEvent) }) {
+	addEventListenerToEvent(eventName, f) {
 		document.addEventListener("on_" + eventName + "Change", (e) =>
-			f(<CustomEvent>e)
+			f(e)
 		);
 	}
 
@@ -201,14 +201,14 @@ export class GlobalAppState {
 		let domain = [...new Set(this.data.map((d) => d.sector))];
 		/// This is a list of all of the sectors
 		this.addEventValueToGlobalAppState("allSectors", [...domain.keys()]);
-		let map = Object.assign({}, ...domain.map((d, i) => ({ [<string>d]: i })));
+		let map = Object.assign({}, ...domain.map((d, i) => ({ [d]: i })));
 		let color_func = d3.interpolateRainbow;
 		/// This is a function that colors a row of data.
 		/// It takes as input the sector and returns a color.
 		console.log("domain", domain);
 		this.addEventValueToGlobalAppState(
 			"colorFunc",
-			(sector: string) => {
+			(sector) => {
 				if (sector === "Index") {
 					return color_func(0.5);
 				} else {

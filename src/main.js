@@ -1,9 +1,9 @@
-import { GlobalAppState } from "./globalAppState";
-import { createPlaybackControls } from "./playbackControls";
-import { Beeswarm } from "./beeswarm";
-import { Linechart } from "./linechart";
-import { Ohlc } from "./ohlc";
-import { addDevTools } from "./dev";
+import { GlobalAppState } from "./globalAppState.js";
+import { createPlaybackControls } from "./playbackControls.js";
+import { Beeswarm } from "./beeswarm.js";
+import { Linechart } from "./linechart.js";
+import { Ohlc } from "./ohlc.js";
+import { addDevTools } from "./dev.js";
 import * as d3 from "d3";
 
 function main() {

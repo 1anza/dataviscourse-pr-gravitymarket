@@ -1,12 +1,9 @@
 import * as d3 from "d3";
-import { dateMinuteToDate, getPercChange } from "./util";
-import { GlobalAppState } from "./globalAppState";
+import { dateMinuteToDate, getPercChange } from "./util.js";
+import { GlobalAppState } from "./globalAppState.js";
 
 export class Beeswarm {
-	gas: GlobalApplicationState;
-	simulationSettings;
-
-	constructor(gas: GlobalAppState) {
+	constructor(gas) {
 		this.gas = gas;
 		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
 		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));

@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util";
+import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util.js";
 
 /*
  * If nothing is selected in selectedSectors, only data[0] the S&P 500 line, will be shown.
