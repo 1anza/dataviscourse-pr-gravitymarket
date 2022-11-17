@@ -1,4 +1,10 @@
-import {dateMinuteToDate, getPercChange} from "./util";
+import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util.js";
+import {
+	scaleDiscontinuous,
+	discontinuitySkipWeekends,
+	discontinuityProvider,
+} from "d3fc-discontinuous-scale";
+
 import * as d3 from "d3";
 
 /*
@@ -6,8 +12,8 @@ import * as d3 from "d3";
  */
 
 export class GlobalAppState {
-	constructor(data) {
-		this.initializeEvents(data);
+	constructor(companyData, sp500Data, sectorData) {
+		this.initializeEvents(companyData, sp500Data, sectorData);
 	}
 
 	/*
@@ -24,12 +30,12 @@ export class GlobalAppState {
 	 * functions_to_add are all added as events with the parameters being the event e.
 	 */
 	addEventValueToGlobalAppState(
-		valueName: string,
+		valueName,
 		default_value = null,
-		functions_to_add: { (e: CustomEvent): void } [] = [],
+		functions_to_add = [],
 		shouldLog = true
 	) {
-		this["set_" + valueName] = (value: any) => {
+		this["set_" + valueName] = (value) => {
 			this[valueName] = value;
 			let _event = new CustomEvent("on_" + valueName + "Change", {
 				detail: value,
@@ -38,13 +44,13 @@ export class GlobalAppState {
 		};
 		if (shouldLog) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				let value = (<CustomEvent>e).detail;
+				let value = e.detail;
 				console.log("Event happened.", valueName, "Changed to: ", value);
 			});
 		}
 		for (let f of functions_to_add) {
 			document.addEventListener("on_" + valueName + "Change", (e) => {
-				f((<CustomEvent>e));
+				f(e);
 			});
 		}
 
@@ -53,20 +59,33 @@ export class GlobalAppState {
 		}
 	}
 
-	addEventListenerToEvent(eventName: string, f: { (e: CustomEvent) }) {
-		document.addEventListener("on_" + eventName + "Change", (e) => f(<CustomEvent>e));
+	addEventListenerToEvent(eventName, f) {
+		document.addEventListener("on_" + eventName + "Change", (e) =>
+			f(e)
+		);
 	}
 
-	initializeEvents(data) {
+	initializeEvents(companyData, sp500Data, sectorData) {
 		/*  ------------Data and bounds---------------------    */
 		this.addEventValueToGlobalAppState("dateValueRange", null);
-		this.addEventValueToGlobalAppState("data", data, [e => {
-			// looks at all of the dates of the first value in data
-			this.set_dateValueRange(d3.extent(e.detail[0].chart, d => {
-					return dateMinuteToDate(d.date, d.minute);
-			}));
-
+		this.addEventValueToGlobalAppState("data", companyData, [
+			(e) => {
+				// looks at all of the dates of the first value in data
+				this.set_dateValueRange(
+					d3.extent(e.detail[0].chart, (d) => {
+						return dateMinuteToDate(d.date, d.minute);
+					})
+				);
+			},
+		]);
+		this.addEventValueToGlobalAppState("sp500Data", sp500Data);
+		this.addEventValueToGlobalAppState("sectorDataDict", null);
+		this.addEventValueToGlobalAppState("sectorData", sectorData, [_ => {
+			let sector_data_dict = {};
+			this.sectorData.forEach(d => sector_data_dict[removeVanguardPrefixFromSector(d.company)] = d);
+			this.set_sectorDataDict(sector_data_dict)
 		}]);
+
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
@@ -81,11 +100,19 @@ export class GlobalAppState {
 			},
 		]);
 		let update_percentYValueRange = () => {
-			let perc_min = d3.min(this.data, d => d3.min(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
-			let perc_max = d3.max(this.data, d => d3.max(d3.range(d.chart.length), i => getPercChange(d, i, this.yValueName)));
+			let perc_min = d3.min(this.data, (d) =>
+				d3.min(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
+			let perc_max = d3.max(this.data, (d) =>
+				d3.max(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
 			this.set_percentYValueRange([perc_min, perc_max]);
 		};
-		this.addEventListenerToEvent("data", _ => update_percentYValueRange(_))
+		this.addEventListenerToEvent("data", (_) => update_percentYValueRange(_));
 		update_percentYValueRange();
 		// The zValue is the marketCap, which determines the radius in the beeswarm
 		// This zValue is local to the first list dimension, (the ticker)
@@ -113,6 +140,27 @@ export class GlobalAppState {
 			false
 		);
 		this.set_index(0);
+
+		let calculate_date_domain = () => {
+			let start_date = dateMinuteToDate(
+				this.data[0].chart[0].date,
+				this.data[0].chart[0].minute
+			);
+			let chart_length = this.data[0].chart.length;
+			let end_date = dateMinuteToDate(
+				this.data[0].chart[chart_length - 1].date,
+				this.data[0].chart[chart_length - 1].minute
+			);
+			console.log("Start date", start_date, "End date", end_date);
+			return scaleDiscontinuous(d3.scaleTime())
+				.discontinuityProvider(discontinuitySkipWeekends())
+				.domain([start_date, end_date]);
+		};
+		this.addEventValueToGlobalAppState("dateDomain", calculate_date_domain());
+		this.addEventListenerToEvent(
+			"data",
+			this.set_dateDomain(calculate_date_domain())
+		);
 		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
 		this.addEventValueToGlobalAppState("playing", false, [
@@ -153,14 +201,20 @@ export class GlobalAppState {
 		let domain = [...new Set(this.data.map((d) => d.sector))];
 		/// This is a list of all of the sectors
 		this.addEventValueToGlobalAppState("allSectors", [...domain.keys()]);
-		let map = Object.assign({}, ...domain.map((d, i) => ({ [<string>d]: i })));
+		let map = Object.assign({}, ...domain.map((d, i) => ({ [d]: i })));
 		let color_func = d3.interpolateRainbow;
 		/// This is a function that colors a row of data.
 		/// It takes as input the sector and returns a color.
 		console.log("domain", domain);
 		this.addEventValueToGlobalAppState(
 			"colorFunc",
-			(sector: string) => color_func(map[sector] / domain.length),
+			(sector) => {
+				if (sector === "Index") {
+					return color_func(0.5);
+				} else {
+					return color_func(map[sector] / domain.length);
+				}
+			},
 			[],
 			true
 		);

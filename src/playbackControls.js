@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 
-
 export function createPlaybackControls(gas) {
 	console.log("createPlaybackControls()");
 
@@ -48,7 +47,7 @@ export function createPlaybackControls(gas) {
 	});
 
 	// Sets up the date monitor
-	let updateDate = (_) => playbackdiv.select("div#current-date").html(gas.date);
+	let updateDate = () => playbackdiv.select("div#current-date").html(gas.date);
 	updateDate();
 	gas.addEventListenerToEvent("date", (e) => {
 		updateDate();

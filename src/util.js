@@ -1,4 +1,4 @@
-function dateMinuteToDate(date: string, minute: string) {
+function dateMinuteToDate(date, minute) {
 	//let datestring = `${date}T0${minute}`;
 	// Back hack for now. Hardcoded minutes
 	let datestring = `${date}T09:30`;
@@ -9,4 +9,8 @@ function getPercChange(row, index, yValueName) {
 	return (row.chart[index][yValueName] / row.chart[0][yValueName] - 1) * 100;
 }
 
-export {dateMinuteToDate, getPercChange};
+function removeVanguardPrefixFromSector(stringName) {
+	return stringName.replace(/^(Vanguard ETF )/, "");
+}
+
+export { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector };
