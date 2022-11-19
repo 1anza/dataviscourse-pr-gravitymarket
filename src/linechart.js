@@ -55,8 +55,12 @@ export class Linechart {
 	 * Moves the data on screen to be centered at the playhead
 	 */
 	updatePlayheadLine() {
+		// There is a lag when transitioning soley based on the gas._frequency
+		// This compensates for that delay by making the transitions slightly longer.
+		let delay_compensation = 1.42;
 		this.svg
 			.select("g#playback-follow")
+			.transition().duration(this.gas._frequency * delay_compensation) 
 			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`)
 			.select("line#playback-line")
 			.attr("x1", 0)
@@ -66,6 +70,7 @@ export class Linechart {
 		console.log(this.scaleX(this.gas.date));
 		this.svg
 			.select("g#plotted-zoomable")
+			.transition().duration(this.gas._frequency * delay_compensation)
 			.attr(
 				"transform",
 				`translate(${
