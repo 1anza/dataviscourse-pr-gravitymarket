@@ -29,7 +29,7 @@ export class Ohlc {
 	 * updates this.scaleX which takes a date and maps it to the x position*/
 
 	updateXScale() {
-		let scale = this.gas.dateDomain;
+		let scale = this.gas.genDateDomain();
 		let range = [this.bounds.minX, this.bounds.maxX];
 		this.scaleX = scale.range(range);
 	}

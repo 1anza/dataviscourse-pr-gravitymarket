@@ -156,11 +156,7 @@ export class GlobalAppState {
 				.discontinuityProvider(discontinuitySkipWeekends())
 				.domain([start_date, end_date]);
 		};
-		this.addEventValueToGlobalAppState("dateDomain", calculate_date_domain());
-		this.addEventListenerToEvent(
-			"data",
-			this.set_dateDomain(calculate_date_domain())
-		);
+		this.addEventValueToGlobalAppState("genDateDomain", calculate_date_domain);
 		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
 		this.addEventValueToGlobalAppState("playing", false, [
@@ -230,6 +226,23 @@ export class GlobalAppState {
 				}
 			},
 		]);
+
+
+		// Variables that determine the half width of the date range shown in the linechart
+		// This is in miliseconds
+		// By default, 1/10 of the width is represented by this
+		let start_date = dateMinuteToDate(
+			this.data[0].chart[0].date,
+			this.data[0].chart[0].minute
+		);
+		let chart_length = this.data[0].chart.length;
+		let end_date = dateMinuteToDate(
+			this.data[0].chart[chart_length - 1].date,
+			this.data[0].chart[chart_length - 1].minute
+		);
+		this.addEventValueToGlobalAppState("chartDateHalfWidth", 
+			Math.abs(end_date - start_date) / 2
+		);
 	}
 
 	// Will loop by default.

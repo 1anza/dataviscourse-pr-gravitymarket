@@ -57,8 +57,9 @@ export class Linechart {
 	 * updates this.scaleX which takes a date and maps it to the x position
 	 */
 	updateScaleX() {
-		let scale = this.gas.dateDomain;
-		let range = [this.bounds.minX, this.bounds.maxX];
+		let scale = this.gas.genDateDomain();
+		// Hardcoded range for now. Maybe this could be adjusted based on data length
+		let range = [-1000, 1000];
 		this.scaleX = scale.range(range);
 	}
 
@@ -107,13 +108,19 @@ export class Linechart {
 			.classed(".dateaxis-text", true);
 	}
 
+	/*
+	 * Updates the y axis and the mask for the linechart lines
+	 */
 	updateAxisY() {
 		let axisG = this.svg
 			.select("g#y-axis")
-			.attr("transform", `translate(${this.bounds.minX} 0)`);
+			.attr("transform", `translate(${this.bounds.maxX} 0)`);
 
-		let yAxis = d3.axisLeft(this.scaleY);
+		let yAxis = d3.axisRight(this.scaleY);
 		axisG.call(yAxis);
+
+		this.svg.select("g#y-axis").select("mask#y-axis-mask").select("rect").attr("width", this.bounds.maxX - this.bounds.minX)
+			.attr("x", this.bounds.minX);
 	}
 
 	updateLines() {
