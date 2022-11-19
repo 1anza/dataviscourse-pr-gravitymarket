@@ -1,4 +1,8 @@
-import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util.js";
+import {
+	dateMinuteToDate,
+	getPercChange,
+	removeVanguardPrefixFromSector,
+} from "./util.js";
 import {
 	scaleDiscontinuous,
 	discontinuitySkipWeekends,
@@ -60,9 +64,7 @@ export class GlobalAppState {
 	}
 
 	addEventListenerToEvent(eventName, f) {
-		document.addEventListener("on_" + eventName + "Change", (e) =>
-			f(e)
-		);
+		document.addEventListener("on_" + eventName + "Change", (e) => f(e));
 	}
 
 	initializeEvents(companyData, sp500Data, sectorData) {
@@ -80,11 +82,16 @@ export class GlobalAppState {
 		]);
 		this.addEventValueToGlobalAppState("sp500Data", sp500Data);
 		this.addEventValueToGlobalAppState("sectorDataDict", null);
-		this.addEventValueToGlobalAppState("sectorData", sectorData, [_ => {
-			let sector_data_dict = {};
-			this.sectorData.forEach(d => sector_data_dict[removeVanguardPrefixFromSector(d.company)] = d);
-			this.set_sectorDataDict(sector_data_dict)
-		}]);
+		this.addEventValueToGlobalAppState("sectorData", sectorData, [
+			(_) => {
+				let sector_data_dict = {};
+				this.sectorData.forEach(
+					(d) =>
+						(sector_data_dict[removeVanguardPrefixFromSector(d.company)] = d)
+				);
+				this.set_sectorDataDict(sector_data_dict);
+			},
+		]);
 
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
@@ -227,7 +234,6 @@ export class GlobalAppState {
 			},
 		]);
 
-
 		// Variables that determine the half width of the date range shown in the linechart
 		// This is in miliseconds
 		// By default, 1/10 of the width is represented by this
@@ -240,7 +246,8 @@ export class GlobalAppState {
 			this.data[0].chart[chart_length - 1].date,
 			this.data[0].chart[chart_length - 1].minute
 		);
-		this.addEventValueToGlobalAppState("chartDateHalfWidth", 
+		this.addEventValueToGlobalAppState(
+			"chartDateHalfWidth",
 			Math.abs(end_date - start_date) / 2
 		);
 	}

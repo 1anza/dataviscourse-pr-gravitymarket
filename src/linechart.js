@@ -1,5 +1,9 @@
 import * as d3 from "d3";
-import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util.js";
+import {
+	dateMinuteToDate,
+	getPercChange,
+	removeVanguardPrefixFromSector,
+} from "./util.js";
 
 /*
  * If nothing is selected in selectedSectors, only data[0] the S&P 500 line, will be shown.
@@ -18,6 +22,12 @@ export class Linechart {
 			maxX: svg_width - 50,
 			minY: 20,
 			maxY: svg_height - 50,
+			// The linechart uses virtual pixels to render the whole
+			// range of lines, which is really wide and won't fit on
+			// the entire screen at a time. These values are the
+			// min and max virutal X coordinates used
+			virtualMaxX: 1000,
+			virtualMinX: -1000,
 		};
 
 		this.textRotation = 45;
@@ -41,6 +51,8 @@ export class Linechart {
 
 	/*
 	 * Moves the playhead line to the this.gas.date
+	 *
+	 * Moves the data on screen to be centered at the playhead
 	 */
 	updatePlayheadLine() {
 		this.svg
@@ -51,6 +63,18 @@ export class Linechart {
 			.attr("x2", 0)
 			.attr("y1", this.bounds.minY)
 			.attr("y2", this.bounds.maxY);
+		console.log(this.scaleX(this.gas.date));
+		this.svg
+			.select("g#plotted-zoomable")
+			.attr(
+				"transform",
+				`translate(${
+					this.bounds.virtualMaxX -
+					this.scaleX(this.gas.date) +
+					this.bounds.virtualMinX +
+					(this.bounds.maxX - this.bounds.minX) / 2
+				} 0)`
+			);
 	}
 
 	/*
@@ -58,8 +82,7 @@ export class Linechart {
 	 */
 	updateScaleX() {
 		let scale = this.gas.genDateDomain();
-		// Hardcoded range for now. Maybe this could be adjusted based on data length
-		let range = [-1000, 1000];
+		let range = [this.bounds.virtualMinX, this.bounds.virtualMaxX];
 		this.scaleX = scale.range(range);
 	}
 
@@ -119,7 +142,11 @@ export class Linechart {
 		let yAxis = d3.axisRight(this.scaleY);
 		axisG.call(yAxis);
 
-		this.svg.select("g#y-axis").select("mask#y-axis-mask").select("rect").attr("width", this.bounds.maxX - this.bounds.minX)
+		this.svg
+			.select("g#y-axis")
+			.select("mask#y-axis-mask")
+			.select("rect")
+			.attr("width", this.bounds.maxX - this.bounds.minX)
 			.attr("x", this.bounds.minX);
 	}
 
@@ -127,9 +154,10 @@ export class Linechart {
 		let datatoplot;
 		if (this.gas.groupingBySector) {
 			datatoplot = this.gas.sectorData.filter((d) => {
-				return this.gas.selectedSectors.has(removeVanguardPrefixFromSector(d.company));
-			}
-			);
+				return this.gas.selectedSectors.has(
+					removeVanguardPrefixFromSector(d.company)
+				);
+			});
 		} else {
 			datatoplot = [this.gas.sp500Data];
 		}
@@ -137,7 +165,9 @@ export class Linechart {
 		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);
 		paths
 			.join("path")
-			.attr("stroke", (d) => this.gas.colorFunc(removeVanguardPrefixFromSector(d.company)))
+			.attr("stroke", (d) =>
+				this.gas.colorFunc(removeVanguardPrefixFromSector(d.company))
+			)
 			.classed("linechart-path", true)
 			.attr("d", (d) => {
 				return d3
