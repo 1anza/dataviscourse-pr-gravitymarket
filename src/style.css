@@ -90,6 +90,10 @@ body {
   margin-left: 3.5em;
 }
 
+.chart-y-axis-background {
+	fill:white;
+}
+
 .title {
   font-size: 4em;
 }

@@ -21,13 +21,21 @@
 		    </div>
 		    <div class="linechart-div boxitem" id="linechart">
 			<svg id="linechart-vis" height="220px" width="500px">
-			    <g id="lines"></g>
 			    <g id="key"></g>
-			    <g id="y-axis"></g>
-			    <g id="x-axis"></g>
-			    <g id="playback-follow">
-			       <line id="playback-line" class="playback-line">
-			       </line>
+			    <g id="y-axis">
+			    <!---
+				    <mask id="y-axis-mask">
+					<rect width="100px" height="1000px" x="0" class="chart-y-axis-background"></rect>
+				    </mask>
+			    -->
+			    </g>
+			    <g id="plotted-zoomable" mask="url(#y-axis-mask)">
+				    <g id="lines"></g>
+				    <g id="x-axis"></g>
+				    <g id="playback-follow">
+				       <line id="playback-line" class="playback-line">
+				       </line>
+				    </g>
 			    </g>
 			</svg>
 		    </div>

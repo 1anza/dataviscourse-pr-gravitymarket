@@ -1,4 +1,8 @@
-import { dateMinuteToDate, getPercChange, removeVanguardPrefixFromSector } from "./util.js";
+import {
+	dateMinuteToDate,
+	getPercChange,
+	removeVanguardPrefixFromSector,
+} from "./util.js";
 import {
 	scaleDiscontinuous,
 	discontinuitySkipWeekends,
@@ -60,9 +64,7 @@ export class GlobalAppState {
 	}
 
 	addEventListenerToEvent(eventName, f) {
-		document.addEventListener("on_" + eventName + "Change", (e) =>
-			f(e)
-		);
+		document.addEventListener("on_" + eventName + "Change", (e) => f(e));
 	}
 
 	initializeEvents(companyData, sp500Data, sectorData) {
@@ -80,11 +82,16 @@ export class GlobalAppState {
 		]);
 		this.addEventValueToGlobalAppState("sp500Data", sp500Data);
 		this.addEventValueToGlobalAppState("sectorDataDict", null);
-		this.addEventValueToGlobalAppState("sectorData", sectorData, [_ => {
-			let sector_data_dict = {};
-			this.sectorData.forEach(d => sector_data_dict[removeVanguardPrefixFromSector(d.company)] = d);
-			this.set_sectorDataDict(sector_data_dict)
-		}]);
+		this.addEventValueToGlobalAppState("sectorData", sectorData, [
+			(_) => {
+				let sector_data_dict = {};
+				this.sectorData.forEach(
+					(d) =>
+						(sector_data_dict[removeVanguardPrefixFromSector(d.company)] = d)
+				);
+				this.set_sectorDataDict(sector_data_dict);
+			},
+		]);
 
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
@@ -156,11 +163,7 @@ export class GlobalAppState {
 				.discontinuityProvider(discontinuitySkipWeekends())
 				.domain([start_date, end_date]);
 		};
-		this.addEventValueToGlobalAppState("dateDomain", calculate_date_domain());
-		this.addEventListenerToEvent(
-			"data",
-			this.set_dateDomain(calculate_date_domain())
-		);
+		this.addEventValueToGlobalAppState("genDateDomain", calculate_date_domain);
 		// When the playhead moves, this will store its estimated current speed.
 		this.addEventValueToGlobalAppState("playHeadMovementSpeed", 0);
 		this.addEventValueToGlobalAppState("playing", false, [
@@ -230,6 +233,23 @@ export class GlobalAppState {
 				}
 			},
 		]);
+
+		// Variables that determine the half width of the date range shown in the linechart
+		// This is in miliseconds
+		// By default, 1/10 of the width is represented by this
+		let start_date = dateMinuteToDate(
+			this.data[0].chart[0].date,
+			this.data[0].chart[0].minute
+		);
+		let chart_length = this.data[0].chart.length;
+		let end_date = dateMinuteToDate(
+			this.data[0].chart[chart_length - 1].date,
+			this.data[0].chart[chart_length - 1].minute
+		);
+		this.addEventValueToGlobalAppState(
+			"chartDateHalfWidth",
+			Math.abs(end_date - start_date) / 2
+		);
 	}
 
 	// Will loop by default.

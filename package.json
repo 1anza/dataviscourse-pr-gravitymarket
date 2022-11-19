@@ -38,6 +38,7 @@
     "d3-time-format": "^4.1.0",
     "d3-timer": "^3.0.1",
     "d3-transition": "^3.0.1",
+    "d3-zoom": "^3.0.0",
     "d3fc-discontinuous-scale": "^2.0.5",
     "src": "^1.1.2"
   }
