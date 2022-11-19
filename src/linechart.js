@@ -126,11 +126,11 @@ export class Linechart {
 		} else {
 			datatoplot = [this.gas.sp500Data];
 		}
-		console.log(datatoplot);
+		console.log("data", datatoplot);
 		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);
 		paths
 			.join("path")
-			.attr("stroke", (d) => this.gas.colorFunc(d.sector))
+			.attr("stroke", (d) => this.gas.colorFunc(removeVanguardPrefixFromSector(d.company)))
 			.classed("linechart-path", true)
 			.attr("d", (d) => {
 				return d3
