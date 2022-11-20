@@ -60,26 +60,36 @@ export class Linechart {
 		let delay_compensation = 1.42;
 		this.svg
 			.select("g#playback-follow")
-			.transition().duration(this.gas._frequency * delay_compensation) 
+			.transition()
+			.duration(this.gas._frequency * delay_compensation)
 			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`)
 			.select("line#playback-line")
 			.attr("x1", 0)
 			.attr("x2", 0)
 			.attr("y1", this.bounds.minY)
 			.attr("y2", this.bounds.maxY);
-		console.log(this.scaleX(this.gas.date));
+
+		let virt_center_coord =
+			this.bounds.virtualMaxX -
+			this.scaleX(this.gas.date) +
+			this.bounds.virtualMinX +
+			(this.bounds.maxX - this.bounds.minX) / 2;
+
+		console.log(virt_center_coord);
 		this.svg
 			.select("g#plotted-zoomable")
-			.transition().duration(this.gas._frequency * delay_compensation)
-			.attr(
-				"transform",
-				`translate(${
-					this.bounds.virtualMaxX -
-					this.scaleX(this.gas.date) +
-					this.bounds.virtualMinX +
-					(this.bounds.maxX - this.bounds.minX) / 2
-				} 0)`
-			);
+			.transition()
+			.duration(this.gas._frequency * delay_compensation)
+			.attr("transform", `translate(${virt_center_coord} 0)`);
+
+		this.svg
+			.select("g#y-axis")
+			.select("mask#y-axis-mask")
+			.select("rect")
+			.attr("width", this.bounds.maxX)
+			.transition()
+			.duration(this.gas._frequency * delay_compensation)
+			.attr("x", -virt_center_coord);
 	}
 
 	/*
@@ -125,8 +135,8 @@ export class Linechart {
 		let xAxis = d3
 			.axisBottom()
 			.scale(this.scaleX)
-			.ticks(24)
-			.tickFormat(d3.timeFormat("%b %Y"));
+			.ticks(d3.utcDay.every(2))
+			.tickFormat(d3.timeFormat("%d %b"));
 		axisG
 			.call(xAxis)
 			.selectAll("text")
@@ -146,13 +156,6 @@ export class Linechart {
 
 		let yAxis = d3.axisRight(this.scaleY);
 		axisG.call(yAxis);
-
-		this.svg
-			.select("g#y-axis")
-			.select("mask#y-axis-mask")
-			.select("rect")
-			.attr("width", this.bounds.maxX - this.bounds.minX)
-			.attr("x", this.bounds.minX);
 	}
 
 	updateLines() {
