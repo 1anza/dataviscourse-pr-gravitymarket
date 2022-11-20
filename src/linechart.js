@@ -67,19 +67,28 @@ export class Linechart {
 			.attr("x2", 0)
 			.attr("y1", this.bounds.minY)
 			.attr("y2", this.bounds.maxY);
-		console.log(this.scaleX(this.gas.date));
+
+		let virt_center_coord = this.bounds.virtualMaxX -
+					this.scaleX(this.gas.date) +
+					this.bounds.virtualMinX +
+					(this.bounds.maxX - this.bounds.minX) / 2;
+
+		console.log(virt_center_coord);
 		this.svg
 			.select("g#plotted-zoomable")
 			.transition().duration(this.gas._frequency * delay_compensation)
 			.attr(
 				"transform",
-				`translate(${
-					this.bounds.virtualMaxX -
-					this.scaleX(this.gas.date) +
-					this.bounds.virtualMinX +
-					(this.bounds.maxX - this.bounds.minX) / 2
-				} 0)`
+				`translate(${virt_center_coord} 0)`
 			);
+
+		this.svg
+			.select("g#y-axis")
+			.select("mask#y-axis-mask")
+			.select("rect")
+			.attr("width", this.bounds.maxX)
+			.transition().duration(this.gas._frequency * delay_compensation)
+			.attr("x", -virt_center_coord);
 	}
 
 	/*
@@ -147,12 +156,6 @@ export class Linechart {
 		let yAxis = d3.axisRight(this.scaleY);
 		axisG.call(yAxis);
 
-		this.svg
-			.select("g#y-axis")
-			.select("mask#y-axis-mask")
-			.select("rect")
-			.attr("width", this.bounds.maxX - this.bounds.minX)
-			.attr("x", this.bounds.minX);
 	}
 
 	updateLines() {
