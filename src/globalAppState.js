@@ -187,6 +187,7 @@ export class GlobalAppState {
 		/// For now, when the animationUpdateSpeed changes, the playback will pause
 		this.addEventValueToGlobalAppState("playbackSpeed", null, [
 			(e) => {
+				let was_playing = this.playing;
 				let time_for_playback = e.detail;
 				// EX: If there are 30 datapoints and we want the
 				// playback to play from start to finish in 10 seconds,
@@ -195,6 +196,7 @@ export class GlobalAppState {
 				let frequency = (time_for_playback / this.data.length) * 1000;
 				this._frequency = frequency;
 				this.set_playing(false);
+				this.set_playing(was_playing);
 			},
 		]);
 		this.set_playbackSpeed(10.0);

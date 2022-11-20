@@ -135,8 +135,8 @@ export class Linechart {
 		let xAxis = d3
 			.axisBottom()
 			.scale(this.scaleX)
-			.ticks(24)
-			.tickFormat(d3.timeFormat("%b %Y"));
+			.ticks(d3.utcDay.every(2))
+			.tickFormat(d3.timeFormat("%d %b"));
 		axisG
 			.call(xAxis)
 			.selectAll("text")
