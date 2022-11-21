@@ -110,3 +110,8 @@ body {
 	stroke-width: 2;
 	stroke: black;
 }
+
+.sector-select-rect {
+	stroke: black;
+	stroke-width: 1;
+}
