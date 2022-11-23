@@ -121,6 +121,7 @@ body {
 	stroke: black;
 	stroke-width: 1;
 	fill:beige;
+	cursor: pointer;
 }
 
 .sector-select-rect-hovered {
@@ -136,3 +137,7 @@ body {
 	font-size: small;
 }
 
+
+svg text {
+	pointer-events: none;
+}

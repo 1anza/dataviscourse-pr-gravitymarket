@@ -138,7 +138,7 @@ export class Linechart {
 		// Hardcoded. This index offset could be calculated dynamically
 		// by seeing how wide the visible date range of the chart is,
 		// and then finding the index range that encompasses this.
-		let index_domain_offset = 120;
+		let index_domain_offset = 100;
 		let index_range = [
 			this.gas.index - index_domain_offset,
 			this.gas.index + index_domain_offset,
@@ -192,7 +192,7 @@ export class Linechart {
 		let axisG = this.svg
 			.select("g#y-axis")
 			.attr("transform", `translate(${this.bounds.maxX} 0)`);
-		let yAxis = d3.axisRight(this.scaleY);
+		let yAxis = d3.axisRight(this.scaleY).tickSize(-1000).ticks(10);
 		axisG.call(yAxis);
 	}
 

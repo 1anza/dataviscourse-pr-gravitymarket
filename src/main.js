@@ -22,7 +22,7 @@ function main() {
 		let ohlc = new Ohlc(gas);
 
 		// TODO Test setting sectors
-		addDevTools(gas);
+		//addDevTools(gas);
 	});
 }
 
