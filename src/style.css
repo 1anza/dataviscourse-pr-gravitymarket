@@ -108,7 +108,12 @@ body {
 
 .playback-line {
 	stroke-width: 2;
-	stroke: black;
+}
+
+.playback-line-hovered {
+}
+
+.playback-line-scrubbing {
 }
 
 .sector-select-rect {
@@ -123,7 +128,6 @@ body {
 
 .sector-select-rect-selected {
 	stroke-width: 4;
-	stroke: blue;
 }
 
 .sector-select-text-label {

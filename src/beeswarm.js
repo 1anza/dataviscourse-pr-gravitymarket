@@ -38,7 +38,7 @@ export class Beeswarm {
 		this.startSimulation();
 		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
 
-		this.sectorControls = new SectorControls(this.gas);
+		this.sectorControls = new SectorControls(this.gas, svg_width, svg_height);
 		this.sectorControls.updateSectorControls(this.scaleX);
 
 		// We keep track of the previousSelectedSectors so that we know what was just added
