@@ -40,7 +40,26 @@ export class Linechart {
 		this.updateLines();
 
 		this.updatePlayheadLine();
-		this.gas.addEventListenerToEvent("date", (_) => this.updatePlayheadLine());
+		// Only updates the scaleY based on the data range when the date is changed every so often, because it is expensive
+		this._last_date_where_scaleY_was_updated = this.gas.date;
+		// Hardcoded in miliseconds
+		// Ideally, this number would be based on the date range that is viewable from the linechart
+		let updateScaleY_date_range_threshold_in_days = 60;
+		let updateScaleY_date_range_threshold_in_mili =
+			60 * 60 * 24 * 1000 * updateScaleY_date_range_threshold_in_days;
+		this.gas.addEventListenerToEvent("date", (_) => {
+			this.updatePlayheadLine();
+			if (
+				Math.abs(this._last_date_where_scaleY_was_updated - this.gas.date) >
+				updateScaleY_date_range_threshold_in_mili
+			) {
+				console.log("Updateing scaleY!");
+				this._last_date_where_scaleY_was_updated = this.gas.date;
+				this.updateScaleY();
+				this.updateLines();
+				this.updateAxisY();
+			}
+		});
 
 		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
 			this.updateScaleY();
@@ -75,7 +94,6 @@ export class Linechart {
 			this.bounds.virtualMinX +
 			(this.bounds.maxX - this.bounds.minX) / 2;
 
-		console.log(virt_center_coord);
 		this.svg
 			.select("g#plotted-zoomable")
 			.transition()
@@ -103,6 +121,8 @@ export class Linechart {
 
 	/*
 	 * updates this.scaleY which takes a percent change and maps it to a y position
+	 *
+	 * The domain for the scaleY depends on the viewable range of the data which is viewable from the current linechart - the width of the date range viewable is
 	 */
 	updateScaleY() {
 		let data_to_get_range;
@@ -113,8 +133,26 @@ export class Linechart {
 		} else {
 			data_to_get_range = [this.gas.sp500Data];
 		}
+		console.log("data_to_get_range", data_to_get_range);
+
+		// Hardcoded. This index offset could be calculated dynamically
+		// by seeing how wide the visible date range of the chart is,
+		// and then finding the index range that encompasses this.
+		let index_domain_offset = 120;
+		let index_range = [
+			this.gas.index - index_domain_offset,
+			this.gas.index + index_domain_offset,
+		];
+		if (index_range[0] < 0) {
+			index_range[0] = 0;
+		}
+		if (index_range[1] > data_to_get_range[0].chart.length) {
+			index_range[1] = data_to_get_range[0].chart.length;
+		}
+
+		console.log("index_range", index_range);
 		let perc_min = d3.min(data_to_get_range, (d) =>
-			d3.min(d3.range(d.chart.length), (i) =>
+			d3.min(d3.range(...index_range), (i) =>
 				getPercChange(d, i, this.gas.yValueName)
 			)
 		);
@@ -124,6 +162,7 @@ export class Linechart {
 			)
 		);
 		let domain = [perc_min, perc_max];
+		console.log("domain", domain);
 		let range = [this.bounds.maxY, this.bounds.minY];
 		this.scaleY = d3.scaleLinear().domain(domain).range(range);
 	}
@@ -168,7 +207,7 @@ export class Linechart {
 		} else {
 			datatoplot = [this.gas.sp500Data];
 		}
-		console.log("data", datatoplot);
+		console.log("linechart datatoplot", datatoplot);
 		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);
 		paths
 			.join("path")

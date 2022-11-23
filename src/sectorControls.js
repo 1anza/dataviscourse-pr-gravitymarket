@@ -60,7 +60,6 @@ export class SectorControls {
 					.filter((d) => d === hovered_sector)
 					.select("rect")
 					.classed("sector-select-rect-hovered", false);
-				console.log("mouseleave", hovered_sector);
 			})
 			.on("click", function (_) {
 				let selected = d3.select(this);
