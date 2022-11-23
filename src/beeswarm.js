@@ -39,7 +39,7 @@ export class Beeswarm {
 		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
 
 		this.sectorControls = new SectorControls(this.gas);
-		this.sectorControls.updatePositions(this.scaleX);
+		this.sectorControls.updateSectorControls(this.scaleX);
 
 		// We keep track of the previousSelectedSectors so that we know what was just added
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
@@ -66,10 +66,8 @@ export class Beeswarm {
 				this.circles.filter((d) => newlyAdded.has(d.sector))
 			);
 
-			this.sectorControls.updatePositions(this.scaleX);
+			this.sectorControls.updateSectorControls(this.scaleX);
 		});
-
-		this.updateSectorControls();
 	}
 
 	/*  ----------------Data scales---------------------    */
@@ -365,19 +363,5 @@ export class Beeswarm {
 			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
 			return d;
 		});
-	}
-
-	/*
-	 * **********************Controls for the group by bar***********************
-	 */
-	updateSectorControls() {
-		let sector_bars = d3
-			.select("svg#beeswarm-vis")
-			.select("g#sector-controls")
-			.selectAll("g#sector-bar")
-			.data(this.gas.allSectors);
-		sector_bars.enter().append("g").attr("id", "sector-bar");
-
-		sector_bars;
 	}
 }

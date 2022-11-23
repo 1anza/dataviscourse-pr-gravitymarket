@@ -117,7 +117,17 @@ body {
 	fill:beige;
 }
 
+.sector-select-rect-hovered {
+	stroke-width: 3;
+}
+
+.sector-select-rect-selected {
+	stroke-width: 4;
+	stroke: blue;
+}
+
 .sector-select-text-label {
 	text-align: end;
 	font-size: small;
 }
+

@@ -46,6 +46,39 @@ export class SectorControls {
 				`translate(${this.rect_width / 2 - 4}, ${this.bounds.minY}) rotate(90)`
 			)
 			.classed("sector-select-text-label", true);
+
+		// handles click and mouse hover interaction
+		let that = this;
+		this.sector_groups
+			.on("mouseover", function (_) {
+				let selected = d3.select(this);
+				let hovered_sector = selected._groups[0][0].__data__;
+				that.sector_groups
+					.filter((d) => d === hovered_sector)
+					.select("rect")
+					.classed("sector-select-rect-hovered", true);
+			})
+			.on("mouseleave", function (_) {
+				let selected = d3.select(this);
+				let hovered_sector = selected._groups[0][0].__data__;
+				that.sector_groups
+					.filter((d) => d === hovered_sector)
+					.select("rect")
+					.classed("sector-select-rect-hovered", false);
+				console.log("mouseleave", hovered_sector);
+			})
+			.on("click", function (_) {
+				let selected = d3.select(this);
+				let hovered_sector = selected._groups[0][0].__data__;
+				if (that.gas.selectedSectors.has(hovered_sector)) {
+					that.gas.selectedSectors.delete(hovered_sector);
+					that.gas.set_selectedSectors(that.gas.selectedSectors);
+				} else {
+					that.gas.set_selectedSectors(
+						that.gas.selectedSectors.add(hovered_sector)
+					);
+				}
+			});
 	}
 
 	/*
@@ -54,7 +87,7 @@ export class SectorControls {
 	 * unselected sectors are put to the side.
 	 * selected sectors are positioned according to scaleX
 	 */
-	updatePositions(scaleX) {
+	updateSectorControls(scaleX) {
 		this.sector_groups.attr("transform", (d, i) => {
 			let x_pos = scaleX(d) - this.rect_height / 2;
 			console.log(x_pos);
@@ -65,5 +98,11 @@ export class SectorControls {
 				i * (this.rect_width + this.rect_spacing) + this.rect_width
 			}) rotate(-90)`;
 		});
+
+		this.sector_groups
+			.select("rect")
+			.classed("sector-select-rect-selected", (d) =>
+				this.gas.selectedSectors.has(d)
+			);
 	}
 }
