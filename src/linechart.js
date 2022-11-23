@@ -153,7 +153,6 @@ export class Linechart {
 		let axisG = this.svg
 			.select("g#y-axis")
 			.attr("transform", `translate(${this.bounds.maxX} 0)`);
-
 		let yAxis = d3.axisRight(this.scaleY);
 		axisG.call(yAxis);
 	}

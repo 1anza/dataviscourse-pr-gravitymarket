@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import { dateMinuteToDate, getPercChange } from "./util.js";
 import { GlobalAppState } from "./globalAppState.js";
+import { SectorControls } from "./sectorControls.js";
 
 export class Beeswarm {
 	constructor(gas) {
@@ -11,7 +12,7 @@ export class Beeswarm {
 			minX: 20,
 			maxX: svg_width - 90,
 			minY: 20,
-			maxY: svg_height - 80,
+			maxY: svg_height - 20,
 		};
 
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
@@ -37,6 +38,9 @@ export class Beeswarm {
 		this.startSimulation();
 		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
 
+		this.sectorControls = new SectorControls(this.gas);
+		this.sectorControls.updateSectorControls(this.scaleX);
+
 		// We keep track of the previousSelectedSectors so that we know what was just added
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
 		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
@@ -61,9 +65,9 @@ export class Beeswarm {
 			this.teleportCircles(
 				this.circles.filter((d) => newlyAdded.has(d.sector))
 			);
-		});
 
-		this.updateSectorControls();
+			this.sectorControls.updateSectorControls(this.scaleX);
+		});
 	}
 
 	/*  ----------------Data scales---------------------    */
@@ -88,7 +92,7 @@ export class Beeswarm {
 	updateRadiusKey() {
 		// By default, the two values plotted are the min and max of the data
 		let ticks = this.gas.zValueDataRange;
-		let rad_key_offset = [20, 40];
+		let rad_key_offset = [-60, -5];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
 			.attr(
@@ -359,19 +363,5 @@ export class Beeswarm {
 			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
 			return d;
 		});
-	}
-
-	/*
-	 * **********************Controls for the group by bar***********************
-	 */
-	updateSectorControls() {
-		let sector_bars = d3
-			.select("svg#beeswarm-vis")
-			.select("g#sector-controls")
-			.selectAll("g#sector-bar")
-			.data(this.gas.allSectors);
-		sector_bars.enter().append("g").attr("id", "sector-bar");
-
-		sector_bars;
 	}
 }
