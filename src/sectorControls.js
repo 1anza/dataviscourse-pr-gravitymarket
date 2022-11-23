@@ -10,12 +10,16 @@ export class SectorControls {
 
 		this.bounds = {
 			minX: 0,
-			maxX: svg_width - 50,
+			maxX: svg_width - 3,
 			minY: 0,
-			maxY: svg_height - 50,
+			maxY: svg_height - 3,
 		};
 
-		this.rect_width = 10;
+		this.rect_width = 15;
+		this.rect_height = 150;
+		this.rect_spacing = 2;
+
+		this.initRects();
 	}
 
 	/*
@@ -23,22 +27,43 @@ export class SectorControls {
 	 * Doesn't position them x - wise
 	 */
 	initRects() {
-		this.sector_rects = this.svg
+		this.sector_groups = this.svg
 			.selectAll("g#sector-select")
 			.data(this.gas.allSectors)
 			.join("g")
-			.attr("id", "sector-select")
+			.attr("id", "sector-select");
+		this.sector_groups
 			.append("rect")
 			.classed("sector-select-rect", true)
 			.attr("y", 0)
-			.attr("height", this.bounds.maxY - this.bounds.minY)
+			.attr("height", this.rect_height)
 			.attr("width", this.rect_width);
+		this.sector_groups
+			.append("text")
+			.text((d) => d)
+			.attr(
+				"transform",
+				`translate(${this.rect_width / 2 - 4}, ${this.bounds.minY}) rotate(90)`
+			)
+			.classed("sector-select-text-label", true);
 	}
-	
+
 	/*
-	 * Positions the x positions of the sectors, 
+	 * Positions the x positions of the sectors,
+	 *
+	 * unselected sectors are put to the side.
+	 * selected sectors are positioned according to scaleX
 	 */
-	updateXPositions() {
-		//this.sector_rects
+	updatePositions(scaleX) {
+		this.sector_groups.attr("transform", (d, i) => {
+			let x_pos = scaleX(d) - this.rect_height / 2;
+			console.log(x_pos);
+			if (isNaN(x_pos)) {
+				x_pos = this.bounds.minX;
+			}
+			return `translate(${x_pos}, ${
+				i * (this.rect_width + this.rect_spacing) + this.rect_width
+			}) rotate(-90)`;
+		});
 	}
 }

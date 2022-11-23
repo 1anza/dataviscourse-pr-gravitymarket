@@ -114,4 +114,10 @@ body {
 .sector-select-rect {
 	stroke: black;
 	stroke-width: 1;
+	fill:beige;
+}
+
+.sector-select-text-label {
+	text-align: end;
+	font-size: small;
 }

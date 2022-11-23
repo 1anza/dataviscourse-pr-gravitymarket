@@ -1,7 +1,6 @@
 import { GlobalAppState } from "./globalAppState.js";
 import { createPlaybackControls } from "./playbackControls.js";
 import { Beeswarm } from "./beeswarm.js";
-import { SectorControls } from "./sectorControls.js";
 import { Linechart } from "./linechart.js";
 import { Ohlc } from "./ohlc.js";
 import { addDevTools } from "./dev.js";
@@ -20,7 +19,6 @@ function main() {
 
 		let beeswarm = new Beeswarm(gas);
 		let linechart = new Linechart(gas);
-		let sectorControls = new SectorControls(gas);
 		let ohlc = new Ohlc(gas);
 
 		// TODO Test setting sectors
