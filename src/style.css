@@ -125,11 +125,11 @@ body {
 }
 
 .sector-select-rect-hovered {
-	stroke-width: 3;
+	stroke-width: 2;
 }
 
 .sector-select-rect-selected {
-	stroke-width: 4;
+	stroke-width: 2;
 }
 
 .sector-select-text-label {

@@ -200,14 +200,6 @@ export class Beeswarm {
 			.attr("y1", this.bounds.minY)
 			.attr("y2", this.bounds.maxY)
 			.classed("beeswarm-gridline", true);
-		let text = grid.selectAll("text#axis-label-x").data(data_to_bind);
-		text.exit().remove();
-		text
-			.join("text")
-			.attr("id", "axis-label-x")
-			.attr("x", (d) => this.scaleX(d))
-			.attr("y", this.bounds.maxY)
-			.text((d) => d);
 	}
 
 	initTooltip() {

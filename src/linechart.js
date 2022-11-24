@@ -44,7 +44,7 @@ export class Linechart {
 		this._last_date_where_scaleY_was_updated = this.gas.date;
 		// Hardcoded in miliseconds
 		// Ideally, this number would be based on the date range that is viewable from the linechart
-		let updateScaleY_date_range_threshold_in_days = 60;
+		let updateScaleY_date_range_threshold_in_days = 20;
 		let updateScaleY_date_range_threshold_in_mili =
 			60 * 60 * 24 * 1000 * updateScaleY_date_range_threshold_in_days;
 		this.gas.addEventListenerToEvent("date", (_) => {
@@ -76,7 +76,7 @@ export class Linechart {
 	updatePlayheadLine() {
 		// There is a lag when transitioning soley based on the gas._frequency
 		// This compensates for that delay by making the transitions slightly longer.
-		let delay_compensation = 1.42;
+		let delay_compensation = 1.0;
 		this.svg
 			.select("g#playback-follow")
 			.transition()
