@@ -48,6 +48,21 @@ body {
 	stroke-width: 1.5pt;
 }
 
+.linechart-positive-tick {
+	fill: green;
+	stroke: green;
+}
+
+.linechart-neutral-tick {
+	fill: black;
+	stroke: black;
+}
+
+.linechart-negative-tick {
+	fill: red;
+	stroke: red;
+}
+
 .beeswarm-gridline {
 	stroke-width: 1px;
 }
