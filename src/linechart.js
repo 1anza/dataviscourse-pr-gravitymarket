@@ -115,8 +115,14 @@ export class Linechart {
 	 * The domain for the scaleY depends on the viewable range of the data which is viewable from the current linechart - the width of the date range viewable is
 	 */
 	updateScaleY() {
-		let domain = this.gas.runningPercentYValueRange;
-		console.log("domain", domain);
+		let domain = structuredClone(this.gas.runningPercentYValueRange);
+		// will always include 0
+		if (domain[0] > 0) {
+			domain[0] = -1;
+		}
+		if (domain[1] < 0) {
+			domain[1] = 1;
+		}
 		let range = [this.bounds.maxY, this.bounds.minY];
 		this.scaleY = d3.scaleLinear().domain(domain).range(range);
 	}

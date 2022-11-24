@@ -82,7 +82,6 @@ export class Beeswarm {
 		let update_y_scale_every = 1;
 		this.gas.addEventListenerToEvent("index", (_) => {
 			if (this.gas.index % update_y_scale_every === 0) {
-				console.log("Beeswarm updating y scale");
 				this.updateScaleY();
 				this.drawYAxis();
 				this.updateSimulationY();
@@ -211,8 +210,6 @@ export class Beeswarm {
 			)
 		);
 		let percentile_max = percentile(max_p, max);
-		console.log("MIN", percentile_min);
-		console.log("MAX", percentile_max);
 
 		let domain = [percentile_min, percentile_max];
 
@@ -238,10 +235,13 @@ export class Beeswarm {
 	drawYAxis() {
 		let tick_step;
 		let domain = this.scaleY.domain();
-		if (Math.abs(domain[1] - domain[0]) < 8) {
+		let domain_distance = Math.abs(domain[1] - domain[0]);
+		if (domain_distance < 8) {
 			tick_step = 1;
-		} else {
+		} else if (domain_distance < 50) {
 			tick_step = 5;
+		} else {
+			tick_step = 10;
 		}
 		let ticks = d3.range(-200, 200.01, tick_step);
 
@@ -349,7 +349,6 @@ export class Beeswarm {
 				let clicked = d3.select(this);
 				let clicked_ = clicked._groups[0][0].__data__;
 				clicked.classed("clicked-swarm-circ", true);
-				console.log(clicked_);
 				that.gas.set_selectedSingleCompany(clicked_);
 			});
 	}
@@ -374,7 +373,6 @@ export class Beeswarm {
 		this.updateCollisions();
 		this.updateSimulationX();
 		this.updateSimulationY();
-		console.log(this.simulation);
 	}
 
 	/*

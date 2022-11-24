@@ -15,12 +15,12 @@ export function createPlaybackControls(gas) {
 	gas.addEventListenerToEvent("playing", (_) => updatePlayButton(button, gas));
 
 	// Sets up the speed controls
-	let n_speed_options = 9;
+	let n_speed_options = 5;
 	let min_speed = 500.0;
 	let max_speed = 80.0;
 	let speed_options = d3.range(
 		min_speed,
-		max_speed + 0.001,
+		max_speed - 0.001,
 		(max_speed - min_speed) / n_speed_options
 	);
 	let playback_speed = playbackdiv.select("select#playback-speed");
