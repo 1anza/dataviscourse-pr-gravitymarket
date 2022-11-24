@@ -337,6 +337,7 @@ export class Beeswarm {
 				let hovered = d3.select(this);
 				tooltip.style("opacity", 0);
 				hovered.classed("hovered-swarm-circ", false);
+				that._prev_selected_data = null;
 			})
 			.on("click", function () {
 				let clicked = d3.select(this);
