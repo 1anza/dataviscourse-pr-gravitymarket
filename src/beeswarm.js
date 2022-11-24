@@ -35,13 +35,16 @@ export class Beeswarm {
 
 		this.simulationSettings = {
 			globalForceScale: 1.0,
-			forceXScale: 0.005,
+			forceXScale: 0.05,
 			forceYScale: 0.1,
 			collisionStrength: 1.0,
 		};
 
 		this.startSimulation();
-		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
+		this.gas.addEventListenerToEvent("index", (_) => {
+			this.updateSimulationY();
+			this.updateTooltip();
+		});
 
 		this.sectorControls = new SectorControls(this.gas, svg_width, svg_height);
 		this.sectorControls.updateSectorControls(this.scaleX);
@@ -322,17 +325,7 @@ export class Beeswarm {
 			.on("mouseover", function (_) {
 				let hovered = d3.select(this);
 				let _data = hovered._groups[0][0].__data__;
-				let sector = `${_data.sector}`;
-				let close_perc = getPercChange(
-					_data,
-					that.gas.index,
-					that.gas.yValueName
-				);
-				let html = `Ticker: "${
-					_data.ticker
-				}" Sector: ${sector} Perc.: ${d3.format(".1f")(close_perc)}%`;
-				// Sets tooltip to be visible
-				tooltip.style("opacity", 1).html(html);
+				that.updateTooltip(_data);
 				hovered.classed("hovered-swarm-circ", true);
 			})
 			.on("mousemove", (e) => {
@@ -351,6 +344,23 @@ export class Beeswarm {
 				clicked.classed("clicked-swarm-circ", true);
 				that.gas.set_selectedSingleCompany(clicked_);
 			});
+	}
+
+	updateTooltip(_data) {
+		if (!_data) {
+			_data = this._prev_selected_data;
+		}
+		if (!_data) {
+			return;
+		}
+		let sector = `${_data.sector}`;
+		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName);
+		let html = `Ticker: "${_data.ticker}" Sector: ${sector} Perc.: ${d3.format(
+			".1f"
+		)(close_perc)}%`;
+		// Sets tooltip to be visible
+		this.tooltip.style("opacity", 1).html(html);
+		this._prev_selected_data = _data;
 	}
 
 	/*  ----------------Simulation----------------------    */
@@ -446,7 +456,7 @@ export class Beeswarm {
 			// Puts them with some random x values
 			let spread = d3.randomNormal(
 				0,
-				(this.bounds.maxX - this.bounds.minX) / 30
+				(this.bounds.maxX - this.bounds.minX) / 40
 			);
 			d.x = this.scaleX(d.sector) + spread();
 			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
