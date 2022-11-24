@@ -1,5 +1,10 @@
 import * as d3 from "d3";
-import { dateMinuteToDate, getPercChange } from "./util.js";
+import percentile from "percentile";
+import {
+	dateMinuteToDate,
+	getPercChange,
+	removeVanguardPrefixFromSector,
+} from "./util.js";
 import { GlobalAppState } from "./globalAppState.js";
 import { SectorControls } from "./sectorControls.js";
 
@@ -69,10 +74,15 @@ export class Beeswarm {
 			this.sectorControls.updateSectorControls(this.scaleX);
 		});
 
-		this.gas.addEventListenerToEvent("runningPercentYValueRange", _ => {
-			this.updateScaleY();
-			this.drawYAxis();
-			this.updateSimulationY();
+		// Runs an expensive computation occasionally to replot the y values.
+		let update_y_scale_every = 1;
+		this.gas.addEventListenerToEvent("index", (_) => {
+			if (this.gas.index % update_y_scale_every === 0) {
+				console.log("Beeswarm updating y scale");
+				this.updateScaleY();
+				this.drawYAxis();
+				this.updateSimulationY();
+			}
 		});
 	}
 
@@ -152,13 +162,54 @@ export class Beeswarm {
 
 	/*
 	 * Updates this.scaleY
-	 * Checks the extent of the percentages plotted by the data, provided by the gas
+	 * Checks the extent of the percentages plotted by the data using an expensive calculation
 	 */
 	updateScaleY() {
-		let domain = structuredClone(this.gas.runningPercentYValueRange);
-		// Extra domain padding
-		domain[0] -= 5;
-		domain[1] += 5;
+		// Checks the percetiles of the data to plot, with a given
+		// padding amount, checking all values falling outside of this
+		// range
+		let data_to_get_range;
+		if (!this.gas.groupingBySector) {
+			data_to_get_range = this.gas.data;
+		} else {
+			data_to_get_range = this.gas.data.filter((d) =>
+				this.gas.selectedSectors.has(d.sector)
+			);
+		}
+		let index_padding = 10;
+		let index_range = [
+			this.gas.index - index_padding,
+			this.gas.index + index_padding,
+		];
+		if (index_range[0] < 0) {
+			index_range[0] = 0;
+		}
+		if (index_range[1] > data_to_get_range[0].chart.length) {
+			index_range[1] = data_to_get_range[0].chart.length;
+		}
+		console.log(index_range);
+		// uses percentiles to find the domain of the data to plot
+		let min_p = 0.1;
+		let max_p = 99.9;
+		let min = data_to_get_range.map((d) =>
+			d3.min(d.chart.slice(index_range[0], index_range[1]), (_, i) =>
+				getPercChange(d, i, this.gas.yValueName)
+			)
+		);
+		let percentile_min = percentile(min_p, min, (d) => d.close);
+		let max = data_to_get_range.map((d) =>
+			d3.max(d.chart.slice(index_range[0], index_range[1]), (_, i) =>
+				getPercChange(d, i, this.gas.yValueName)
+			)
+		);
+		let percentile_max = percentile(max_p, max, (d) => d.close);
+		console.log("MIN", percentile_min);
+		console.log("MAX", percentile_max);
+
+		let domain = [percentile_min, percentile_max];
+		// extra domain padding
+		domain[0] -= 2;
+		domain[1] += 2;
 
 		// Asserts that the domain always contains 0
 		if (domain[0] > 0) {
@@ -177,16 +228,24 @@ export class Beeswarm {
 	/*  ----------------Rendering-----------------------    */
 
 	/*
-	 * Draws and positions the Y axis grid lines 
+	 * Draws and positions the Y axis grid lines
 	 */
 	drawYAxis() {
-		let tick_step = 5;
+		let tick_step;
+		let domain = this.scaleY.domain();
+		if (Math.abs(domain[1] - domain[0]) < 8) {
+			tick_step = 1;
+		} else {
+			tick_step = 5;
+		}
 		let ticks = d3.range(-200, 200.01, tick_step);
 
 		let anim_duration = 100;
 
 		let grid = d3.select("svg#beeswarm-vis").select("g#grid");
-		let lines = grid.selectAll("line#horizontal").data(ticks)
+		let lines = grid
+			.selectAll("line#horizontal")
+			.data(ticks)
 			.join("line")
 			.attr("id", "horizontal")
 			.attr("x1", this.bounds.minX)
@@ -194,15 +253,19 @@ export class Beeswarm {
 			.classed("beeswarm-gridline-0line", (d) => d === 0)
 			.attr("stroke", (d) => (d > 0 ? "green" : "red"))
 			.attr("x2", this.bounds.maxX)
-			.transition().duration(anim_duration)
+			.transition()
+			.duration(anim_duration)
 			.attr("y1", (d) => this.scaleY(d))
 			.attr("y2", (d) => this.scaleY(d));
 
-		let axis_labels = grid.selectAll("text#axis-label-y").data(ticks)
+		let axis_labels = grid
+			.selectAll("text#axis-label-y")
+			.data(ticks)
 			.join("text")
 			.attr("id", "axis-label-y")
 			.attr("x", this.bounds.maxX)
-			.transition().duration(anim_duration)
+			.transition()
+			.duration(anim_duration)
 			.attr("y", (d) => this.scaleY(d))
 			.text((d) => `${d}%`);
 	}
@@ -255,7 +318,14 @@ export class Beeswarm {
 				let hovered = d3.select(this);
 				let _data = hovered._groups[0][0].__data__;
 				let sector = `${_data.sector}`;
-				let html = `Ticker: "${_data.ticker}" Sector: ${sector}`;
+				let close_perc = getPercChange(
+					_data,
+					that.gas.index,
+					that.gas.yValueName
+				);
+				let html = `Ticker: "${
+					_data.ticker
+				}" Sector: ${sector} Perc.: ${d3.format(".1f")(close_perc)}%`;
 				// Sets tooltip to be visible
 				tooltip.style("opacity", 1).html(html);
 				hovered.classed("hovered-swarm-circ", true);

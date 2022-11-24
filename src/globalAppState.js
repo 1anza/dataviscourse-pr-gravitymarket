@@ -96,7 +96,6 @@ export class GlobalAppState {
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 
-
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
 		this.addEventValueToGlobalAppState("yValueName", "close", [
 			(_) => {
@@ -238,7 +237,6 @@ export class GlobalAppState {
 			},
 		]);
 
-
 		// This value stores a running estimate of the extent of the
 		// data being plotted. It is not updated every time the index
 		// is incremented to save performance.
@@ -290,7 +288,7 @@ export class GlobalAppState {
 				this.set_runningPercentYValueRange(update_runningPercentYValueRange());
 			}
 		});
-		this.addEventListenerToEvent("selectedSectors", _ => {
+		this.addEventListenerToEvent("selectedSectors", (_) => {
 			this.set_runningPercentYValueRange(update_runningPercentYValueRange());
 		});
 	}
