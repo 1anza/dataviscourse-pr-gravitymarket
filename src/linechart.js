@@ -146,13 +146,17 @@ export class Linechart {
 		let axisG = this.svg
 			.select("g#y-axis")
 			.attr("transform", `translate(${this.bounds.maxX} 0)`);
-		let yAxis = d3.axisRight(this.scaleY).tickSize(-1000).ticks(10).tickFormat(d => `${d}%`);
-		axisG.call(yAxis)
+		let yAxis = d3
+			.axisRight(this.scaleY)
+			.tickSize(-1000)
+			.ticks(10)
+			.tickFormat((d) => `${d}%`);
+		axisG
+			.call(yAxis)
 			.selectAll("g.tick")
-			.attr("a", d => console.log("FDSFDS",d))
-			.classed("linechart-positive-tick", d => d > 0)
-			.classed("linechart-negative-tick", d => d < 0)
-			.classed("linechart-neutral-tick", d => d === 0)
+			.classed("linechart-positive-tick", (d) => d > 0)
+			.classed("linechart-negative-tick", (d) => d < 0)
+			.classed("linechart-neutral-tick", (d) => d === 0)
 			.select("line")
 			.attr("stroke", null);
 	}

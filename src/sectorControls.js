@@ -94,7 +94,7 @@ export class SectorControls {
 
 			let y_pos;
 			if (this.gas.selectedSectors.has(d)) {
-				y_pos = this.rect_height;
+				y_pos = 0;
 			} else {
 				y_pos = i * (this.rect_height + this.rect_spacing) + this.rect_height;
 			}

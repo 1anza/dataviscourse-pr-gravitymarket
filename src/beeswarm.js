@@ -14,7 +14,7 @@ export class Beeswarm {
 		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
 		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));
 		this.bounds = {
-			minX: 20,
+			minX: 30,
 			maxX: svg_width - 90,
 			minY: 20,
 			maxY: svg_height - 20,
@@ -34,8 +34,8 @@ export class Beeswarm {
 		this.drawCircles();
 
 		this.simulationSettings = {
-			globalForceScale: 1,
-			forceXScale: 0.01,
+			globalForceScale: 1.0,
+			forceXScale: 0.005,
 			forceYScale: 0.1,
 			collisionStrength: 1.0,
 		};
@@ -185,7 +185,7 @@ export class Beeswarm {
 		// this padding gives the width of the rows to include.
 		// Higher values of this will include more future and past data points
 		// in the calculation of the data extent
-		let index_padding = 4;
+		let index_padding = 2;
 		let index_range = [
 			this.gas.index - index_padding,
 			this.gas.index + index_padding,
@@ -196,18 +196,17 @@ export class Beeswarm {
 		if (index_range[1] > data_to_get_range[0].chart.length) {
 			index_range[1] = data_to_get_range[0].chart.length;
 		}
-		console.log(index_range);
 		// uses percentiles to find the domain of the data to plot
 		let min_p = 0.1;
 		let max_p = 99.9;
 		let min = data_to_get_range.map((d) =>
-			d3.min(d.chart.slice(index_range[0], index_range[1]), (_, i) =>
+			d3.min(d3.range(index_range[0], index_range[1], 1), (i) =>
 				getPercChange(d, i, this.gas.yValueName)
 			)
 		);
 		let percentile_min = percentile(min_p, min);
 		let max = data_to_get_range.map((d) =>
-			d3.max(d.chart.slice(index_range[0], index_range[1]), (_, i) =>
+			d3.max(d3.range(index_range[0], index_range[1], 1), (i) =>
 				getPercChange(d, i, this.gas.yValueName)
 			)
 		);
@@ -360,8 +359,8 @@ export class Beeswarm {
 	startSimulation() {
 		this.simulation = d3
 			.forceSimulation(this.gas.data)
-			.alphaTarget(0.1)
-			.velocityDecay(0.1)
+			.alphaTarget(0.2)
+			.velocityDecay(0.15)
 			.on("tick", (_) => {
 				this.circles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 			});
@@ -395,7 +394,7 @@ export class Beeswarm {
 						return this.scaleRadius(d[this.gas.zValueName]);
 					}
 				})
-				.iterations(2)
+				.iterations(4)
 				.strength(this.simulationSettings.collisionStrength)
 		);
 	}
