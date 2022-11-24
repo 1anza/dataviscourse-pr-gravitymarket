@@ -95,6 +95,58 @@ export class GlobalAppState {
 
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
+
+		// This value stores a running estimate of the extent of the
+		// data being plotted. It is not updated every time the index
+		// is incremented to save performance.
+		let update_runningPercentYValueRange_every_n_index = 10;
+		let update_runningPercentYValueRange = () => {
+			let data_to_get_range;
+			if (this.groupingBySector) {
+				data_to_get_range = this.sectorData.filter((d) =>
+					this.selectedSectors.has(removeVanguardPrefixFromSector(d.company))
+				);
+			} else {
+				data_to_get_range = [this.sp500Data];
+			}
+			console.log("data_to_get_range", data_to_get_range);
+
+			// The amount that runningPercentYValueRange will look ahead
+			// and behind to get the extent of the percent
+			let index_padding = 50;
+			let index_range = [
+				this.index - index_padding,
+				this.index + index_padding,
+			];
+			if (index_range[0] < 0) {
+				index_range[0] = 0;
+			}
+			if (index_range[1] > data_to_get_range[0].chart.length) {
+				index_range[1] = data_to_get_range[0].chart.length;
+			}
+
+			let perc_min = d3.min(data_to_get_range, (d) =>
+				d3.min(d3.range(...index_range), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
+			let perc_max = d3.max(data_to_get_range, (d) =>
+				d3.max(d3.range(d.chart.length), (i) =>
+					getPercChange(d, i, this.yValueName)
+				)
+			);
+			return [perc_min, perc_max];
+		};
+		this.addEventValueToGlobalAppState(
+			"runningPercentYValueRange",
+			update_runningPercentYValueRange()
+		);
+		this.addEventListenerToEvent("index", (_) => {
+			if (this.index % update_runningPercentYValueRange_every_n_index === 0) {
+				this.set_runningPercentYValueRange(update_runningPercentYValueRange());
+			}
+		});
+
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
 		this.addEventValueToGlobalAppState("yValueName", "close", [
 			(_) => {

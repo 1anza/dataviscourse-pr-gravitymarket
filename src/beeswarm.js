@@ -144,10 +144,14 @@ export class Beeswarm {
 		}
 	}
 
+	/*
+	 * Updates this.scaleY
+	 * Checks the extent of the percentages plotted by the data
+	 */
 	updateScaleY() {
 		this.scaleY = d3
 			.scaleLinear()
-			.domain([-60, 100])
+			.domain([-100, 100])
 			.range([this.bounds.maxY, this.bounds.minY]);
 	}
 
@@ -168,6 +172,8 @@ export class Beeswarm {
 			.attr("id", "horizontal")
 			.attr("x1", this.bounds.minX)
 			.classed("beeswarm-gridline", true)
+			.classed("beeswarm-gridline-0line", (d) => d === 0)
+			.attr("stroke", (d) => (d > 0 ? "green" : "red"))
 			.attr("x2", this.bounds.maxX)
 			.attr("y1", (d) => this.scaleY(d))
 			.attr("y2", (d) => this.scaleY(d));

@@ -1,28 +1,28 @@
 body {
-  margin: 0;
-  background-color: #f7fafb;
-  font-family: Georgia, Helvetica, sans-serif;
+	margin: 0;
+	background-color: #f7fafb;
+	font-family: Georgia, Helvetica, sans-serif;
 }
 
 .column-box {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
-    align-items: stretch;
-    align-content: center;
+	align-items: stretch;
+	align-content: center;
 }
 
 .row-box {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
-    align-items: stretch;
-    align-content: center;
+	align-items: stretch;
+	align-content: center;
 }
 
 .boxitem {
-  margin: 5px;
-  padding: 5px;
+	margin: 5px;
+	padding: 5px;
 }
 
 .beeswarm-div {
@@ -32,19 +32,16 @@ body {
 }
 
 #playback-div {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: space-around;
-    justify-content: flex-start;
-    align-items: baseline;
-
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-content: space-around;
+	justify-content: flex-start;
+	align-items: baseline;
 }
 
 .ohlc-div {
 }
-
-
 
 .linechart-path {
 	fill: none;
@@ -52,13 +49,17 @@ body {
 }
 
 .beeswarm-gridline {
-	stroke: black;
+	stroke-width: 1px;
+}
+
+.beeswarm-gridline-0line {
+	stroke: gray;
 	stroke-width: 2px;
 }
 
 .candlestick {
-    fill: none;
-    stroke-width: 1.5pt;
+	fill: none;
+	stroke-width: 1.5pt;
 }
 
 .dateaxis-text {
@@ -83,27 +84,27 @@ body {
 
 .yAxis,
 .xAxis {
-  font-size: 1.5em;
+	font-size: 1.5em;
 }
 
 .container {
-  margin-left: 3.5em;
+	margin-left: 3.5em;
 }
 
 .chart-y-axis-background {
-	fill:white;
+	fill: white;
 }
 
 .title {
-  font-size: 4em;
+	font-size: 4em;
 }
 
-.playback-button{
-    padding: 0px 32px;
-    border-radius: 9px;
+.playback-button {
+	padding: 0px 32px;
+	border-radius: 9px;
 }
-.playback-button:hover{
-  background-color: grey;
+.playback-button:hover {
+	background-color: grey;
 }
 
 .playback-line {
@@ -120,7 +121,7 @@ body {
 .sector-select-rect {
 	stroke: black;
 	stroke-width: 1;
-	fill:beige;
+	fill: beige;
 	cursor: pointer;
 }
 
@@ -136,7 +137,6 @@ body {
 	text-align: end;
 	font-size: small;
 }
-
 
 svg text {
 	pointer-events: none;
