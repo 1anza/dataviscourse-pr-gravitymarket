@@ -68,6 +68,12 @@ export class Beeswarm {
 
 			this.sectorControls.updateSectorControls(this.scaleX);
 		});
+
+		this.gas.addEventListenerToEvent("runningPercentYValueRange", _ => {
+			this.updateScaleY();
+			this.drawYAxis();
+			this.updateSimulationY();
+		});
 	}
 
 	/*  ----------------Data scales---------------------    */
@@ -146,28 +152,41 @@ export class Beeswarm {
 
 	/*
 	 * Updates this.scaleY
-	 * Checks the extent of the percentages plotted by the data
+	 * Checks the extent of the percentages plotted by the data, provided by the gas
 	 */
 	updateScaleY() {
+		let domain = structuredClone(this.gas.runningPercentYValueRange);
+		// Extra domain padding
+		domain[0] -= 5;
+		domain[1] += 5;
+
+		// Asserts that the domain always contains 0
+		if (domain[0] > 0) {
+			domain[0] = -1;
+		}
+		if (domain[1] < 0) {
+			domain[1] = 1;
+		}
+
 		this.scaleY = d3
 			.scaleLinear()
-			.domain([-100, 100])
+			.domain(domain)
 			.range([this.bounds.maxY, this.bounds.minY]);
 	}
 
 	/*  ----------------Rendering-----------------------    */
 
+	/*
+	 * Draws and positions the Y axis grid lines 
+	 */
 	drawYAxis() {
-		// Hardcoded ticks
-		// this can be made to be dynamic - just base
-		// these ticks on the extent of the percentages in the data at
-		// the current index.
-		let ticks = d3.range(-60, 100.01, 20);
+		let tick_step = 5;
+		let ticks = d3.range(-200, 200.01, tick_step);
+
+		let anim_duration = 100;
 
 		let grid = d3.select("svg#beeswarm-vis").select("g#grid");
-		let lines = grid.selectAll("line#horizontal").data(ticks);
-		lines.exit().remove();
-		lines
+		let lines = grid.selectAll("line#horizontal").data(ticks)
 			.join("line")
 			.attr("id", "horizontal")
 			.attr("x1", this.bounds.minX)
@@ -175,15 +194,15 @@ export class Beeswarm {
 			.classed("beeswarm-gridline-0line", (d) => d === 0)
 			.attr("stroke", (d) => (d > 0 ? "green" : "red"))
 			.attr("x2", this.bounds.maxX)
+			.transition().duration(anim_duration)
 			.attr("y1", (d) => this.scaleY(d))
 			.attr("y2", (d) => this.scaleY(d));
 
-		let axis_labels = grid.selectAll("text#axis-label-y").data(ticks);
-		axis_labels.exit().remove();
-		axis_labels
+		let axis_labels = grid.selectAll("text#axis-label-y").data(ticks)
 			.join("text")
 			.attr("id", "axis-label-y")
 			.attr("x", this.bounds.maxX)
+			.transition().duration(anim_duration)
 			.attr("y", (d) => this.scaleY(d))
 			.text((d) => `${d}%`);
 	}
@@ -251,7 +270,6 @@ export class Beeswarm {
 				tooltip.style("opacity", 0);
 				hovered.classed("hovered-swarm-circ", false);
 			})
-			/////////////////////////////////////////////////////////////////////
 			.on("click", function () {
 				let clicked = d3.select(this);
 				let clicked_ = clicked._groups[0][0].__data__;

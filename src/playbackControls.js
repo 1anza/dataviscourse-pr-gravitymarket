@@ -16,8 +16,8 @@ export function createPlaybackControls(gas) {
 
 	// Sets up the speed controls
 	let n_speed_options = 9;
-	let max_speed = 100.0;
-	let min_speed = 10.0;
+	let min_speed = 500.0;
+	let max_speed = 80.0;
 	let speed_options = d3.range(
 		min_speed,
 		max_speed + 0.001,
