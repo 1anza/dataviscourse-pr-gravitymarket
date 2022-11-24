@@ -72,6 +72,10 @@ export class Beeswarm {
 			);
 
 			this.sectorControls.updateSectorControls(this.scaleX);
+
+			this.updateScaleY();
+			this.drawYAxis();
+			this.updateSimulationY();
 		});
 
 		// Runs an expensive computation occasionally to replot the y values.
@@ -176,7 +180,12 @@ export class Beeswarm {
 				this.gas.selectedSectors.has(d.sector)
 			);
 		}
-		let index_padding = 10;
+		// This is the 'lookahead' and 'lookbehind' amount.
+		// When calculating the extent of the percentages to be plotted,
+		// this padding gives the width of the rows to include.
+		// Higher values of this will include more future and past data points
+		// in the calculation of the data extent
+		let index_padding = 4;
 		let index_range = [
 			this.gas.index - index_padding,
 			this.gas.index + index_padding,
@@ -196,20 +205,17 @@ export class Beeswarm {
 				getPercChange(d, i, this.gas.yValueName)
 			)
 		);
-		let percentile_min = percentile(min_p, min, (d) => d.close);
+		let percentile_min = percentile(min_p, min);
 		let max = data_to_get_range.map((d) =>
 			d3.max(d.chart.slice(index_range[0], index_range[1]), (_, i) =>
 				getPercChange(d, i, this.gas.yValueName)
 			)
 		);
-		let percentile_max = percentile(max_p, max, (d) => d.close);
+		let percentile_max = percentile(max_p, max);
 		console.log("MIN", percentile_min);
 		console.log("MAX", percentile_max);
 
 		let domain = [percentile_min, percentile_max];
-		// extra domain padding
-		domain[0] -= 2;
-		domain[1] += 2;
 
 		// Asserts that the domain always contains 0
 		if (domain[0] > 0) {
