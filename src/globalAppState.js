@@ -122,17 +122,6 @@ export class GlobalAppState {
 		};
 		this.addEventListenerToEvent("data", (_) => update_percentYValueRange(_));
 		update_percentYValueRange();
-		// The zValue is the marketCap, which determines the radius in the beeswarm
-		// This zValue is local to the first list dimension, (the ticker)
-		this.addEventValueToGlobalAppState("zValueDataRange", null);
-		this.addEventValueToGlobalAppState("zValueName", "marketcap", [
-			(_) => {
-				this.set_zValueDataRange(
-					d3.extent(this.data, (d) => d[this.zValueName])
-				);
-			},
-		]);
-		console.log(this.zValueDataRange);
 
 		/*  -----------Time series and tick controls--------    */
 		this.addEventValueToGlobalAppState("date", null, [], true);
@@ -229,6 +218,30 @@ export class GlobalAppState {
 				}
 			},
 		]);
+
+		// The zValue is the marketCap, which determines the radius in the beeswarm
+		// This zValue is local to the first list dimension, (the ticker)
+		let updateZValueDataRange = (_) => {
+			let data_to_get_range;
+			if (this.selectedSectors.size > 0) {
+				data_to_get_range = this.data.filter((d) =>
+					this.selectedSectors.has(d.sector)
+				);
+			} else {
+				data_to_get_range = this.data;
+			}
+			console.log("DATA TO GET RANGE", data_to_get_range);
+			this.set_zValueDataRange(
+				d3.extent(data_to_get_range, (d) => d[this.zValueName])
+			);
+		};
+		this.addEventValueToGlobalAppState("zValueDataRange", null);
+		this.addEventValueToGlobalAppState("zValueName", "marketcap", [
+			(_) => updateZValueDataRange(),
+		]);
+		this.addEventListenerToEvent("selectedSectors", (_) =>
+			updateZValueDataRange()
+		);
 
 		// This value stores a running estimate of the extent of the
 		// data being plotted. It is not updated every time the index

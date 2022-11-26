@@ -51,7 +51,7 @@ export class Beeswarm {
 
 		// We keep track of the previousSelectedSectors so that we know what was just added
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
-		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
+		this.gas.addEventListenerToEvent("zValueDataRange", (_) => {
 			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
 			if (this.gas.groupingBySector) {
 				this.circles.attr("visibility", (d) =>
@@ -62,6 +62,11 @@ export class Beeswarm {
 			}
 			this.updateScaleX();
 			this.drawXAxis();
+
+			this.updateScaleRadius();
+			this.updateRadiusKey();
+			this.circles.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]));
+
 			this.updateCollisions();
 			this.updateSimulationX();
 			// previousSelectedSectors' union selectedSectors
@@ -82,7 +87,7 @@ export class Beeswarm {
 		});
 
 		// Runs an expensive computation occasionally to replot the y values.
-		let update_y_scale_every = 1;
+		let update_y_scale_every = 10;
 		this.gas.addEventListenerToEvent("index", (_) => {
 			if (this.gas.index % update_y_scale_every === 0) {
 				this.updateScaleY();
@@ -104,6 +109,8 @@ export class Beeswarm {
 
 	/*
 	 * Sets this.scaleRadius to a function that maps the z value range as an area into a radius
+	 *
+	 * Only examines the companies that are visible with the currenly selected sectors
 	 */
 	updateScaleRadius(minRadius = 3, maxRadius = 25) {
 		let zValueRadiusRange = this.gas.zValueDataRange.map((x) =>
@@ -195,7 +202,7 @@ export class Beeswarm {
 		// this padding gives the width of the rows to include.
 		// Higher values of this will include more future and past data points
 		// in the calculation of the data extent
-		let index_padding = 2;
+		let index_padding = 10;
 		let index_range = [
 			this.gas.index - index_padding,
 			this.gas.index + index_padding,
@@ -207,8 +214,8 @@ export class Beeswarm {
 			index_range[1] = data_to_get_range[0].chart.length;
 		}
 		// uses percentiles to find the domain of the data to plot
-		let min_p = 5.0;
-		let max_p = 95.0;
+		let min_p = 0.0;
+		let max_p = 100.0;
 		let min = data_to_get_range.map((d) =>
 			d3.min(d3.range(index_range[0], index_range[1], 1), (i) =>
 				getPercChange(d, i, this.gas.yValueName)
@@ -221,7 +228,6 @@ export class Beeswarm {
 			)
 		);
 		let percentile_max = percentile(max_p, max);
-
 
 		let domain = [percentile_min, percentile_max];
 
@@ -242,7 +248,6 @@ export class Beeswarm {
 			domain[0] = -1 * domain[1];
 		}
 		console.log("domain", domain);
-
 
 		this.scaleY = d3
 			.scaleLinear()
