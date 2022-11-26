@@ -3,6 +3,7 @@ import {
 	dateMinuteToDate,
 	getPercChange,
 	removeVanguardPrefixFromSector,
+	genDateTicksEveryN,
 } from "./util.js";
 
 /*
@@ -134,7 +135,8 @@ export class Linechart {
 		let xAxis = d3
 			.axisBottom()
 			.scale(this.scaleX)
-			.ticks(d3.utcDay.every(2))
+			// Hardcoded to have ticks every 5 data point dates
+			.tickValues(genDateTicksEveryN(this.gas.data[0].chart, 5))
 			.tickFormat(d3.timeFormat("%d %b"));
 		axisG
 			.call(xAxis)

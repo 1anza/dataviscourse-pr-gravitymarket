@@ -149,20 +149,13 @@ export class GlobalAppState {
 		);
 		this.set_index(0);
 
+		// Uses scalePoint, which has as the range only dates which exist in the data.
 		let calculate_date_domain = () => {
-			let start_date = dateMinuteToDate(
-				this.data[0].chart[0].date,
-				this.data[0].chart[0].minute
-			);
-			let chart_length = this.data[0].chart.length;
-			let end_date = dateMinuteToDate(
-				this.data[0].chart[chart_length - 1].date,
-				this.data[0].chart[chart_length - 1].minute
-			);
-			console.log("Start date", start_date, "End date", end_date);
-			return scaleDiscontinuous(d3.scaleTime())
-				.discontinuityProvider(discontinuitySkipWeekends())
-				.domain([start_date, end_date]);
+			return d3
+				.scalePoint()
+				.domain(
+					this.data[0].chart.map((d) => dateMinuteToDate(d.date, d.minute))
+				);
 		};
 		this.addEventValueToGlobalAppState("genDateDomain", calculate_date_domain);
 		// When the playhead moves, this will store its estimated current speed.

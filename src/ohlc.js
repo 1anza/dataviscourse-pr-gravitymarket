@@ -1,5 +1,9 @@
 import * as d3 from "d3";
-import { dateMinuteToDate, getPercChange } from "./util.js";
+import {
+	dateMinuteToDate,
+	getPercChange,
+	genDateTicksEveryMonth,
+} from "./util.js";
 
 export class Ohlc {
 	constructor(gas) {
@@ -47,7 +51,8 @@ export class Ohlc {
 		let xAxis = d3
 			.axisBottom()
 			.scale(this.scaleX)
-			.ticks(10)
+			// Hardcoded to have dates every 20
+			.tickValues(genDateTicksEveryMonth(this.gas.data[0].chart))
 			.tickFormat(d3.timeFormat("%b %Y"));
 		axisG
 			.call(xAxis)
