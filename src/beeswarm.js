@@ -207,8 +207,8 @@ export class Beeswarm {
 			index_range[1] = data_to_get_range[0].chart.length;
 		}
 		// uses percentiles to find the domain of the data to plot
-		let min_p = 0.1;
-		let max_p = 99.9;
+		let min_p = 5.0;
+		let max_p = 95.0;
 		let min = data_to_get_range.map((d) =>
 			d3.min(d3.range(index_range[0], index_range[1], 1), (i) =>
 				getPercChange(d, i, this.gas.yValueName)
@@ -222,6 +222,7 @@ export class Beeswarm {
 		);
 		let percentile_max = percentile(max_p, max);
 
+
 		let domain = [percentile_min, percentile_max];
 
 		// Asserts that the domain always contains 0
@@ -231,7 +232,6 @@ export class Beeswarm {
 		if (domain[1] < 0) {
 			domain[1] = 1;
 		}
-
 		// We want the origin (0%) to always be in the middle of the chart.
 		// To do this, we assert that both boundaries of the domain are
 		// equidistant from 0. That is, abs(domain[0]) = abs(domain[1]),
@@ -241,6 +241,8 @@ export class Beeswarm {
 		} else {
 			domain[0] = -1 * domain[1];
 		}
+		console.log("domain", domain);
+
 
 		this.scaleY = d3
 			.scaleLinear()
@@ -257,7 +259,7 @@ export class Beeswarm {
 		let tick_step;
 		let domain = this.scaleY.domain();
 		let domain_distance = Math.abs(domain[1] - domain[0]);
-		if (domain_distance < 8) {
+		if (domain_distance < 9) {
 			tick_step = 1;
 		} else if (domain_distance < 50) {
 			tick_step = 5;
