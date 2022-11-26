@@ -90,6 +90,14 @@ export class Beeswarm {
 				this.updateSimulationY();
 			}
 		});
+
+		// Applies the class to the selected ticker
+		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) => {
+			this.circles.classed(
+				"beeswarm-single-selected-ticker",
+				(d) => this.gas.selectedSingleCompany.ticker === d.ticker
+			);
+		});
 	}
 
 	/*  ----------------Data scales---------------------    */
@@ -222,6 +230,16 @@ export class Beeswarm {
 		}
 		if (domain[1] < 0) {
 			domain[1] = 1;
+		}
+
+		// We want the origin (0%) to always be in the middle of the chart.
+		// To do this, we assert that both boundaries of the domain are
+		// equidistant from 0. That is, abs(domain[0]) = abs(domain[1]),
+		// 		or -1 * domain[0] = domain[1]
+		if (-1 * domain[0] > domain[1]) {
+			domain[1] = -1 * domain[0];
+		} else {
+			domain[0] = -1 * domain[1];
 		}
 
 		this.scaleY = d3

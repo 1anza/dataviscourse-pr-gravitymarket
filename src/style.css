@@ -97,6 +97,12 @@ body {
 	fill: none;
 }
 
+	/* the single ticker that is being shown in the ohlc which has been clicked */
+.beeswarm-single-selected-ticker {
+	stroke-width: 1;
+	stroke: black;
+}
+
 .yAxis,
 .xAxis {
 	font-size: 1.5em;
