@@ -1,0 +1,141 @@
+body {
+  margin: 0;
+  background-color: #f7fafb;
+  font-family: Georgia, Helvetica, sans-serif;
+}
+
+.column-box {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+    align-items: stretch;
+    align-content: center;
+}
+
+.row-box {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+    align-items: stretch;
+    align-content: center;
+}
+
+.boxitem {
+  margin: 5px;
+  padding: 5px;
+}
+
+.beeswarm-div {
+}
+
+.table-div {
+}
+
+#playback-div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: flex-start;
+    align-items: baseline;
+
+}
+
+.ohlc-div {
+}
+
+
+
+.linechart-path {
+	fill: none;
+	stroke-width: 1.5pt;
+}
+
+.beeswarm-gridline {
+	stroke: black;
+	stroke-width: 2px;
+}
+
+.candlestick {
+    fill: none;
+    stroke-width: 1.5pt;
+}
+
+.dateaxis-text {
+	text-anchor: start;
+}
+
+#beeswarm-tooltip {
+	background-color: white;
+	border: solid;
+	border-width: 2px;
+	border-radius: 5px;
+	padding: 5px;
+	display: block;
+	position: absolute;
+}
+
+#beeswarm-key-circle {
+	stroke: gray;
+	stroke-width: 2;
+	fill: none;
+}
+
+.yAxis,
+.xAxis {
+  font-size: 1.5em;
+}
+
+.container {
+  margin-left: 3.5em;
+}
+
+.chart-y-axis-background {
+	fill:white;
+}
+
+.title {
+  font-size: 4em;
+}
+
+.playback-button{
+    padding: 0px 32px;
+    border-radius: 9px;
+}
+.playback-button:hover{
+  background-color: grey;
+}
+
+.playback-line {
+	stroke-width: 2;
+	stroke: black;
+}
+
+.sector-select-rect {
+	stroke: black;
+	stroke-width: 1;
+	fill:beige;
+}
+
+.sector-select-rect-hovered {
+	stroke-width: 3;
+}
+
+.sector-select-rect-selected {
+	stroke-width: 4;
+	stroke: blue;
+}
+
+.sector-select-text-label {
+	text-align: end;
+	font-size: small;
+}
+#details {
+	border-radius: 2px;
+	border-color: black;
+	border-width: 1px;
+	border-style: solid;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
