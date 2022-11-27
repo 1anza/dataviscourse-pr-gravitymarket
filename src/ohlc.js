@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import { hierarchy, text } from "d3";
+import { title } from "process";
 import {
 	dateMinuteToDate,
 	getPercChange,
@@ -81,6 +83,19 @@ export class Ohlc {
 		let series = this.svg.select("g.ohlc-series");
 		let bars = series.selectAll("g.ohlc-bar").data(company.chart);
 		bars = bars.join("g").classed("ohlc-bar", true);
+
+		//Add company title
+		let titleName = this.svg.select('g#title')
+		let title = titleName.selectAll('text')
+		title.remove();
+		titleName.append("text")
+			.attr('class', 'title')
+			.attr("x", 100)
+			.attr("y", this.bounds.minY)
+			.style("fill", 'black')
+			.text(company.company)
+			.attr("text-anchor", "left")
+			.style('font-size', '15px')
 
 		let lines = bars.selectAll("line.open-close-line").data(function (d) {
 			return [d];
