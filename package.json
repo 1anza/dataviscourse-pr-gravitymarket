@@ -8,7 +8,7 @@
   "devDependencies": {
     "@types/node": "^18.11.9",
     "@typescript/lib-dom": "npm:@types/web@^0.0.79",
-    "parcel-bundler": "^1.12.5",
+    "parcel-bundler": "^1.8.1",
     "parcel-plugin-static-files-copy": "^2.6.0",
     "typescript": "^4.8.4"
   },
@@ -41,6 +41,6 @@
     "d3-zoom": "^3.0.0",
     "d3fc-discontinuous-scale": "^2.0.5",
     "percentile": "^1.6.0",
-    "src": "^1.1.2"
+    "src": "^1.0.0"
   }
 }
