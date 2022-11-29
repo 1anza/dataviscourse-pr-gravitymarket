@@ -62,7 +62,6 @@ export class DateRangeBrush {
 		let rangePoints = d3.range(range[0], range[1], that.scaleX.step());
 
 		let brushed = function (selection) {
-			d3.select(this).call(brushedHandle, selection);
 			let xPosMin = selection.selection[0];
 			let left_index = d3.bisect(rangePoints, xPosMin) - 1;
 
@@ -70,7 +69,7 @@ export class DateRangeBrush {
 			let right_index = d3.bisect(rangePoints, xPosMax) - 1;
 			that.gas.set_indexPlottedRange([left_index, right_index]);
 		};
-		let brushedHandle = function (g, selection) {
+		let brushedHandle = function (selection) {
 			that.handleLeft.attr(
 				"transform",
 				`rotate(90) translate(0 ${
@@ -91,7 +90,8 @@ export class DateRangeBrush {
 				[this.bounds.minX, this.bounds.minY],
 				[this.bounds.maxX, this.bounds.maxY],
 			])
-			.on("start brush end", brushed);
+			.on("start brush end", brushedHandle)
+			.on("end", brushed);
 
 		this.svg
 			.select("g#controls")

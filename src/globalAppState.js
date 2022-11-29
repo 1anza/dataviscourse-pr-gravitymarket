@@ -311,12 +311,16 @@ export class GlobalAppState {
 		this.addEventListenerToEvent("selectedSectors", (_) => {
 			this.set_runningPercentYValueRange(update_runningPercentYValueRange());
 		});
+		console.log(this.indexPlottedRange);
+		this.addEventListenerToEvent("indexPlottedRange", (_) =>
+			this.set_runningPercentYValueRange(update_runningPercentYValueRange())
+		);
 	}
 
 	// Will loop by default.
 	updateIndex() {
-		if (this.index === this.data[0].chart.length - 1) {
-			this.set_index(0);
+		if (this.index >= this.indexPlottedRange[1] - 1) {
+			this.set_index(this.indexPlottedRange[0]);
 		} else {
 			this.set_index(this.index + 1);
 		}

@@ -45,6 +45,12 @@ export class Linechart {
 		this.gas.addEventListenerToEvent("date", (_) => {
 			this.updatePlayheadLine();
 		});
+		this.gas.addEventListenerToEvent("indexPlottedRange", (_) => {
+			console.log("Updateing scaleY!");
+			this.updateScaleY();
+			this.updateLines();
+			this.updateAxisY();
+		});
 		this.gas.addEventListenerToEvent("runningPercentYValueRange", (_) => {
 			console.log("Updateing scaleY!");
 			this.updateScaleY();
