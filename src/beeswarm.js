@@ -1,20 +1,23 @@
 import * as d3 from "d3";
-import {dateMinuteToDate, getPercChange} from "./util";
-import {GlobalAppState} from "./globalAppState";
+import percentile from "percentile";
+import {
+	dateMinuteToDate,
+	getPercChange,
+	removeVanguardPrefixFromSector,
+} from "./util.js";
+import { GlobalAppState } from "./globalAppState.js";
+import { SectorControls } from "./sectorControls.js";
 
 export class Beeswarm {
-	gas: GlobalApplicationState;
-	simulationSettings;
-
-	constructor(gas: GlobalAppState) {
+	constructor(gas) {
 		this.gas = gas;
 		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
 		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));
 		this.bounds = {
-			minX: 20,
+			minX: 30,
 			maxX: svg_width - 90,
 			minY: 20,
-			maxY: svg_height - 80,
+			maxY: svg_height - 20,
 		};
 
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
@@ -31,18 +34,24 @@ export class Beeswarm {
 		this.drawCircles();
 
 		this.simulationSettings = {
-			globalForceScale: 1,
-			forceXScale: 0.01,
+			globalForceScale: 1.0,
+			forceXScale: 0.05,
 			forceYScale: 0.1,
 			collisionStrength: 1.0,
 		};
 
 		this.startSimulation();
-		this.gas.addEventListenerToEvent("index", (_) => this.updateSimulationY());
+		this.gas.addEventListenerToEvent("index", (_) => {
+			this.updateSimulationY();
+			this.updateTooltip();
+		});
+
+		this.sectorControls = new SectorControls(this.gas, svg_width, svg_height);
+		this.sectorControls.updateSectorControls(this.scaleX);
 
 		// We keep track of the previousSelectedSectors so that we know what was just added
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
-		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
+		this.gas.addEventListenerToEvent("zValueDataRange", (_) => {
 			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
 			if (this.gas.groupingBySector) {
 				this.circles.attr("visibility", (d) =>
@@ -53,6 +62,11 @@ export class Beeswarm {
 			}
 			this.updateScaleX();
 			this.drawXAxis();
+
+			this.updateScaleRadius();
+			this.updateRadiusKey();
+			this.circles.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]));
+
 			this.updateCollisions();
 			this.updateSimulationX();
 			// previousSelectedSectors' union selectedSectors
@@ -64,15 +78,39 @@ export class Beeswarm {
 			this.teleportCircles(
 				this.circles.filter((d) => newlyAdded.has(d.sector))
 			);
+
+			this.sectorControls.updateSectorControls(this.scaleX);
+
+			this.updateScaleY();
+			this.drawYAxis();
+			this.updateSimulationY();
 		});
 
-		this.updateSectorControls();
+		// Runs an expensive computation occasionally to replot the y values.
+		let update_y_scale_every = 10;
+		this.gas.addEventListenerToEvent("index", (_) => {
+			if (this.gas.index % update_y_scale_every === 0) {
+				this.updateScaleY();
+				this.drawYAxis();
+				this.updateSimulationY();
+			}
+		});
+
+		// Applies the class to the selected ticker
+		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) => {
+			this.circles.classed(
+				"beeswarm-single-selected-ticker",
+				(d) => this.gas.selectedSingleCompany.ticker === d.ticker
+			);
+		});
 	}
 
 	/*  ----------------Data scales---------------------    */
 
 	/*
 	 * Sets this.scaleRadius to a function that maps the z value range as an area into a radius
+	 *
+	 * Only examines the companies that are visible with the currenly selected sectors
 	 */
 	updateScaleRadius(minRadius = 3, maxRadius = 25) {
 		let zValueRadiusRange = this.gas.zValueDataRange.map((x) =>
@@ -91,7 +129,7 @@ export class Beeswarm {
 	updateRadiusKey() {
 		// By default, the two values plotted are the min and max of the data
 		let ticks = this.gas.zValueDataRange;
-		let rad_key_offset = [20, 40];
+		let rad_key_offset = [-60, -5];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
 			.attr(
@@ -143,40 +181,124 @@ export class Beeswarm {
 		}
 	}
 
+	/*
+	 * Updates this.scaleY
+	 * Checks the extent of the percentages plotted by the data using an expensive calculation
+	 */
 	updateScaleY() {
+		// Checks the percetiles of the data to plot, with a given
+		// padding amount, checking all values falling outside of this
+		// range
+		let data_to_get_range;
+		if (!this.gas.groupingBySector) {
+			data_to_get_range = this.gas.data;
+		} else {
+			data_to_get_range = this.gas.data.filter((d) =>
+				this.gas.selectedSectors.has(d.sector)
+			);
+		}
+		// This is the 'lookahead' and 'lookbehind' amount.
+		// When calculating the extent of the percentages to be plotted,
+		// this padding gives the width of the rows to include.
+		// Higher values of this will include more future and past data points
+		// in the calculation of the data extent
+		let index_padding = 10;
+		let index_range = [
+			this.gas.index - index_padding,
+			this.gas.index + index_padding,
+		];
+		if (index_range[0] < 0) {
+			index_range[0] = 0;
+		}
+		if (index_range[1] > data_to_get_range[0].chart.length) {
+			index_range[1] = data_to_get_range[0].chart.length;
+		}
+		// uses percentiles to find the domain of the data to plot
+		let min_p = 0.0;
+		let max_p = 100.0;
+		let min = data_to_get_range.map((d) =>
+			d3.min(d3.range(index_range[0], index_range[1], 1), (i) =>
+				getPercChange(d, i, this.gas.yValueName)
+			)
+		);
+		let percentile_min = percentile(min_p, min);
+		let max = data_to_get_range.map((d) =>
+			d3.max(d3.range(index_range[0], index_range[1], 1), (i) =>
+				getPercChange(d, i, this.gas.yValueName)
+			)
+		);
+		let percentile_max = percentile(max_p, max);
+
+		let domain = [percentile_min, percentile_max];
+
+		// Asserts that the domain always contains 0
+		if (domain[0] > 0) {
+			domain[0] = -1;
+		}
+		if (domain[1] < 0) {
+			domain[1] = 1;
+		}
+		// We want the origin (0%) to always be in the middle of the chart.
+		// To do this, we assert that both boundaries of the domain are
+		// equidistant from 0. That is, abs(domain[0]) = abs(domain[1]),
+		// 		or -1 * domain[0] = domain[1]
+		if (-1 * domain[0] > domain[1]) {
+			domain[1] = -1 * domain[0];
+		} else {
+			domain[0] = -1 * domain[1];
+		}
+		console.log("domain", domain);
+
 		this.scaleY = d3
 			.scaleLinear()
-			.domain([-60, 100])
+			.domain(domain)
 			.range([this.bounds.maxY, this.bounds.minY]);
 	}
 
 	/*  ----------------Rendering-----------------------    */
 
+	/*
+	 * Draws and positions the Y axis grid lines
+	 */
 	drawYAxis() {
-		// Hardcoded ticks
-		// this can be made to be dynamic - just base
-		// these ticks on the extent of the percentages in the data at
-		// the current index.
-		let ticks = d3.range(-60, 100.01, 20);
+		let tick_step;
+		let domain = this.scaleY.domain();
+		let domain_distance = Math.abs(domain[1] - domain[0]);
+		if (domain_distance < 9) {
+			tick_step = 1;
+		} else if (domain_distance < 50) {
+			tick_step = 5;
+		} else {
+			tick_step = 10;
+		}
+		let ticks = d3.range(-200, 200.01, tick_step);
+
+		let anim_duration = 100;
 
 		let grid = d3.select("svg#beeswarm-vis").select("g#grid");
-		let lines = grid.selectAll("line#horizontal").data(ticks);
-		lines.exit().remove();
-		lines
+		let lines = grid
+			.selectAll("line#horizontal")
+			.data(ticks)
 			.join("line")
 			.attr("id", "horizontal")
 			.attr("x1", this.bounds.minX)
 			.classed("beeswarm-gridline", true)
+			.classed("beeswarm-gridline-0line", (d) => d === 0)
+			.attr("stroke", (d) => (d > 0 ? "green" : "red"))
 			.attr("x2", this.bounds.maxX)
+			.transition()
+			.duration(anim_duration)
 			.attr("y1", (d) => this.scaleY(d))
 			.attr("y2", (d) => this.scaleY(d));
 
-		let axis_labels = grid.selectAll("text#axis-label-y").data(ticks);
-		axis_labels.exit().remove();
-		axis_labels
+		let axis_labels = grid
+			.selectAll("text#axis-label-y")
+			.data(ticks)
 			.join("text")
 			.attr("id", "axis-label-y")
 			.attr("x", this.bounds.maxX)
+			.transition()
+			.duration(anim_duration)
 			.attr("y", (d) => this.scaleY(d))
 			.text((d) => `${d}%`);
 	}
@@ -199,14 +321,6 @@ export class Beeswarm {
 			.attr("y1", this.bounds.minY)
 			.attr("y2", this.bounds.maxY)
 			.classed("beeswarm-gridline", true);
-		let text = grid.selectAll("text#axis-label-x").data(data_to_bind);
-		text.exit().remove();
-		text
-			.join("text")
-			.attr("id", "axis-label-x")
-			.attr("x", (d) => this.scaleX(d))
-			.attr("y", this.bounds.maxY)
-			.text((d) => d);
 	}
 
 	initTooltip() {
@@ -220,6 +334,7 @@ export class Beeswarm {
 	}
 
 	drawCircles() {
+		const parseTime = d3.timeParse("%Y-%m-%d %H:%M");
 		let tooltip = this.tooltip;
 		this.circles = d3
 			.select("svg#beeswarm-vis")
@@ -236,10 +351,7 @@ export class Beeswarm {
 			.on("mouseover", function (_) {
 				let hovered = d3.select(this);
 				let _data = hovered._groups[0][0].__data__;
-				let sector = `${_data.sector}`;
-				let html = `Ticker: "${_data.ticker}" Sector: ${sector}`;
-				// Sets tooltip to be visible
-				tooltip.style("opacity", 1).html(html);
+				that.updateTooltip(_data);
 				hovered.classed("hovered-swarm-circ", true);
 			})
 			.on("mousemove", (e) => {
@@ -251,15 +363,49 @@ export class Beeswarm {
 				let hovered = d3.select(this);
 				tooltip.style("opacity", 0);
 				hovered.classed("hovered-swarm-circ", false);
+				that._prev_selected_data = null;
 			})
-			/////////////////////////////////////////////////////////////////////
 			.on("click", function () {
+				var date = d3.select("div#current-date").html() // for table
 				let clicked = d3.select(this);
 				let clicked_ = clicked._groups[0][0].__data__;
 				clicked.classed("clicked-swarm-circ", true);
-				console.log(clicked_);
+				// add table information on click
+				var filteredDateData = clicked_.chart.filter(a => { return parseTime(a.date + " " + a.minute) == date })[0]
+				var valuesToDisplay = {
+					open: filteredDateData.open,
+					close: filteredDateData.close,
+					high: filteredDateData.high,
+					low: filteredDateData.low,
+					volume: filteredDateData.volume,
+					pe: clicked_.pe,
+					eps: clicked_.eps,
+					beta: clicked_.beta,
+					dividend: clicked_.dividend,
+					earnings: clicked_.earnings,
+					marketcap: clicked_.marketcap
+				}
+				console.log('Values to display->', valuesToDisplay)
 				that.gas.set_selectedSingleCompany(clicked_);
+				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
 			});
+	}
+
+	updateTooltip(_data) {
+		if (!_data) {
+			_data = this._prev_selected_data;
+		}
+		if (!_data) {
+			return;
+		}
+		let sector = `${_data.sector}`;
+		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName);
+		let html = `Ticker: "${_data.ticker}" Sector: ${sector} Perc.: ${d3.format(
+			".1f"
+		)(close_perc)}%`;
+		// Sets tooltip to be visible
+		this.tooltip.style("opacity", 1).html(html);
+		this._prev_selected_data = _data;
 	}
 
 	/*  ----------------Simulation----------------------    */
@@ -267,8 +413,8 @@ export class Beeswarm {
 	startSimulation() {
 		this.simulation = d3
 			.forceSimulation(this.gas.data)
-			.alphaTarget(0.1)
-			.velocityDecay(0.1)
+			.alphaTarget(0.2)
+			.velocityDecay(0.15)
 			.on("tick", (_) => {
 				this.circles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 			});
@@ -282,7 +428,6 @@ export class Beeswarm {
 		this.updateCollisions();
 		this.updateSimulationX();
 		this.updateSimulationY();
-		console.log(this.simulation);
 	}
 
 	/*
@@ -302,7 +447,7 @@ export class Beeswarm {
 						return this.scaleRadius(d[this.gas.zValueName]);
 					}
 				})
-				.iterations(2)
+				.iterations(4)
 				.strength(this.simulationSettings.collisionStrength)
 		);
 	}
@@ -356,24 +501,11 @@ export class Beeswarm {
 			// Puts them with some random x values
 			let spread = d3.randomNormal(
 				0,
-				(this.bounds.maxX - this.bounds.minX) / 30
+				(this.bounds.maxX - this.bounds.minX) / 40
 			);
 			d.x = this.scaleX(d.sector) + spread();
 			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
 			return d;
 		});
-	}
-
-	/*
-	 * **********************Controls for the group by bar***********************
-	 */
-	updateSectorControls() {
-		let sector_bars = d3.select("svg#beeswarm-vis").select("g#sector-controls")
-			.selectAll("g#sector-bar")
-			.data(this.gas.allSectors);
-		sector_bars.enter().append("g")
-			.attr("id", "sector-bar")
-
-		sector_bars
 	}
 }

@@ -1,28 +1,28 @@
 body {
-  margin: 0;
-  background-color: #f7fafb;
-  font-family: Georgia, Helvetica, sans-serif;
+	margin: 0;
+	background-color: #f7fafb;
+	font-family: Georgia, Helvetica, sans-serif;
 }
 
 .column-box {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
-    align-items: stretch;
-    align-content: center;
+	align-items: stretch;
+	align-content: center;
 }
 
 .row-box {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
-    align-items: stretch;
-    align-content: center;
+	align-items: stretch;
+	align-content: center;
 }
 
 .boxitem {
-  margin: 5px;
-  padding: 5px;
+	margin: 5px;
+	padding: 5px;
 }
 
 .beeswarm-div {
@@ -32,33 +32,53 @@ body {
 }
 
 #playback-div {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-content: space-around;
-    justify-content: flex-start;
-    align-items: baseline;
-
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-content: space-around;
+	justify-content: flex-start;
+	align-items: baseline;
 }
 
 .ohlc-div {
 }
-
-
 
 .linechart-path {
 	fill: none;
 	stroke-width: 1.5pt;
 }
 
-.beeswarm-gridline {
+.linechart-positive-tick {
+	fill: green;
+	stroke: green;
+}
+
+.linechart-neutral-tick {
+	fill: black;
 	stroke: black;
+}
+
+.linechart-negative-tick {
+	fill: red;
+	stroke: red;
+}
+
+.beeswarm-gridline {
+	stroke-width: 1px;
+}
+
+.beeswarm-gridline-0line {
+	stroke: gray;
 	stroke-width: 2px;
 }
 
 .candlestick {
-    fill: none;
-    stroke-width: 1.5pt;
+	fill: none;
+	stroke-width: 1.5pt;
+}
+
+.dateaxis-text {
+	text-anchor: start;
 }
 
 #beeswarm-tooltip {
@@ -77,28 +97,77 @@ body {
 	fill: none;
 }
 
+	/* the single ticker that is being shown in the ohlc which has been clicked */
+.beeswarm-single-selected-ticker {
+	stroke-width: 1;
+	stroke: black;
+}
+
 .yAxis,
 .xAxis {
-  font-size: 1.5em;
+	font-size: 1.5em;
 }
 
 .container {
-  margin-left: 3.5em;
+	margin-left: 3.5em;
+}
+
+.chart-y-axis-background {
+	fill: white;
 }
 
 .title {
-  font-size: 4em;
+	font-size: 4em;
 }
 
-.playback-button{
-    padding: 0px 32px;
-    border-radius: 9px;
+.playback-button {
+	padding: 0px 32px;
+	border-radius: 9px;
 }
-.playback-button:hover{
-  background-color: grey;
+.playback-button:hover {
+	background-color: grey;
 }
 
 .playback-line {
 	stroke-width: 2;
 	stroke: black;
+}
+
+.playback-line-hovered {
+}
+
+.playback-line-scrubbing {
+}
+
+.sector-select-rect {
+	stroke: black;
+	stroke-width: 1;
+	fill: beige;
+	cursor: pointer;
+}
+
+.sector-select-rect-hovered {
+	stroke-width: 2;
+}
+
+.sector-select-rect-selected {
+	stroke-width: 2;
+}
+
+.sector-select-text-label {
+	text-align: end;
+	font-size: small;
+}
+
+svg text {
+	pointer-events: none;
+}
+
+#details {
+	border-radius: 2px;
+	border-color: black;
+	border-width: 1px;
+	border-style: solid;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
 }

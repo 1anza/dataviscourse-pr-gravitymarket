@@ -1,73 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 
-    <link rel="stylesheet" href="src/style.css"></link>
+	<link rel="stylesheet" href="src/style.css"></link>
 
-    <!-- How to use these icons: https://fontawesome.com -->
-    <script src="https://kit.fontawesome.com/02ee6d355a.js" crossorigin="anonymous"></script>
+	<!-- How to use these icons: https://fontawesome.com -->
+	<script src="https://kit.fontawesome.com/02ee6d355a.js" crossorigin="anonymous"></script>
 
-    <script src="src/main.ts"></script>
-    <title>Swarm Chart</title>
+	<script src="src/main.js"></script>
+	<title>Swarm Chart</title>
 </head>
 <body>
-    <div class="column-box">
-	    <div class="row-box">
-		    <div class="table-div boxitem" id="table">
-		    </div>
-		    <div class="linechart-div boxitem" id="linechart">
-			<svg id="linechart-vis" height="220px" width="100%">
-			    <g id="lines"></g>
-			    <g id="key"></g>
-			    <g id="y-axis"></g>
-			    <g id="x-axis"></g>
-			    <g id="playback-follow">
-			       <line id="playback-line" class="playback-line">
-			       </line>
-			    </g>
+	<div class="column-box">
+		<div class="row-box">
+			<div class="table-div boxitem" id="table">
+			</div>
+			<div class="linechart-div boxitem" id="linechart">
+				<svg id="linechart-vis" height="300px" width="700px">
+					<g id="key"></g>
+					<g id="y-axis">
+						<mask id="y-axis-mask">
+							<rect class="chart-y-axis-background" y="0" height="100000px"></rect>
+						</mask>
+					</g>
+					<g id="plotted-zoomable" mask="url(#y-axis-mask)">
+						<g id="lines"></g>
+						<g id="x-axis"></g>
+						<g id="playback-follow">
+							<line id="playback-line" class="playback-line">
+							</line>
+						</g>
+					</g>
+				</svg>
+			</div>
+			<div class="ohlc-div boxitem" id="ohlc">
+				<svg id="ohlc-vis" height="100%" width="100%">
+					<g class="ohlc-series"></g>
+					<g id="y-axis"></g>
+					<g id="x-axis"></g>
+					<g id="title"></g>
+				</svg>
+			</div>
+			<div class="table-div boxitem">
+				<svg id="details" height="100%" width="100%"></svg>
+				<!-- <table>
+			<tr>
+				<th>Attributes</th>
+				<th>Values</th>
+			  </tr>
+			  <tr>
+				<td>Open</td>
+				<td>--</td>
+			  </tr>
+			  <tr>
+				<td>Close</td>
+				<td>--</td>
+			  </tr>
+
+		</table> -->
+			</div>
+		</div>
+		<div class="beeswarm-div boxitem" id="beeswarm">
+			<svg id="beeswarm-vis" height="425px" width="100%">
+				<g id="radius-key"></g>
+				<g id="grid"></g>
+				<g id="title"></g>
+				<g id="swarm"></g>
 			</svg>
-		    </div>
-		    <div class="ohlc-div boxitem" id="ohlc">
-			<svg id="ohlc-vis" height="100%" width="100%">
-				<g class="ohlc-series"></g>
-			    <g id="y-axis"></g>
-			    <g id="x-axis"></g>
-			</svg>
-		    </div>
-	    </div>
-	    <div class="beeswarm-div boxitem" id="beeswarm">
-		<svg id="beeswarm-vis" height="425px" width="100%">
-		    <g id="radius-key"></g>
-		    <g id="grid"></g>
-		    <g id="title"></g>
-		    <g id="swarm"></g>
-		    <g id="sector-controls"></g>
-		</svg>
-	    </div>
-	    <div class="playback-div boxitem" id="playback-div">
-		<div class="playback-control">
-		    <button id="go-to-start" class="playback-button">
-			<i class="fa-solid fa-backward-step"></i>
-		    </button>
+			<svg id="sector-controls" height="200px" width="100%"></svg>
 		</div>
-		<div class="playback-control">
-		    <button id="playpause" class="playback-button">
-			<i class="fa-solid fa-play" id="play"></i>
-			<i class="fa-solid fa-pause" id="pause" style="display:none"></i>
-		    </button>
+		<div class="playback-div boxitem" id="playback-div">
+			<div class="playback-control">
+				<button id="go-to-start" class="playback-button">
+					<i class="fa-solid fa-backward-step"></i>
+				</button>
+			</div>
+			<div class="playback-control">
+				<button id="playpause" class="playback-button">
+					<i class="fa-solid fa-play" id="play"></i>
+					<i class="fa-solid fa-pause" id="pause" style="display:none"></i>
+				</button>
+			</div>
+			<div class="playback-control">
+				Playback speed (Seconds):
+				<select class="playback-select" id="playback-speed">
+				</select>
+			</div>
+			<div class="playback-monitor" id="current-date">
+			</div>
 		</div>
-		<div class="playback-control">
-		    Playback speed (Seconds):
-		    <select class="playback-select" id="playback-speed">
-		    </select>
-		</div>
-		<div class="playback-monitor" id="current-date">
-		</div>
-	    </div>
-    </div>
+	</div>
 </body>
 </html>

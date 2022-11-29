@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 
-
 export function createPlaybackControls(gas) {
 	console.log("createPlaybackControls()");
 
@@ -16,12 +15,12 @@ export function createPlaybackControls(gas) {
 	gas.addEventListenerToEvent("playing", (_) => updatePlayButton(button, gas));
 
 	// Sets up the speed controls
-	let n_speed_options = 9;
-	let max_speed = 100.0;
-	let min_speed = 10.0;
+	let n_speed_options = 5;
+	let min_speed = 500.0;
+	let max_speed = 80.0;
 	let speed_options = d3.range(
 		min_speed,
-		max_speed + 0.001,
+		max_speed - 0.001,
 		(max_speed - min_speed) / n_speed_options
 	);
 	let playback_speed = playbackdiv.select("select#playback-speed");
@@ -48,7 +47,7 @@ export function createPlaybackControls(gas) {
 	});
 
 	// Sets up the date monitor
-	let updateDate = (_) => playbackdiv.select("div#current-date").html(gas.date);
+	let updateDate = () => playbackdiv.select("div#current-date").html(gas.date);
 	updateDate();
 	gas.addEventListenerToEvent("date", (e) => {
 		updateDate();
