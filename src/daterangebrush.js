@@ -32,6 +32,11 @@ export class DateRangeBrush {
 		this.updateScaleX();
 		this.drawXAxis();
 		this.createBrush();
+		this.updatePlaybackHead();
+
+		this.gas.addEventListenerToEvent("date", _ => {
+			this.updatePlaybackHead();
+		});
 	}
 
 	updateScaleX() {
@@ -56,8 +61,6 @@ export class DateRangeBrush {
 
 	createBrush() {
 		let that = this;
-
-		let domain = that.scaleX.domain();
 		let range = that.scaleX.range();
 		let rangePoints = d3.range(range[0], range[1], that.scaleX.step());
 
@@ -97,5 +100,10 @@ export class DateRangeBrush {
 			.select("g#controls")
 			.call(brush)
 			.call(brush.move, [this.bounds.minX, this.bounds.maxX]);
+	}
+
+	updatePlaybackHead() {
+		this.svg.select("g#playback-follow")
+			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`);
 	}
 }
