@@ -4,6 +4,7 @@ import { Beeswarm } from "./beeswarm.js";
 import { Linechart } from "./linechart.js";
 import { Ohlc } from "./ohlc.js";
 import { Table } from "./table.js";
+import { DateRangeBrush } from "./daterangebrush.js";
 import { addDevTools } from "./dev.js";
 import * as d3 from "d3";
 
@@ -21,10 +22,8 @@ function main() {
 		let beeswarm = new Beeswarm(gas);
 		let linechart = new Linechart(gas);
 		let ohlc = new Ohlc(gas);
-		let table = new Table(gas)
-
-		// TODO Test setting sectors
-		//addDevTools(gas);
+		let table = new Table(gas);
+		let daterangebrush = new DateRangeBrush(gas);
 	});
 }
 

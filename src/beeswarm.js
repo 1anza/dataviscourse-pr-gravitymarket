@@ -366,12 +366,14 @@ export class Beeswarm {
 				that._prev_selected_data = null;
 			})
 			.on("click", function () {
-				var date = d3.select("div#current-date").html() // for table
+				var date = d3.select("div#current-date").html(); // for table
 				let clicked = d3.select(this);
 				let clicked_ = clicked._groups[0][0].__data__;
 				clicked.classed("clicked-swarm-circ", true);
 				// add table information on click
-				var filteredDateData = clicked_.chart.filter(a => { return parseTime(a.date + " " + a.minute) == date })[0]
+				var filteredDateData = clicked_.chart.filter((a) => {
+					return parseTime(a.date + " " + a.minute) == date;
+				})[0];
 				var valuesToDisplay = {
 					open: filteredDateData.open,
 					close: filteredDateData.close,
@@ -383,9 +385,9 @@ export class Beeswarm {
 					beta: clicked_.beta,
 					dividend: clicked_.dividend,
 					earnings: clicked_.earnings,
-					marketcap: clicked_.marketcap
-				}
-				console.log('Values to display->', valuesToDisplay)
+					marketcap: clicked_.marketcap,
+				};
+				console.log("Values to display->", valuesToDisplay);
 				that.gas.set_selectedSingleCompany(clicked_);
 				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
 			});
