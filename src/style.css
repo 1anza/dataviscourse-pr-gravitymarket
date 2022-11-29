@@ -40,7 +40,12 @@ body {
 	align-items: baseline;
 }
 
-.ohlc-div {
+.open-close-line-up-day {
+	stroke: green;
+}
+
+.open-close-line-down-day {
+	stroke: red;
 }
 
 .linechart-path {

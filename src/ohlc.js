@@ -84,6 +84,9 @@ export class Ohlc {
 		let bars = series.selectAll("g.ohlc-bar").data(company.chart);
 		bars = bars.join("g").classed("ohlc-bar", true);
 
+
+
+
 		//Add company title
 		let titleName = this.svg.select('g#title')
 		let title = titleName.selectAll('text')
@@ -102,8 +105,8 @@ export class Ohlc {
 		});
 		lines
 			.join("line")
-			.classed("open-close-line", true)
-			.attr("stroke", "black")
+			.classed("open-close-line-up-day", (d) => d.close > d.open)
+			.classed("open-close-line-down-day", (d) => d.close < d.open)
 			.attr("stroke-width", "1")
 			.attr("x1", (d) => this.scaleX(dateMinuteToDate(d.date, d.minute)))
 			.attr("y1", (d) => this.scaleY(d.open))
