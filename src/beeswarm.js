@@ -413,15 +413,18 @@ export class Beeswarm {
 	startSimulation() {
 		this.simulation = d3
 			.forceSimulation(this.gas.data)
-			.alphaTarget(0.2)
+			.alphaTarget(0.1)
 			.velocityDecay(0.15)
 			.on("tick", (_) => {
 				this.circles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 			});
 
-		// Sets the starting locations
+		// Teleports with custom y spread
+		let spread_var = (this.bounds.maxX - this.bounds.minX) / 10;
+		let spread = d3.randomNormal(0, spread_var);
+		this.teleportCircles(this.circles, spread_var);
 		this.circles.datum((d) => {
-			d.x = this.scaleX(d.sector);
+			d.y = spread() * 2;
 			return d;
 		});
 
@@ -447,7 +450,7 @@ export class Beeswarm {
 						return this.scaleRadius(d[this.gas.zValueName]);
 					}
 				})
-				.iterations(4)
+				.iterations(3)
 				.strength(this.simulationSettings.collisionStrength)
 		);
 	}
@@ -496,13 +499,13 @@ export class Beeswarm {
 	 * Takes a selection of circles, and sets their x and y values based on
 	 * their data
 	 */
-	teleportCircles(circles) {
+	teleportCircles(circles, spread_var = null) {
+		if (spread_var === null) {
+			spread_var = (this.bounds.maxX - this.bounds.minX) / 40;
+		}
+		// Puts them with some random x values
+		let spread = d3.randomNormal(0, spread_var);
 		circles.datum((d) => {
-			// Puts them with some random x values
-			let spread = d3.randomNormal(
-				0,
-				(this.bounds.maxX - this.bounds.minX) / 40
-			);
 			d.x = this.scaleX(d.sector) + spread();
 			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
 			return d;
