@@ -137,6 +137,20 @@ export class GlobalAppState {
 			false
 		);
 		this.set_index(0);
+		this.addEventValueToGlobalAppState(
+			"indexPlottedRange",
+			[0, this.data[0].chart.length],
+			[
+				(_) => {
+					if (this.index < this.indexPlottedRange[0]) {
+						this.set_index(this.indexPlottedRange[0]);
+					}
+					if (this.index > this.indexPlottedRange[1]) {
+						this.set_index(this.indexPlottedRange[1]);
+					}
+				},
+			]
+		);
 
 		// Uses scalePoint, which has as the range only dates which exist in the data.
 		let calculate_date_domain = () => {
