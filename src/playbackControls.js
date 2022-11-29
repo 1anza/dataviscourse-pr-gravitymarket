@@ -43,7 +43,7 @@ export function createPlaybackControls(gas) {
 	// Sets up the rewind button
 	playbackdiv.select("button#go-to-start").on("click", (_) => {
 		gas.set_playing(false);
-		gas.set_index(0);
+		gas.set_index(gas.indexPlottedRange[0]);
 	});
 
 	// Sets up the date monitor

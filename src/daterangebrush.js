@@ -18,10 +18,10 @@ export class DateRangeBrush {
 			minX: 10,
 			maxX: svg_width - 10,
 			minY: 5,
-			maxY: svg_height - 5,
+			maxY: svg_height - 10,
 		};
-		this.handleWidth = 30;
-		this.handleHeight = 30;
+		this.handleWidth = 20;
+		this.handleHeight = 20;
 		this.svg
 			.selectAll("image")
 			.attr("width", this.handleWidth)
@@ -34,7 +34,7 @@ export class DateRangeBrush {
 		this.createBrush();
 		this.updatePlaybackHead();
 
-		this.gas.addEventListenerToEvent("date", _ => {
+		this.gas.addEventListenerToEvent("date", (_) => {
 			this.updatePlaybackHead();
 		});
 	}
@@ -53,10 +53,7 @@ export class DateRangeBrush {
 			.tickValues(genDateTicksEveryMonth(this.gas.data[0].chart))
 			.tickFormat(d3.timeFormat("%b"));
 		axisG.call(axisX);
-		axisG.attr(
-			"transform",
-			`translate(0 ${(this.bounds.maxY - this.bounds.minY) / 2})`
-		);
+		axisG.attr("transform", `translate(0 ${this.bounds.maxY - 10})`);
 	}
 
 	createBrush() {
@@ -73,15 +70,16 @@ export class DateRangeBrush {
 			that.gas.set_indexPlottedRange([left_index, right_index]);
 		};
 		let brushedHandle = function (selection) {
+			let y_val = that.bounds.minY;
 			that.handleLeft.attr(
 				"transform",
-				`rotate(90) translate(0 ${
+				`rotate(90) translate(${y_val} ${
 					-1 * selection.selection[0] - that.handleWidth / 2
 				})`
 			);
 			that.handleRight.attr(
 				"transform",
-				`rotate(90) translate(0 ${
+				`rotate(90) translate(${y_val} ${
 					-1 * selection.selection[1] - that.handleWidth / 2
 				})`
 			);
@@ -103,7 +101,8 @@ export class DateRangeBrush {
 	}
 
 	updatePlaybackHead() {
-		this.svg.select("g#playback-follow")
+		this.svg
+			.select("g#playback-follow")
 			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`);
 	}
 }

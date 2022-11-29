@@ -74,6 +74,12 @@ body {
 	align-items: baseline;
 }
 
+.playhead-handle {
+	stroke: grey;
+	fill: gray;
+	cursor: pointer;
+}
+
 .open-close-line-up-day {
 	stroke: green;
 }
