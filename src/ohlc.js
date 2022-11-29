@@ -100,7 +100,7 @@ export class Ohlc {
 			.attr("text-anchor", "left")
 			.style('font-size', '15px')
 
-		let lines = bars.selectAll("line.open-close-line").data(function (d) {
+		let lines = bars.selectAll("line").data(function (d) {
 			return [d];
 		});
 		lines
