@@ -33,6 +33,7 @@ export class DateRangeBrush {
 		this.drawXAxis();
 		this.createBrush();
 		this.updatePlaybackHead();
+		this.setupPlaybackHead();
 
 		this.gas.addEventListenerToEvent("date", (_) => {
 			this.updatePlaybackHead();
@@ -91,6 +92,7 @@ export class DateRangeBrush {
 				[this.bounds.minX, this.bounds.minY],
 				[this.bounds.maxX, this.bounds.maxY],
 			])
+			.handleSize(15)
 			.on("start brush end", brushedHandle)
 			.on("end", brushed);
 
@@ -98,6 +100,29 @@ export class DateRangeBrush {
 			.select("g#controls")
 			.call(brush)
 			.call(brush.move, [this.bounds.minX, this.bounds.maxX]);
+	}
+
+	setupPlaybackHead() {
+		let playback_follow = this.svg
+			.select("g#playback-follow")
+			.datum({ x: this.scaleX(this.gas.date) })
+			.attr("transform", (d) => `translate(${d.x} 0)`);
+		let polygon = this.svg.select("polygon#playback-head");
+		let that = this;
+		let range = this.scaleX.range();
+		let rangePoints = d3.range(range[0], range[1], this.scaleX.step());
+		let x = this.bounds.minX;
+		let on_drag = function (e, d) {
+			let index = d3.bisect(rangePoints, e.x);
+			console.log(d, index);
+			d.x += e.dx;
+			d.x = Math.max(that.scaleX.range()[0], d.x);
+			d.x = Math.min(d.x, that.bounds.maxX);
+			d3.select(this).attr("transform", `translate(${d.x} 0)`);
+			that.gas.set_index(index);
+		};
+		let drag = d3.drag().on("drag", on_drag);
+		playback_follow.call(drag);
 	}
 
 	updatePlaybackHead() {

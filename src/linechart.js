@@ -73,7 +73,8 @@ export class Linechart {
 	updatePlayheadLine() {
 		// There is a lag when transitioning soley based on the gas._frequency
 		// This compensates for that delay by making the transitions slightly longer.
-		let delay_compensation = 1.0;
+		// TEMP transition was causing issues
+		let delay_compensation = 0.0;
 		this.svg
 			.select("g#playback-follow")
 			.transition()
