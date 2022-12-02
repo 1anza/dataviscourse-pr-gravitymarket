@@ -138,9 +138,11 @@ export class Beeswarm {
 	 * Draws a key for the radius
 	 */
 	updateRadiusKey() {
-		// By default, the two values plotted are the min and max of the data
-		let ticks = this.gas.zValueDataRange;
-		let rad_key_offset = [-60, -5];
+		// By default, the two values plotted are the max/2 and max of the data
+		let ticks = structuredClone(this.gas.zValueDataRange);
+		ticks[0] = ticks[1] / 10;
+		console.log("TICKS", ticks);
+		let rad_key_offset = [-60, -10];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
 			.attr(
@@ -156,15 +158,17 @@ export class Beeswarm {
 			.attr("id", "beeswarm-key-circle");
 
 		// Angle in radians
-		let theta = Math.PI / 4;
-		let format = d3.format(",.1f");
+		let theta = Math.PI / 3;
+		// Small offset
+		let offset = [5, 5];
+		let format = d3.format(",.2r");
 		rad_key
 			.selectAll("text")
 			.data(ticks)
 			.join("text")
-			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta))
-			.attr("y", (d) => this.scaleRadius(d) * Math.sin(theta))
-			.text((d) => `$${format(d / 1e9)}B`)
+			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta) + offset[0])
+			.attr("y", (d) => this.scaleRadius(d) * Math.sin(theta) + offset[1])
+			.text((d) => `$${format(d / 1e9)} Billion`)
 			.attr("id", "beeswarm-key-text");
 	}
 
