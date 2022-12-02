@@ -15,16 +15,16 @@
 	<title>Swarm Chart</title>
 </head>
 <body>
-    <div class="sidenav">
-	    <div class="title">
-		    <a href="index.html">
-		    GravMarket
-		    </a>
-	    </div>
-	    <a href="userguide.html">User Guide</a>
-	    <a href="about.html">About</a>
-	    <a href="credits.html">Credits</a>
-    </div>
+	<div class="sidenav">
+		<div class="title">
+			<a href="index.html">
+				GravMarket
+			</a>
+		</div>
+			<a href="userguide.html">User Guide</a>
+			<a href="about.html">About</a>
+			<a href="credits.html">Credits</a>
+	</div>
 	<div class="column-box">
 		<div class="row-box">
 			<div class="table-div boxitem" id="table">
@@ -48,7 +48,7 @@
 				</svg>
 			</div>
 			<div class="ohlc-div boxitem" id="ohlc">
-				<svg id="ohlc-vis" height="95%" width="150%">
+				<svg id="ohlc-vis" height="95%" width="195%">
 					<g class="ohlc-series"></g>
 					<g id="y-axis"></g>
 					<g id="x-axis"></g>
@@ -56,14 +56,14 @@
 				</svg>
 			</div>
 			<div class="table-div boxitem">
-				<svg id="details" height="100%" width="57%"></svg>
+				<svg id="details" height="100%" width="45%"></svg>
 			</div>
 		</div>
 		<div class="beeswarm-div boxitem" id="beeswarm">
 			<svg id="beeswarm-vis" height="325px" width="100%">
 				<g id="radius-key">
 					<text x="-30" y="-30" class="radius-key-title">
-					Market Cap
+						Market Cap
 					</text>
 				</g>
 				<g id="grid"></g>
@@ -76,26 +76,24 @@
 			<svg id="daterangebrush" height="30px" width="100%">
 				<g id="controls"></g>
 				<g id="x-axis"></g>
-				<image
-				    id="handle-left"
-				    x="0"
-				    y="0"
-				    width="20"
-				    height="20"
-				    transform="rotate(90) translate(0, -100)"
-				    xlink:href="res/drag-reorder.png" />
-				<image
-				    id="handle-right"
-				    x="0"
-				    y="0"
-				    width="20"
-				    height="20"
-				    transform="rotate(90) translate(0, -100)"
-				    xlink:href="res/drag-reorder.png" />
+				<image id="handle-left"
+					   x="0"
+					   y="0"
+					   width="20"
+					   height="20"
+					   transform="rotate(90) translate(0, -100)"
+					   xlink:href="res/drag-reorder.png" />
+				<image id="handle-right"
+					   x="0"
+					   y="0"
+					   width="20"
+					   height="20"
+					   transform="rotate(90) translate(0, -100)"
+					   xlink:href="res/drag-reorder.png" />
 				<g id="playback-follow">
 					<line id="playback-line" class="playback-line" x1="0" x2="0" y1="-1000" y2="1000">
 					</line>
-					<polygon id = "playback-head" class="playhead-handle" points="-19,-15 19,-15 0,10"/>
+					<polygon id="playback-head" class="playhead-handle" points="-19,-15 19,-15 0,10" />
 				</g>
 			</svg>
 		</div>
