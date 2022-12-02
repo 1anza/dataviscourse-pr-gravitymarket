@@ -43,7 +43,7 @@ export class Table {
 			.append("text")
 			.attr("x", 20)
 			.attr("y", function (d, i) {
-				return 10 + i * (size + 5) + size / 2;
+				return 10 + i * (size + 1) + size / 2;
 			})
 			.style("fill", "black")
 			.text(function (d) {
@@ -66,9 +66,10 @@ export class Table {
 			.attr("class", "values")
 			.attr("x", 100)
 			.attr("y", function (d, i) {
-				return 9 + i * (size + 5) + size / 2;
+				return 9 + i * (size + 1) + size / 2;
 			})
 			.style("fill", "black")
+			.style("font-weight", "normal")
 			.text(function (d) {
 				return data[d];
 			})

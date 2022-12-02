@@ -12,9 +12,9 @@ export class SectorControls {
 			maxY: svg_height - 3,
 		};
 
-		this.rect_height = 15;
+		this.rect_height = 22;
 		this.rect_width = 150;
-		this.rect_spacing = 2;
+		this.rect_spacing = 3;
 
 		this.initRects();
 	}
@@ -39,7 +39,8 @@ export class SectorControls {
 		this.sector_groups
 			.append("text")
 			.text((d) => d)
-			.attr("transform", `translate(0 ${this.rect_height - 4} )`)
+			.attr("transform", `translate(13 ${this.rect_height - 4} )`)
+			.attr("text-anchor", "center")
 			.classed("sector-select-text-label", true);
 
 		// handles click and mouse hover interaction
