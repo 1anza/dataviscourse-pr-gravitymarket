@@ -5,7 +5,7 @@
 	position: fixed; /* Fixed Sidebar (stay in place on scroll) */
 	z-index: 1; /* Stay on top */
 	top: 0; /* Stay at the top */
-	left:0;
+	left: 0;
 	background-color: #111; /* Black */
 	overflow-x: hidden; /* Disable horizontal scroll */
 	display: flex;
@@ -24,17 +24,14 @@
 	display: block;
 }
 
-
 * {
-	font-family: 'Bradley Hand';
+	font-family: "Bradley Hand";
 	font-weight: 800;
-	
 }
 
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
 	color: #faf8ed;
-	;
 }
 
 .sidenav .title {
@@ -134,7 +131,7 @@ body {
 
 .dateaxis-text {
 	text-anchor: start;
-	font: 'Bradley Hand';
+	font: "Bradley Hand";
 }
 
 #beeswarm-tooltip {
@@ -154,8 +151,8 @@ body {
 }
 
 .beeswarm-circle-company-label {
-	text-anchor:middle;
-	font-size:small;
+	text-anchor: middle;
+	font-size: small;
 }
 
 .radius-key-title {
@@ -181,7 +178,7 @@ body {
 	fill: white;
 }
 
-#ohlc-vis{
+#ohlc-vis {
 	margin-top: 10px;
 }
 
@@ -229,12 +226,12 @@ body {
 .sector-select-text-label {
 	text-align: center;
 	font-size: 12px;
-	font: 'Bradley Hand';
+	font: "Bradley Hand";
 }
 
 svg text {
 	pointer-events: none;
-	font: 'Bradley Hand';
+	font: "Bradley Hand";
 }
 
 svg image {
@@ -261,6 +258,6 @@ svg image {
 	stroke: black;
 }
 
-.daterangebrush{
+.daterangebrush {
 	margin-top: 25px;
 }

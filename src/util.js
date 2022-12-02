@@ -5,12 +5,17 @@ function dateMinuteToDate(date, minute) {
 	return new Date(datestring);
 }
 
-function getPercChange(row, index, yValueName) {
+function getPercChange(row, index, yValueName, zeroeth_index = 0) {
 	row["percentChange"] =
-		(row.chart[index][yValueName] / row.chart[0][yValueName] - 1) * 100;
+		(row.chart[index][yValueName] / row.chart[zeroeth_index][yValueName] - 1) *
+		100;
 	row.chart[index]["percentChange"] =
-		(row.chart[index][yValueName] / row.chart[0][yValueName] - 1) * 100;
-	return (row.chart[index][yValueName] / row.chart[0][yValueName] - 1) * 100;
+		(row.chart[index][yValueName] / row.chart[zeroeth_index][yValueName] - 1) *
+		100;
+	return (
+		(row.chart[index][yValueName] / row.chart[zeroeth_index][yValueName] - 1) *
+		100
+	);
 }
 
 function removeVanguardPrefixFromSector(stringName) {

@@ -69,7 +69,9 @@ export class Beeswarm {
 
 			this.updateScaleRadius();
 			this.updateRadiusKey();
-			this.circles.select("circle").attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]));
+			this.circles
+				.select("circle")
+				.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]));
 
 			this.updateCollisions();
 			this.updateSimulationX();
@@ -376,12 +378,10 @@ export class Beeswarm {
 			.data(this.gas.data);
 		this.circles.exit().remove();
 		let that = this;
-		this.circles = this.circles
-			.join("g")
-			.attr("id", "circle");
+		this.circles = this.circles.join("g").attr("id", "circle");
 
-
-		this.circles.append("circle")
+		this.circles
+			.append("circle")
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)
@@ -424,7 +424,10 @@ export class Beeswarm {
 				that.gas.set_selectedSingleCompany(clicked_);
 				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
 			});
-		this.circles.append("text").classed("beeswarm-circle-company-label", true).attr("y", 4);
+		this.circles
+			.append("text")
+			.classed("beeswarm-circle-company-label", true)
+			.attr("y", 4);
 	}
 
 	updateTooltip(_data) {
@@ -434,11 +437,13 @@ export class Beeswarm {
 		if (!_data) {
 			return;
 		}
-		let sector = `${_data.sector}`;
 		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName);
-		let html = `Ticker: ${_data.ticker} <div> Company: ${_data.company} <div> Market Cap: ${_data.marketcap} <div> Perc.: ${d3.format(
-			".1f"
-		)(close_perc)}%`;
+		let marketcap_format = d3.format(",.3r");
+		let html = `Ticker: ${_data.ticker} <div> Company: ${
+			_data.company
+		} <div> Market Cap: $${marketcap_format(
+			_data.marketcap / 1e9
+		)}B <div> Perc.: ${d3.format(".1f")(close_perc)}%`;
 		// Sets tooltip to be visible
 		this.tooltip.style("opacity", 1).html(html);
 		this._prev_selected_data = _data;
@@ -474,16 +479,15 @@ export class Beeswarm {
 	 * Updates text labels for companies that have a large radius
 	 */
 	updateBigcompanyLabels() {
-		let thresh = this.gas.zValueDataRange[1] * 0.20;
-		this.circles.selectAll("text.beeswarm-circle-company-label")
-			.text(d => {
-				if (d[this.gas.zValueName] > thresh) {
-					console.log(d.ticker);
-					return d.ticker;
-				} else {
-					"";
-				}
-			});
+		let thresh = this.gas.zValueDataRange[1] * 0.2;
+		this.circles.selectAll("text.beeswarm-circle-company-label").text((d) => {
+			if (d[this.gas.zValueName] > thresh) {
+				console.log(d.ticker);
+				return d.ticker;
+			} else {
+				("");
+			}
+		});
 	}
 
 	/*
