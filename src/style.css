@@ -22,6 +22,12 @@
 	display: block;
 }
 
+* {
+	font-family: 'Bradley Hand';
+	font-weight: 800;
+	
+}
+
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
 	color: #f1f1f1;
@@ -34,7 +40,7 @@
 
 body {
 	margin: 0;
-	background-color: #f7fafb;
+	background-color: #faf8ed;
 	font-family: Georgia, Helvetica, sans-serif;
 }
 
@@ -124,6 +130,7 @@ body {
 
 .dateaxis-text {
 	text-anchor: start;
+	font: 'Bradley Hand';
 }
 
 #beeswarm-tooltip {
@@ -161,8 +168,15 @@ body {
 	fill: white;
 }
 
+#ohlc-vis{
+	margin-top: 10px;
+}
+
 .title {
+	margin-bottom: 10px;
 	font-size: 4em;
+	font-family: fantasy;
+	font-stretch: extra-expanded;
 }
 
 .playback-button {
@@ -200,12 +214,14 @@ body {
 }
 
 .sector-select-text-label {
-	text-align: end;
-	font-size: small;
+	text-align: center;
+	font-size: 12px;
+	font: 'Bradley Hand';
 }
 
 svg text {
 	pointer-events: none;
+	font: 'Bradley Hand';
 }
 
 svg image {
@@ -213,12 +229,13 @@ svg image {
 }
 
 #details {
+	margin-left: 115px;
 	border-radius: 2px;
 	border-color: black;
-	border-width: 1px;
+	border-width: 2px;
 	border-style: solid;
 	font-size: 12px;
-	font-family: Arial, Helvetica, sans-serif;
+	font-weight: normal;
 }
 
 .daterangerect {
@@ -229,4 +246,8 @@ svg image {
 .daterangeselectedrect {
 	fill: lightblue;
 	stroke: black;
+}
+
+.daterangebrush{
+	margin-top: 25px;
 }

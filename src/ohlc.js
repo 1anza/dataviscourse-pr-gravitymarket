@@ -92,7 +92,7 @@ export class Ohlc {
 			.append("text")
 			.attr("class", "title")
 			.attr("x", 100)
-			.attr("y", this.bounds.minY)
+			.attr("y", this.bounds.minY-5)
 			.style("fill", "black")
 			.text(company.company)
 			.attr("text-anchor", "left")
