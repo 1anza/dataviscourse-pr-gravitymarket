@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "parcel ./index.html",
-    "build": "parcel build ./index.html --public-url ./dataviscourse-pr-gravitymarket/"
+    "build": "parcel build ./index.html --public-url ./"
   },
   "dependencies": {
     "@d3fc/d3fc-discontinuous-scale": "^4.1.0",
