@@ -107,14 +107,17 @@ export class DateRangeBrush {
 			.select("g#playback-follow")
 			.datum({ x: this.scaleX(this.gas.date) })
 			.attr("transform", (d) => `translate(${d.x} 0)`);
-		let polygon = this.svg.select("polygon#playback-head");
+
+		// Attaches a listener to the gas.date to make the d.x update when the date changes
+		this.gas.addEventListenerToEvent("date", (_) =>
+			playback_follow.datum({ x: this.scaleX(this.gas.date) })
+		);
 		let that = this;
 		let range = this.scaleX.range();
 		let rangePoints = d3.range(range[0], range[1], this.scaleX.step());
 		let x = this.bounds.minX;
 		let on_drag = function (e, d) {
 			let index = d3.bisect(rangePoints, e.x);
-			console.log(d, index);
 			d.x += e.dx;
 			d.x = Math.max(that.scaleX.range()[0], d.x);
 			d.x = Math.min(d.x, that.bounds.maxX);

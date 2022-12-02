@@ -57,16 +57,19 @@ export class Beeswarm {
 		this.gas.addEventListenerToEvent("zValueDataRange", (_) => {
 			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
 			if (this.gas.groupingBySector) {
-				this.circles.attr("visibility", (d) =>
-					this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
-				).attr("fill", (d) => this.gas.colorFunc(d.sector))
+				this.circles
+					.attr("visibility", (d) =>
+						this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
+					)
+					.attr("fill", (d) => this.gas.colorFunc(d.sector));
 			} else {
-				this.circles.attr("visibility", "visible")
-					.attr('fill', (d) => {
-						if (d.percentChange > 0) return this.colorPositive(d.percentChange)
-						else return this.colorNegative(d.percentChange)
+				this.circles
+					.attr("visibility", "visible")
+					.attr("fill", (d) => {
+						if (d.percentChange > 0) return this.colorPositive(d.percentChange);
+						else return this.colorNegative(d.percentChange);
 					})
-					.attr('stroke', 'none')
+					.attr("stroke", "none");
 			}
 			this.updateScaleX();
 			this.drawXAxis();
@@ -135,9 +138,11 @@ export class Beeswarm {
 	 * Draws a key for the radius
 	 */
 	updateRadiusKey() {
-		// By default, the two values plotted are the min and max of the data
-		let ticks = this.gas.zValueDataRange;
-		let rad_key_offset = [-60, -5];
+		// By default, the two values plotted are the max/2 and max of the data
+		let ticks = structuredClone(this.gas.zValueDataRange);
+		ticks[0] = ticks[1] / 10;
+		console.log("TICKS", ticks);
+		let rad_key_offset = [-60, -10];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
 			.attr(
@@ -153,15 +158,17 @@ export class Beeswarm {
 			.attr("id", "beeswarm-key-circle");
 
 		// Angle in radians
-		let theta = Math.PI / 4;
-		let format = d3.format(",.1f");
+		let theta = Math.PI / 3;
+		// Small offset
+		let offset = [5, 5];
+		let format = d3.format(",.2r");
 		rad_key
-			.selectAll("text")
+			.selectAll("text#beeswarm-key-text")
 			.data(ticks)
 			.join("text")
-			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta))
-			.attr("y", (d) => this.scaleRadius(d) * Math.sin(theta))
-			.text((d) => `$${format(d / 1e9)}B`)
+			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta) + offset[0])
+			.attr("y", (d) => this.scaleRadius(d) * Math.sin(theta) + offset[1])
+			.text((d) => `$${format(d / 1e9)} Billion`)
 			.attr("id", "beeswarm-key-text");
 	}
 
@@ -332,27 +339,27 @@ export class Beeswarm {
 	}
 
 	// gradient
-	getValues() {
-
-	}
+	getValues() {}
 	//gradient
 	initColorScales() {
-		this.maxPercentChange = d3.max((this.gas.data), function (d) {
-			return d3.max((d.chart), function (e) {
-				return e.percentChange
+		this.maxPercentChange = d3.max(this.gas.data, function (d) {
+			return d3.max(d.chart, function (e) {
+				return e.percentChange;
 			});
-		})
-		this.minPercentChange = d3.min((this.gas.data), function (d) {
-			return d3.min((d.chart), function (e) {
-				return e.percentChange
+		});
+		this.minPercentChange = d3.min(this.gas.data, function (d) {
+			return d3.min(d.chart, function (e) {
+				return e.percentChange;
 			});
-		})
-		this.colorPositive = d3.scaleLinear()
+		});
+		this.colorPositive = d3
+			.scaleLinear()
 			.domain([0, this.maxPercentChange])
-			.range(["#E9EDEB", "#244C3B"])
-		this.colorNegative = d3.scaleLinear()
+			.range(["#E9EDEB", "#244C3B"]);
+		this.colorNegative = d3
+			.scaleLinear()
 			.domain([this.minPercentChange, 0])
-			.range(["#5a1214", "#EEE7E7"])
+			.range(["#5a1214", "#EEE7E7"]);
 	}
 
 	initTooltip() {
@@ -376,8 +383,8 @@ export class Beeswarm {
 		let that = this;
 		this.circles = this.circles
 			.join("circle")
-			.attr('fill', "white")
-			.attr('stroke', 'black')
+			.attr("fill", "white")
+			.attr("stroke", "black")
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)
 			.on("mouseover", function (_) {
@@ -398,12 +405,13 @@ export class Beeswarm {
 				that._prev_selected_data = null;
 			})
 			.on("click", function () {
-
 				let clicked = d3.select(this);
 				let clicked_ = clicked._groups[0][0].__data__;
 				clicked.classed("clicked-swarm-circ", true);
-				var date = d3.select("div#current-date").html()
-				var filteredDateData = clicked_.chart.filter(a => { return that.parseTime(a.date + " " + a.minute) == date })[0]
+				var date = d3.select("div#current-date").html();
+				var filteredDateData = clicked_.chart.filter((a) => {
+					return that.parseTime(a.date + " " + a.minute) == date;
+				})[0];
 				var valuesToDisplay = {
 					open: filteredDateData.open,
 					close: filteredDateData.close,
@@ -415,19 +423,21 @@ export class Beeswarm {
 					beta: clicked_.beta,
 					dividend: clicked_.dividend,
 					earnings: clicked_.earnings,
-					marketcap: clicked_.marketcap
-				}
-				console.log('Values to display->', valuesToDisplay)
+					marketcap: clicked_.marketcap,
+				};
+				console.log("Values to display->", valuesToDisplay);
 				that.gas.set_selectedSingleCompany(clicked_);
 				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
-
-
 			});
 	}
 	changeColor() {
-		var date = d3.select("div#current-date").html()
+		var date = d3.select("div#current-date").html();
 		if (this.gas.selectedSingleCompany != undefined) {
-			var filteredDateData = this.gas.selectedSingleCompany.chart.filter(a => { return this.parseTime(a.date + " " + a.minute) == date })[0]
+			var filteredDateData = this.gas.selectedSingleCompany.chart.filter(
+				(a) => {
+					return this.parseTime(a.date + " " + a.minute) == date;
+				}
+			)[0];
 			var valuesToDisplay = {
 				open: filteredDateData.open,
 				close: filteredDateData.close,
@@ -439,21 +449,19 @@ export class Beeswarm {
 				beta: this.gas.selectedSingleCompany.beta,
 				dividend: this.gas.selectedSingleCompany.dividend,
 				earnings: this.gas.selectedSingleCompany.earnings,
-				marketcap: this.gas.selectedSingleCompany.marketcap
-			}
+				marketcap: this.gas.selectedSingleCompany.marketcap,
+			};
 			this.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
 		}
 
-
 		if (!this.gas.groupingBySector) {
-			this.circles.attr('fill', (d) => {
-				if (d.percentChange > 0) return this.colorPositive(d.percentChange)
-				else return this.colorNegative(d.percentChange)
-			}).attr('stroke', 'none')
-		}
-		else
-			this.circles.attr("fill", (d) => this.gas.colorFunc(d.sector))
-
+			this.circles
+				.attr("fill", (d) => {
+					if (d.percentChange > 0) return this.colorPositive(d.percentChange);
+					else return this.colorNegative(d.percentChange);
+				})
+				.attr("stroke", "none");
+		} else this.circles.attr("fill", (d) => this.gas.colorFunc(d.sector));
 	}
 
 	updateTooltip(_data) {
@@ -496,7 +504,7 @@ export class Beeswarm {
 		this.updateCollisions();
 		this.updateSimulationX();
 		this.updateSimulationY();
-		console.log('simulation', this.simulation);
+		console.log("simulation", this.simulation);
 	}
 
 	/*
