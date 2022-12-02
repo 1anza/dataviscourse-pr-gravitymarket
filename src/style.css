@@ -149,6 +149,11 @@ body {
 	fill: none;
 }
 
+.beeswarm-circle-company-label {
+	text-anchor:middle;
+	font-size:small;
+}
+
 .radius-key-title {
 	font-size: large;
 }
