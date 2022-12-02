@@ -19,6 +19,7 @@ export class Beeswarm {
 			minY: 20,
 			maxY: svg_height - 20,
 		};
+		this.parseTime = d3.timeParse("%Y-%m-%d %H:%M");
 
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
 		this.updateScaleX();
@@ -30,6 +31,7 @@ export class Beeswarm {
 		this.drawYAxis();
 		this.drawXAxis();
 
+		this.initColorScales(); //red/green gradient
 		this.initTooltip();
 		this.drawCircles();
 
@@ -45,6 +47,7 @@ export class Beeswarm {
 			this.updateSimulationY();
 			this.updateTooltip();
 		});
+		this.gas.addEventListenerToEvent("date", (_) => this.changeColor());
 
 		this.sectorControls = new SectorControls(this.gas, svg_width, svg_height);
 		this.sectorControls.updateSectorControls(this.scaleX);
@@ -56,9 +59,14 @@ export class Beeswarm {
 			if (this.gas.groupingBySector) {
 				this.circles.attr("visibility", (d) =>
 					this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
-				);
+				).attr("fill", (d) => this.gas.colorFunc(d.sector))
 			} else {
-				this.circles.attr("visibility", "visible");
+				this.circles.attr("visibility", "visible")
+					.attr('fill', (d) => {
+						if (d.percentChange > 0) return this.colorPositive(d.percentChange)
+						else return this.colorNegative(d.percentChange)
+					})
+					.attr('stroke', 'none')
 			}
 			this.updateScaleX();
 			this.drawXAxis();
@@ -323,6 +331,30 @@ export class Beeswarm {
 			.classed("beeswarm-gridline", true);
 	}
 
+	// gradient
+	getValues() {
+
+	}
+	//gradient
+	initColorScales() {
+		this.maxPercentChange = d3.max((this.gas.data), function (d) {
+			return d3.max((d.chart), function (e) {
+				return e.percentChange
+			});
+		})
+		this.minPercentChange = d3.min((this.gas.data), function (d) {
+			return d3.min((d.chart), function (e) {
+				return e.percentChange
+			});
+		})
+		this.colorPositive = d3.scaleLinear()
+			.domain([0, this.maxPercentChange])
+			.range(["#E9EDEB", "#244C3B"])
+		this.colorNegative = d3.scaleLinear()
+			.domain([this.minPercentChange, 0])
+			.range(["#5a1214", "#EEE7E7"])
+	}
+
 	initTooltip() {
 		this.tooltip = d3
 			.select("div#beeswarm")
@@ -334,7 +366,6 @@ export class Beeswarm {
 	}
 
 	drawCircles() {
-		const parseTime = d3.timeParse("%Y-%m-%d %H:%M");
 		let tooltip = this.tooltip;
 		this.circles = d3
 			.select("svg#beeswarm-vis")
@@ -345,7 +376,8 @@ export class Beeswarm {
 		let that = this;
 		this.circles = this.circles
 			.join("circle")
-			.attr("fill", (d) => this.gas.colorFunc(d.sector))
+			.attr('fill', "white")
+			.attr('stroke', 'black')
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)
 			.on("mouseover", function (_) {
@@ -366,14 +398,12 @@ export class Beeswarm {
 				that._prev_selected_data = null;
 			})
 			.on("click", function () {
-				var date = d3.select("div#current-date").html(); // for table
+
 				let clicked = d3.select(this);
 				let clicked_ = clicked._groups[0][0].__data__;
 				clicked.classed("clicked-swarm-circ", true);
-				// add table information on click
-				var filteredDateData = clicked_.chart.filter((a) => {
-					return parseTime(a.date + " " + a.minute) == date;
-				})[0];
+				var date = d3.select("div#current-date").html()
+				var filteredDateData = clicked_.chart.filter(a => { return that.parseTime(a.date + " " + a.minute) == date })[0]
 				var valuesToDisplay = {
 					open: filteredDateData.open,
 					close: filteredDateData.close,
@@ -385,12 +415,45 @@ export class Beeswarm {
 					beta: clicked_.beta,
 					dividend: clicked_.dividend,
 					earnings: clicked_.earnings,
-					marketcap: clicked_.marketcap,
-				};
-				console.log("Values to display->", valuesToDisplay);
+					marketcap: clicked_.marketcap
+				}
+				console.log('Values to display->', valuesToDisplay)
 				that.gas.set_selectedSingleCompany(clicked_);
 				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
+
+
 			});
+	}
+	changeColor() {
+		var date = d3.select("div#current-date").html()
+		if (this.gas.selectedSingleCompany != undefined) {
+			var filteredDateData = this.gas.selectedSingleCompany.chart.filter(a => { return this.parseTime(a.date + " " + a.minute) == date })[0]
+			var valuesToDisplay = {
+				open: filteredDateData.open,
+				close: filteredDateData.close,
+				high: filteredDateData.high,
+				low: filteredDateData.low,
+				volume: filteredDateData.volume,
+				pe: this.gas.selectedSingleCompany.pe,
+				eps: this.gas.selectedSingleCompany.eps,
+				beta: this.gas.selectedSingleCompany.beta,
+				dividend: this.gas.selectedSingleCompany.dividend,
+				earnings: this.gas.selectedSingleCompany.earnings,
+				marketcap: this.gas.selectedSingleCompany.marketcap
+			}
+			this.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
+		}
+
+
+		if (!this.gas.groupingBySector) {
+			this.circles.attr('fill', (d) => {
+				if (d.percentChange > 0) return this.colorPositive(d.percentChange)
+				else return this.colorNegative(d.percentChange)
+			}).attr('stroke', 'none')
+		}
+		else
+			this.circles.attr("fill", (d) => this.gas.colorFunc(d.sector))
+
 	}
 
 	updateTooltip(_data) {
@@ -433,6 +496,7 @@ export class Beeswarm {
 		this.updateCollisions();
 		this.updateSimulationX();
 		this.updateSimulationY();
+		console.log('simulation', this.simulation);
 	}
 
 	/*

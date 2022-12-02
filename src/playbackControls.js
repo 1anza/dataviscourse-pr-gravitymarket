@@ -8,6 +8,7 @@ export function createPlaybackControls(gas) {
 	// Sets up the playpause button
 	let button = playbackdiv.select("button#playpause").on("click", function () {
 		gas.set_playing(!gas.playing);
+		gas.set_changeColor()
 		let button = d3.select(this);
 		updatePlayButton(button, gas);
 	});
