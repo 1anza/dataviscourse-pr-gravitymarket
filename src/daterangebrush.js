@@ -15,8 +15,8 @@ export class DateRangeBrush {
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
-			minX: 10,
-			maxX: svg_width - 10,
+			minX: 40,
+			maxX: svg_width - 40,
 			minY: 5,
 			maxY: svg_height - 10,
 		};

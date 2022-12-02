@@ -69,7 +69,7 @@ export class GlobalAppState {
 
 	initializeEvents(companyData, sp500Data, sectorData) {
 		/*  ------------Data and bounds---------------------    */
-		this.addEventValueToGlobalAppState("dateValueRange", null);
+		this.addEventValueToGlobalAppState("dateValueRange", null, [], true);
 		this.addEventValueToGlobalAppState("data", companyData, [
 			(e) => {
 				// looks at all of the dates of the first value in data
@@ -125,7 +125,7 @@ export class GlobalAppState {
 		update_percentYValueRange();
 
 		/*  -----------Time series and tick controls--------    */
-		this.addEventValueToGlobalAppState("date", null, [], true);
+		this.addEventValueToGlobalAppState("date", null, [], false);
 		this.addEventValueToGlobalAppState(
 			"index",
 			null,
