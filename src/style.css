@@ -142,6 +142,10 @@ body {
 	fill: none;
 }
 
+.radius-key-title {
+	font-size: large;
+}
+
 /* the single ticker that is being shown in the ohlc which has been clicked */
 .beeswarm-single-selected-ticker {
 	stroke-width: 1;

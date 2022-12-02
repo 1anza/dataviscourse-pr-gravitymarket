@@ -163,7 +163,7 @@ export class Beeswarm {
 		let offset = [5, 5];
 		let format = d3.format(",.2r");
 		rad_key
-			.selectAll("text")
+			.selectAll("text#beeswarm-key-text")
 			.data(ticks)
 			.join("text")
 			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta) + offset[0])
