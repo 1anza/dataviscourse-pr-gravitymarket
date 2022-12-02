@@ -13,7 +13,7 @@ export class SectorControls {
 		};
 
 		this.rect_height = 22;
-		this.rect_width = 150;
+		this.rect_width = 175;
 		this.rect_spacing = 3;
 
 		this.initRects();
