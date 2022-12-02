@@ -273,8 +273,10 @@ export class Beeswarm {
 			tick_step = 1;
 		} else if (domain_distance < 50) {
 			tick_step = 5;
-		} else {
+		} else if (domain_distance < 80) {
 			tick_step = 10;
+		} else {
+			tick_step = 20;
 		}
 		let ticks = d3.range(-200, 200.01, tick_step);
 
