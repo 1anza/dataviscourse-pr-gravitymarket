@@ -426,7 +426,7 @@ export class Beeswarm {
 		}
 		let sector = `${_data.sector}`;
 		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName);
-		let html = `Ticker: "${_data.ticker}" Sector: ${sector} Perc.: ${d3.format(
+		let html = `Ticker: ${_data.ticker} <div> Company: ${_data.company} <div> Market Cap: ${_data.marketcap} <div> Perc.: ${d3.format(
 			".1f"
 		)(close_perc)}%`;
 		// Sets tooltip to be visible
