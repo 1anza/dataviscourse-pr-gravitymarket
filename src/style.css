@@ -159,6 +159,10 @@ body {
 	font-size: large;
 }
 
+.tutorial-text {
+	text-anchor: middle;
+}
+
 /* the single ticker that is being shown in the ohlc which has been clicked */
 .beeswarm-single-selected-ticker {
 	stroke-width: 1;

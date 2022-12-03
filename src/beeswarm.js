@@ -53,18 +53,38 @@ export class Beeswarm {
 
 		this.updateBigcompanyLabels();
 
+		this.circles.attr("visibility", (d) =>
+			this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
+		);
+
+		// positions the tutorial in the middle.
+		let tutorial = d3
+			.select("g#tutorial")
+			.attr(
+				"transform",
+				`translate(${(this.bounds.maxX - this.bounds.minX) / 2} ${
+					(this.bounds.maxY - this.bounds.minY) / 2
+				})`
+			);
+		tutorial.attr(
+			"visibility",
+			this.gas.groupingBySector ? "hidden" : "visible"
+		);
+
+		this.gas.addEventListenerToEvent("groupingBySector", (_) => {
+			tutorial.attr(
+				"visibility",
+				this.gas.groupingBySector ? "hidden" : "visible"
+			);
+		});
+
 		// We keep track of the previousSelectedSectors so that we know what was just added
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
 		this.gas.addEventListenerToEvent("zValueDataRange", (_) => {
 			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
-			if (this.gas.groupingBySector) {
-				this.circles.attr("visibility", (d) =>
-					this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
-				);
-			} else {
-				this.circles.attr("visibility", "visible").attr("stroke", "none");
-			}
-			this.updateScaleX();
+			this.circles.attr("visibility", (d) =>
+				this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
+			);
 			this.drawXAxis();
 
 			this.updateScaleRadius();
