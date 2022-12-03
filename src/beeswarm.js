@@ -133,6 +133,12 @@ export class Beeswarm {
 				(d) => this.gas.selectedSingleCompany.ticker === d.ticker
 			);
 		});
+
+		this.gas.addEventListenerToEvent("indexPlottedRange", _ => {
+			this.updateScaleY();
+			this.drawYAxis();
+			this.updateSimulationY();
+		});
 	}
 
 	/*  ----------------Data scales---------------------    */
