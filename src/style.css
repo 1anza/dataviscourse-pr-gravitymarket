@@ -64,10 +64,7 @@ body {
 }
 
 .boxitem {
-	margin: 5px;
-	padding: 5px;
 }
-
 
 #playback-div {
 	display: flex;
@@ -182,7 +179,6 @@ body {
 #ohlc-vis {
 	margin-top: 10px;
 	margin-right: 15px;
-
 }
 
 .title {
@@ -190,6 +186,7 @@ body {
 	font-size: 4em;
 	font-family: fantasy;
 	font-stretch: extra-expanded;
+	text-anchor: start;
 }
 
 .playback-button {

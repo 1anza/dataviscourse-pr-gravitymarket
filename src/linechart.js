@@ -20,7 +20,7 @@ export class Linechart {
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
 			minX: 50,
-			maxX: svg_width - 50,
+			maxX: svg_width - 40,
 			minY: 20,
 			maxY: svg_height - 50,
 			// The linechart uses virtual pixels to render the whole

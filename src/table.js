@@ -8,10 +8,10 @@ export class Table {
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
-			minX: 50,
-			maxX: svg_width - 50,
-			minY: 20,
-			maxY: svg_height - 50,
+			minX: 5,
+			maxX: svg_width - 5,
+			minY: 10,
+			maxY: svg_height - 10,
 		};
 		this.attributes = [
 			"open",

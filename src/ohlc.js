@@ -14,7 +14,7 @@ export class Ohlc {
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
-			minX: 50,
+			minX: 40,
 			maxX: svg_width - 50,
 			minY: 20,
 			maxY: svg_height - 50,
@@ -97,7 +97,7 @@ export class Ohlc {
 		titleName
 			.append("text")
 			.attr("class", "title")
-			.attr("x", 100)
+			.attr("x", this.bounds.minX + 5)
 			.attr("y", this.bounds.minY - 5)
 			.style("fill", "black")
 			.text(company.company)
