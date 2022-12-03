@@ -19,11 +19,17 @@ function main() {
 
 		createPlaybackControls(gas);
 
-		let beeswarm = new Beeswarm(gas);
-		let linechart = new Linechart(gas);
-		let ohlc = new Ohlc(gas);
-		let table = new Table(gas);
-		let daterangebrush = new DateRangeBrush(gas);
+		let update_vis = () => {
+			gas.set_selectedSectors(new Set());
+			let beeswarm = new Beeswarm(gas);
+			let linechart = new Linechart(gas);
+			let ohlc = new Ohlc(gas);
+			let table = new Table(gas);
+			let daterangebrush = new DateRangeBrush(gas);
+		};
+
+		window.onresize = (_) => update_vis();
+		update_vis();
 	});
 }
 

@@ -26,6 +26,8 @@ export class Table {
 			"marketcap",
 		];
 
+		this.textHeight = 22;
+
 		this.addAttributesName();
 		this.gas.addEventListenerToEvent("index", (_) =>
 			this.updateDetails(gas.selectedSingleCompany)
@@ -36,15 +38,16 @@ export class Table {
 	}
 
 	addAttributesName() {
-		var size = 22;
-
-		let attributesNames = this.svg
-			.selectAll("labels")
+		this.svg
+			.selectAll("text")
 			.data(this.attributes)
-			.enter()
-			.append("text")
+			.join("text")
 			.attr("x", this.bounds.minX)
-			.attr("y", (d, i) => this.bounds.minY + i * (size + 1) + size / 2)
+			.attr(
+				"y",
+				(d, i) =>
+					this.bounds.minY + i * (this.textHeight + 1) + this.textHeight / 2
+			)
 			.style("fill", "black")
 			.text(function (d) {
 				return d + ": ";
@@ -55,8 +58,6 @@ export class Table {
 	}
 
 	updateDetails(data) {
-		var size = 22;
-
 		let attributesValues = this.svg.selectAll(".values").data(this.attributes);
 
 		attributesValues.exit().remove();
@@ -65,7 +66,11 @@ export class Table {
 			.join("text")
 			.attr("class", "values")
 			.attr("x", 75)
-			.attr("y", (d, i) => this.bounds.minY + i * (size + 1) + size / 2)
+			.attr(
+				"y",
+				(d, i) =>
+					this.bounds.minY + i * (this.textHeight + 1) + this.textHeight / 2
+			)
 			.style("fill", "black")
 			.style("font-weight", "normal")
 			.text((d) => {
