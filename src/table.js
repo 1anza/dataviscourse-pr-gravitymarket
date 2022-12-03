@@ -28,8 +28,11 @@ export class Table {
 		];
 
 		this.addAttributesName();
-		this.gas.addEventListenerToEvent("selectedSingleCompanyDetails", (_) =>
-			this.updateDetails(gas.selectedSingleCompanyDetails)
+		this.gas.addEventListenerToEvent("index", (_) =>
+			this.updateDetails(gas.selectedSingleCompany)
+		);
+		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) =>
+			this.updateDetails(gas.selectedSingleCompany)
 		);
 	}
 
@@ -70,9 +73,16 @@ export class Table {
 			})
 			.style("fill", "black")
 			.style("font-weight", "normal")
-			.text(function (d) {
+			.text((d) => {
+				/*
+				 * Some data values are accessed in a weird way. Some depend on the gas index,
+				 * and some and constant across all time values
+				 */
+				if (new Set(["open", "high", "low", "close"]).has(d)) {
+					return data.chart[this.gas.index][d];
+				}
 				if (d === "volume") {
-					return d3.format(",.5r")(data[d]);
+					return d3.format(",.5r")(data.chart[this.gas.index][d]);
 				}
 				if (d === "marketcap") {
 					return "$" + d3.format(",.3r")(data[d] / 1e9) + " B";

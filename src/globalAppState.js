@@ -95,7 +95,6 @@ export class GlobalAppState {
 
 		this.addEventValueToGlobalAppState("changeColor", null);
 		this.addEventValueToGlobalAppState("selectedSingleCompany", null);
-		this.addEventValueToGlobalAppState("selectedSingleCompanyDetails", null);
 		this.addEventValueToGlobalAppState("percentYValueRange", null);
 		this.addEventValueToGlobalAppState("yValueDataRange", null);
 		this.addEventValueToGlobalAppState("yValueName", "close", [

@@ -444,7 +444,6 @@ export class Beeswarm {
 					marketcap: clicked_.marketcap,
 				};
 				that.gas.set_selectedSingleCompany(clicked_);
-				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
 			});
 		this.circles
 			.append("text")
