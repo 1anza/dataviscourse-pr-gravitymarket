@@ -28,7 +28,12 @@
     <div class="column-box">
       <div class="row-box">
         <div class="linechart-div boxitem" id="linechart">
-          <svg id="linechart-vis" height="100%" width="600px">
+          <svg
+            id="linechart-vis"
+            height="100%"
+            width="50vw"
+            preserveAspectRatio="xMinYMin meet"
+          >
             <g id="key"></g>
             <g id="y-axis">
               <mask id="y-axis-mask">
@@ -57,7 +62,12 @@
           </svg>
         </div>
         <div class="ohlc-div boxitem" id="ohlc">
-          <svg id="ohlc-vis" height="100%" width="140%">
+          <svg
+            id="ohlc-vis"
+            height="100%"
+            width="28vw"
+            preserveAspectRatio="xMinYMin meet"
+          >
             <g class="ohlc-series"></g>
             <g id="y-axis"></g>
             <g id="x-axis"></g>
@@ -86,7 +96,12 @@
           </svg>
         </div>
         <div class="table-div boxitem">
-          <svg id="details-vis" height="100%" width="100%"></svg>
+          <svg
+            id="details-vis"
+            height="100%"
+            width="180px"
+            preserveAspectRatio="none"
+          ></svg>
         </div>
       </div>
       <div class="beeswarm-div boxitem" id="beeswarm">

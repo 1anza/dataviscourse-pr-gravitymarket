@@ -15,7 +15,7 @@ export class Ohlc {
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
 			minX: 40,
-			maxX: svg_width - 25,
+			maxX: svg_width - 22,
 			minY: 20,
 			maxY: svg_height - 55,
 		};

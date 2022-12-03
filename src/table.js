@@ -8,9 +8,9 @@ export class Table {
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
-			minX: 5,
+			minX: 0,
 			maxX: svg_width - 5,
-			minY: 10,
+			minY: 15,
 			maxY: svg_height - 10,
 		};
 		this.attributes = [
@@ -23,7 +23,6 @@ export class Table {
 			"eps",
 			"beta",
 			"dividend",
-			"earnings",
 			"marketcap",
 		];
 
@@ -44,10 +43,8 @@ export class Table {
 			.data(this.attributes)
 			.enter()
 			.append("text")
-			.attr("x", 20)
-			.attr("y", function (d, i) {
-				return 10 + i * (size + 1) + size / 2;
-			})
+			.attr("x", this.bounds.minX)
+			.attr("y", (d, i) => this.bounds.minY + i * (size + 1) + size / 2)
 			.style("fill", "black")
 			.text(function (d) {
 				return d + ": ";
@@ -67,10 +64,8 @@ export class Table {
 		attributesValues
 			.join("text")
 			.attr("class", "values")
-			.attr("x", 100)
-			.attr("y", function (d, i) {
-				return 9 + i * (size + 1) + size / 2;
-			})
+			.attr("x", 75)
+			.attr("y", (d, i) => this.bounds.minY + i * (size + 1) + size / 2)
 			.style("fill", "black")
 			.style("font-weight", "normal")
 			.text((d) => {
