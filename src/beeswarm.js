@@ -37,7 +37,7 @@ export class Beeswarm {
 
 		this.simulationSettings = {
 			globalForceScale: 1.0,
-			forceXScale: 0.01,
+			forceXScale: 0.7,
 			forceYScale: 0.5,
 			collisionStrength: 1.0,
 		};
