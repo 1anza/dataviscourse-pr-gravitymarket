@@ -41,7 +41,7 @@
 
 body {
 	margin-top: 35px;
-	background-color: #FDFBF7;
+	background-color: #fdfbf7;
 	font-family: sans-serif, Helvetica, sans-serif;
 }
 
@@ -158,8 +158,12 @@ body {
 	font-size: small;
 }
 
+.swarm-circ {
+	stroke-width: 1;
+}
+
 /* the single ticker that is being shown in the ohlc which has been clicked */
-.beeswarm-single-selected-ticker {
+.beeswarm-single-selected-ticker :not(text) {
 	stroke-width: 1;
 	stroke: black;
 }

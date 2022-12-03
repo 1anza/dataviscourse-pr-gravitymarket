@@ -134,7 +134,7 @@ export class Beeswarm {
 			);
 		});
 
-		this.gas.addEventListenerToEvent("indexPlottedRange", _ => {
+		this.gas.addEventListenerToEvent("indexPlottedRange", (_) => {
 			this.updateScaleY();
 			this.drawYAxis();
 			this.updateSimulationY();
@@ -413,6 +413,7 @@ export class Beeswarm {
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)
+			.attr("stroke", (d) => d3.color(this.gas.colorFunc(d.sector)).darker())
 			.on("mouseover", function (_) {
 				let hovered = d3.select(this);
 				let _data = hovered._groups[0][0].__data__;
@@ -464,7 +465,12 @@ export class Beeswarm {
 		if (!_data) {
 			return;
 		}
-		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName, this.gas.indexPlottedRange[0]);
+		let close_perc = getPercChange(
+			_data,
+			this.gas.index,
+			this.gas.yValueName,
+			this.gas.indexPlottedRange[0]
+		);
 		let marketcap_format = d3.format(",.3r");
 		let html = `Ticker: ${_data.ticker} <div> Company: ${
 			_data.company
@@ -569,7 +575,14 @@ export class Beeswarm {
 			d3
 				.forceY()
 				.y((d) =>
-					this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName, this.gas.indexPlottedRange[0]))
+					this.scaleY(
+						getPercChange(
+							d,
+							this.gas.index,
+							this.gas.yValueName,
+							this.gas.indexPlottedRange[0]
+						)
+					)
 				)
 				.strength(
 					this.simulationSettings.globalForceScale *
@@ -590,7 +603,14 @@ export class Beeswarm {
 		let spread = d3.randomNormal(0, spread_var);
 		circles.datum((d) => {
 			d.x = this.scaleX(d.sector) + spread();
-			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName, this.gas.indexPlottedRange[0]));
+			d.y = this.scaleY(
+				getPercChange(
+					d,
+					this.gas.index,
+					this.gas.yValueName,
+					this.gas.indexPlottedRange[0]
+				)
+			);
 			return d;
 		});
 	}
