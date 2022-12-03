@@ -48,7 +48,9 @@ export function createPlaybackControls(gas) {
 	});
 
 	// Sets up the date monitor
-	let updateDate = () => playbackdiv.select("div#current-date").html(gas.date);
+	let dateformat = d3.timeFormat("%a %d %b %Y");
+	let updateDate = () =>
+		playbackdiv.select("div#current-date").html(dateformat(gas.date));
 	updateDate();
 	gas.addEventListenerToEvent("date", (e) => {
 		updateDate();

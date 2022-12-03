@@ -63,7 +63,7 @@ export class Beeswarm {
 			.select("g#tutorial")
 			.attr(
 				"transform",
-				`translate(${(this.bounds.maxX - this.bounds.minX) / 2} ${
+				`translate(${(this.bounds.maxX - this.bounds.minX) / 2 + 50} ${
 					(this.bounds.maxY - this.bounds.minY) / 2
 				})`
 			);

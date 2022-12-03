@@ -71,6 +71,12 @@ export class Table {
 			.style("fill", "black")
 			.style("font-weight", "normal")
 			.text(function (d) {
+				if (d === "volume") {
+					return d3.format(",.5r")(data[d]);
+				}
+				if (d === "marketcap") {
+					return "$" + d3.format(",.3r")(data[d] / 1e9) + " B";
+				}
 				return data[d];
 			})
 			.attr("text-anchor", "left");
