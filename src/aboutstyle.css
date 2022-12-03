@@ -3,6 +3,12 @@
 	margin: 0;
 }
 
+a {
+	color: #6666ff;
+	background-color: transparent;
+	text-decoration: text-decoration-line;
+}
+
 /* The sidebar menu, from https://www.w3schools.com/howto/howto_css_fixed_sidebar.asp */
 .sidenav {
 	height: 5%; /* Full-height: remove this if you want "auto" height */

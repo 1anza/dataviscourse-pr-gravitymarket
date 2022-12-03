@@ -430,28 +430,50 @@ export class Beeswarm {
 				tooltip.style("opacity", 0);
 				hovered.classed("hovered-swarm-circ", false);
 				that._prev_selected_data = null;
-			})
-			.on("click", function () {
-				let clicked = d3.select(this);
-				let clicked_ = clicked._groups[0][0].__data__;
-				clicked.classed("clicked-swarm-circ", true);
-				var filteredDateData =
-					clicked._groups[0][0].__data__.chart[that.gas.index];
-				var valuesToDisplay = {
-					open: filteredDateData.open,
-					close: filteredDateData.close,
-					high: filteredDateData.high,
-					low: filteredDateData.low,
-					volume: filteredDateData.volume,
-					pe: clicked_.pe,
-					eps: clicked_.eps,
-					beta: clicked_.beta,
-					dividend: clicked_.dividend,
-					earnings: clicked_.earnings,
-					marketcap: clicked_.marketcap,
-				};
-				that.gas.set_selectedSingleCompany(clicked_);
 			});
+
+		// Recolors old companies that are deselected from selectedSingleCompany
+		let old_selectedSingleCompanyCircle;
+
+		let updateSelectedCircle = (_new) => {
+			console.log("UPDATE SLEECETED SCIRLCE");
+			console.log(old_selectedSingleCompanyCircle);
+			console.log(_new);
+			if (old_selectedSingleCompanyCircle) {
+				old_selectedSingleCompanyCircle
+					.select("circle")
+					.attr("fill", (d) => this.gas.colorFunc(d.sector));
+			}
+			_new
+				.select("circle")
+				.attr("fill", (d) => d3.color(this.gas.colorFunc(d.sector)).brighter());
+			old_selectedSingleCompanyCircle = _new;
+		};
+
+		this.circles.on("click", function () {
+			let clicked = d3.select(this);
+			let clicked_ = clicked._groups[0][0].__data__;
+			clicked.classed("clicked-swarm-circ", true);
+			var filteredDateData =
+				clicked._groups[0][0].__data__.chart[that.gas.index];
+			var valuesToDisplay = {
+				open: filteredDateData.open,
+				close: filteredDateData.close,
+				high: filteredDateData.high,
+				low: filteredDateData.low,
+				volume: filteredDateData.volume,
+				pe: clicked_.pe,
+				eps: clicked_.eps,
+				beta: clicked_.beta,
+				dividend: clicked_.dividend,
+				earnings: clicked_.earnings,
+				marketcap: clicked_.marketcap,
+			};
+			that.gas.set_selectedSingleCompany(clicked_);
+			updateSelectedCircle(clicked);
+			that.updateBigcompanyLabels();
+		});
+
 		this.circles
 			.append("text")
 			.classed("beeswarm-circle-company-label", true)
@@ -514,7 +536,11 @@ export class Beeswarm {
 	updateBigcompanyLabels() {
 		let thresh = this.gas.zValueDataRange[1] * 0.15;
 		this.circles.selectAll("text.beeswarm-circle-company-label").text((d) => {
-			if (d[this.gas.zValueName] > thresh) {
+			if (
+				d[this.gas.zValueName] > thresh ||
+				(this.gas.selectedSingleCompany &&
+					this.gas.selectedSingleCompany.ticker === d.ticker)
+			) {
 				return d.ticker;
 			} else {
 				("");
