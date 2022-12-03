@@ -8,11 +8,11 @@ export class SectorControls {
 		this.bounds = {
 			minX: 0,
 			maxX: svg_width - 3,
-			minY: 0,
+			minY: 10,
 			maxY: svg_height - 3,
 		};
 
-		this.rect_height = 22;
+		this.rect_height = 18;
 		this.rect_width = 165;
 		this.rect_spacing = 3;
 
@@ -96,7 +96,7 @@ export class SectorControls {
 				//let i = this.gas.selectedSectors.get(d);
 				let i = counts[d];
 				let x_pos = scaleX(d) - this.rect_width / 2;
-				let y_pos = (i % 2) * this.rect_height;
+				let y_pos = (i % 2) * this.rect_height + this.bounds.minY;
 				console.log("y pos is this: ", y_pos);
 				return `translate(${x_pos}, ${y_pos})`;
 			});
@@ -105,7 +105,7 @@ export class SectorControls {
 			.attr("transform", (d, i) => {
 				let x_pos = this.bounds.minX;
 				let y_pos =
-					i * (this.rect_height + this.rect_spacing) + this.rect_height;
+					i * (this.rect_height + this.rect_spacing) + this.rect_height + this.bounds.minY;
 				return `translate(${x_pos}, ${y_pos})`;
 			});
 

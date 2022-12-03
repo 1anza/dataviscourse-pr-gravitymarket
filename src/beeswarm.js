@@ -16,7 +16,7 @@ export class Beeswarm {
 		this.bounds = {
 			minX: 30,
 			maxX: svg_width - 90,
-			minY: 20,
+			minY: 35,
 			maxY: svg_height - 20,
 		};
 		this.parseTime = d3.timeParse("%Y-%m-%d %H:%M");
