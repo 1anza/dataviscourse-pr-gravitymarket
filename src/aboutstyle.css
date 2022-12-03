@@ -29,7 +29,20 @@
         display: block;
     }
 
+* {
+    font-family: "Bradley Hand";
+    font-weight: 800;
+}
 
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color: #faf8ed;
+}
+
+.sidenav .title {
+    color: black;
+    font-size: 30px;
+}
 
 html {
     box-sizing: border-box;
