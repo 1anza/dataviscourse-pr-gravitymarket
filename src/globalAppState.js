@@ -290,12 +290,12 @@ export class GlobalAppState {
 
 			let perc_min = d3.min(data_to_get_range, (d) =>
 				d3.min(d3.range(...index_range), (i) =>
-					getPercChange(d, i, this.yValueName)
+					getPercChange(d, i, this.yValueName, this.indexPlottedRange[0])
 				)
 			);
 			let perc_max = d3.max(data_to_get_range, (d) =>
 				d3.max(d3.range(...index_range), (i) =>
-					getPercChange(d, i, this.yValueName)
+					getPercChange(d, i, this.yValueName, this.indexPlottedRange[0])
 				)
 			);
 			return [perc_min, perc_max];
