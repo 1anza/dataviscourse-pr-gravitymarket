@@ -25,7 +25,7 @@
 }
 
 * {
-	font-family: "Georgia";
+	font-family: "sans-serif";
 	font-weight: 800;
 }
 
@@ -42,7 +42,7 @@
 body {
 	margin-top: 35px;
 	background-color: #FDFBF7;
-	font-family: Georgia, Helvetica, sans-serif;
+	font-family: sans-serif, Helvetica, sans-serif;
 }
 
 .column-box {
@@ -125,7 +125,7 @@ body {
 
 .dateaxis-text {
 	text-anchor: start;
-	font: "Georgia";
+	font: "sans-serif";
 }
 
 #beeswarm-tooltip {
@@ -227,12 +227,12 @@ body {
 .sector-select-text-label {
 	text-align: center;
 	font-size: 12px;
-	font: "Georgia";
+	font: "sans-serif";
 }
 
 svg text {
 	pointer-events: none;
-	font: "Georgia";
+	font: "sans-serif";
 }
 
 svg image {
