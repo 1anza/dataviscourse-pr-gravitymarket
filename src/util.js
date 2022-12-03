@@ -5,7 +5,7 @@ function dateMinuteToDate(date, minute) {
 	return new Date(datestring);
 }
 
-function getPercChange(row, index, yValueName, zeroeth_index = 0) {
+function getPercChange(row, index, yValueName, zeroeth_index) {
 	row["percentChange"] =
 		(row.chart[index][yValueName] / row.chart[zeroeth_index][yValueName] - 1) *
 		100;

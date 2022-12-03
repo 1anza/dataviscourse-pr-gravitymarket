@@ -251,13 +251,13 @@ export class Beeswarm {
 		let max_p = 100.0;
 		let min = data_to_get_range.map((d) =>
 			d3.min(d3.range(index_range[0], index_range[1], 1), (i) =>
-				getPercChange(d, i, this.gas.yValueName)
+				getPercChange(d, i, this.gas.yValueName, this.gas.indexPlottedRange[0])
 			)
 		);
 		let percentile_min = percentile(min_p, min);
 		let max = data_to_get_range.map((d) =>
 			d3.max(d3.range(index_range[0], index_range[1], 1), (i) =>
-				getPercChange(d, i, this.gas.yValueName)
+				getPercChange(d, i, this.gas.yValueName, this.gas.indexPlottedRange[0])
 			)
 		);
 		let percentile_max = percentile(max_p, max);
@@ -458,7 +458,7 @@ export class Beeswarm {
 		if (!_data) {
 			return;
 		}
-		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName);
+		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName, this.gas.indexPlottedRange[0]);
 		let marketcap_format = d3.format(",.3r");
 		let html = `Ticker: ${_data.ticker} <div> Company: ${
 			_data.company
@@ -563,7 +563,7 @@ export class Beeswarm {
 			d3
 				.forceY()
 				.y((d) =>
-					this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName))
+					this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName, this.gas.indexPlottedRange[0]))
 				)
 				.strength(
 					this.simulationSettings.globalForceScale *
@@ -584,7 +584,7 @@ export class Beeswarm {
 		let spread = d3.randomNormal(0, spread_var);
 		circles.datum((d) => {
 			d.x = this.scaleX(d.sector) + spread();
-			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName));
+			d.y = this.scaleY(getPercChange(d, this.gas.index, this.gas.yValueName, this.gas.indexPlottedRange[0]));
 			return d;
 		});
 	}

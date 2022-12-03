@@ -159,7 +159,6 @@ export class Ohlc {
 	}
 
 	updatePlayheadLine() {
-		console.log("UPDATE PLAYTHEAD LINGE");
 		this.svg
 			.select("g#playback-follow")
 			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`);

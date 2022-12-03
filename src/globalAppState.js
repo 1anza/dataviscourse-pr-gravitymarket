@@ -110,12 +110,12 @@ export class GlobalAppState {
 		let update_percentYValueRange = () => {
 			let perc_min = d3.min(this.data, (d) =>
 				d3.min(d3.range(d.chart.length), (i) =>
-					getPercChange(d, i, this.yValueName)
+					getPercChange(d, i, this.yValueName, 0)
 				)
 			);
 			let perc_max = d3.max(this.data, (d) =>
 				d3.max(d3.range(d.chart.length), (i) =>
-					getPercChange(d, i, this.yValueName)
+					getPercChange(d, i, this.yValueName, 0)
 				)
 			);
 			this.set_percentYValueRange([perc_min, perc_max]);
