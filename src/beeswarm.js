@@ -82,6 +82,7 @@ export class Beeswarm {
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
 		this.gas.addEventListenerToEvent("zValueDataRange", (_) => {
 			// Sets the visibility of all circles, hiding all ones not in the selectedSectors.
+			this.updateScaleX();
 			this.circles.attr("visibility", (d) =>
 				this.gas.selectedSectors.has(d.sector) ? "visible" : "hidden"
 			);
@@ -502,7 +503,6 @@ export class Beeswarm {
 		let thresh = this.gas.zValueDataRange[1] * 0.15;
 		this.circles.selectAll("text.beeswarm-circle-company-label").text((d) => {
 			if (d[this.gas.zValueName] > thresh) {
-				console.log(d.ticker);
 				return d.ticker;
 			} else {
 				("");
