@@ -29,6 +29,12 @@ export class Ohlc {
 		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) =>
 			this.updateOhlcChart(gas.selectedSingleCompany)
 		);
+
+		this.gas.addEventListenerToEvent("date", (_) => {
+			this.updatePlayheadLine();
+		});
+		this.updatePlayheadLine();
+		this.setupPlaybackHead();
 	}
 
 	/*
@@ -110,5 +116,42 @@ export class Ohlc {
 			.attr("y1", (d) => this.scaleY(d.open))
 			.attr("x2", (d) => this.scaleX(dateMinuteToDate(d.date, d.minute)))
 			.attr("y2", (d) => this.scaleY(d.close));
+	}
+
+	setupPlaybackHead() {
+		let playback_follow = this.svg
+			.select("g#playback-follow")
+			.datum({ x: this.scaleX(this.gas.date) })
+			.attr("transform", (d) => `translate(${d.x} 0)`);
+
+		// Attaches a listener to the gas.date to make the d.x update when the date changes
+		this.gas.addEventListenerToEvent("date", (_) =>
+			playback_follow.datum({ x: this.scaleX(this.gas.date) })
+		);
+		let that = this;
+		let range = this.scaleX.range();
+		let rangePoints = d3.range(range[0], range[1], this.scaleX.step());
+		let x = this.bounds.minX;
+		let on_drag = function (e, d) {
+			let index = d3.bisect(rangePoints, e.x);
+			d.x += e.dx;
+			d.x = Math.max(that.scaleX.range()[0], d.x);
+			d.x = Math.min(d.x, that.bounds.maxX);
+			d3.select(this).attr("transform", `translate(${d.x} 0)`);
+			that.gas.set_index(index);
+		};
+		let drag = d3.drag().on("drag", on_drag);
+		playback_follow.call(drag);
+	}
+
+	updatePlayheadLine() {
+		console.log("UPDATE PLAYTHEAD LINGE");
+		this.svg
+			.select("g#playback-follow")
+			.attr("transform", `translate(${this.scaleX(this.gas.date)} 0)`);
+		this.svg
+			.select("g#playback-follow")
+			.select("line")
+			.attr("y2", this.bounds.maxY);
 	}
 }

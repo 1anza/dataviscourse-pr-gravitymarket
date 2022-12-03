@@ -479,7 +479,7 @@ export class Beeswarm {
 	 * Updates text labels for companies that have a large radius
 	 */
 	updateBigcompanyLabels() {
-		let thresh = this.gas.zValueDataRange[1] * 0.2;
+		let thresh = this.gas.zValueDataRange[1] * 0.15;
 		this.circles.selectAll("text.beeswarm-circle-company-label").text((d) => {
 			if (d[this.gas.zValueName] > thresh) {
 				console.log(d.ticker);
