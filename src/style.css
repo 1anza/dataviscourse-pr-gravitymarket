@@ -54,6 +54,7 @@ body {
 }
 
 .row-box {
+	height: 275px;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
@@ -176,6 +177,8 @@ body {
 
 #ohlc-vis {
 	margin-top: 10px;
+	margin-right: 15px;
+
 }
 
 .title {
@@ -235,6 +238,8 @@ svg image {
 }
 
 #details-vis {
+	border: solid;
+	border-width: 2px;
 	font-size: 12px;
 	font-weight: normal;
 }
