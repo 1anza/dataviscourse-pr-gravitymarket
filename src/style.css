@@ -62,6 +62,7 @@ body {
 	flex-wrap: nowrap;
 	align-items: stretch;
 	align-content: center;
+	justify-content: space-evenly;
 }
 
 .boxitem {
@@ -69,11 +70,6 @@ body {
 	padding: 5px;
 }
 
-.beeswarm-div {
-}
-
-.table-div {
-}
 
 #playback-div {
 	display: flex;
@@ -236,12 +232,7 @@ svg image {
 	pointer-events: none;
 }
 
-#details {
-	margin-left: 250px;
-	border-radius: 2px;
-	border-color: black;
-	border-width: 2px;
-	border-style: solid;
+#details-vis {
 	font-size: 12px;
 	font-weight: normal;
 }
