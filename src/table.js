@@ -4,7 +4,7 @@ import { dateMinuteToDate, getPercChange } from "./util.js";
 export class Table {
 	constructor(gas) {
 		this.gas = gas;
-		this.svg = d3.select("svg#details");
+		this.svg = d3.select("svg#details-vis");
 		let svg_width = parseInt(this.svg.style("width"));
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
