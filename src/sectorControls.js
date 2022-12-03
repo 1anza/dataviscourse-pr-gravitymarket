@@ -13,7 +13,7 @@ export class SectorControls {
 		};
 
 		this.rect_height = 22;
-		this.rect_width = 175;
+		this.rect_width = 165;
 		this.rect_spacing = 3;
 
 		this.initRects();
@@ -39,7 +39,7 @@ export class SectorControls {
 		this.sector_groups
 			.append("text")
 			.text((d) => d)
-			.attr("transform", `translate(13 ${this.rect_height - 4} )`)
+			.attr("transform", `translate(4 ${this.rect_height - 4} )`)
 			.attr("text-anchor", "center")
 			.classed("sector-select-text-label", true);
 
@@ -69,9 +69,8 @@ export class SectorControls {
 					that.gas.selectedSectors.delete(hovered_sector);
 					that.gas.set_selectedSectors(that.gas.selectedSectors);
 				} else {
-					that.gas.set_selectedSectors(
-						that.gas.selectedSectors.add(hovered_sector)
-					);
+					that.gas.selectedSectors.add(hovered_sector);
+					that.gas.set_selectedSectors(that.gas.selectedSectors);
 				}
 			});
 	}
@@ -85,22 +84,30 @@ export class SectorControls {
 	 * This should be called when gas.selectedSectors changes
 	 */
 	updateSectorControls(scaleX) {
-		this.sector_groups.attr("transform", (d, i) => {
-			let x_pos;
-			if (this.gas.selectedSectors.has(d)) {
-				x_pos = scaleX(d) - this.rect_width / 2;
-			} else {
-				x_pos = this.bounds.minX;
-			}
-
-			let y_pos;
-			if (this.gas.selectedSectors.has(d)) {
-				y_pos = 0;
-			} else {
-				y_pos = i * (this.rect_height + this.rect_spacing) + this.rect_height;
-			}
-			return `translate(${x_pos}, ${y_pos})`;
-		});
+		let counts = {};
+		let i = 0;
+		for (let d of this.gas.selectedSectors) {
+			counts[d] = i;
+			i += 1;
+		}
+		this.sector_groups
+			.filter((d) => this.gas.selectedSectors.has(d))
+			.attr("transform", (d) => {
+				//let i = this.gas.selectedSectors.get(d);
+				let i = counts[d];
+				let x_pos = scaleX(d) - this.rect_width / 2;
+				let y_pos = (i % 2) * this.rect_height;
+				console.log("y pos is this: ", y_pos);
+				return `translate(${x_pos}, ${y_pos})`;
+			});
+		this.sector_groups
+			.filter((d) => !this.gas.selectedSectors.has(d))
+			.attr("transform", (d, i) => {
+				let x_pos = this.bounds.minX;
+				let y_pos =
+					i * (this.rect_height + this.rect_spacing) + this.rect_height;
+				return `translate(${x_pos}, ${y_pos})`;
+			});
 
 		this.sector_groups
 			.select("rect")
