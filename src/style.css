@@ -25,7 +25,7 @@
 }
 
 * {
-	font-family: "Bradley Hand";
+	font-family: "Georgia";
 	font-weight: 800;
 }
 
@@ -125,7 +125,7 @@ body {
 
 .dateaxis-text {
 	text-anchor: start;
-	font: "Bradley Hand";
+	font: "Georgia";
 }
 
 #beeswarm-tooltip {
@@ -227,12 +227,12 @@ body {
 .sector-select-text-label {
 	text-align: center;
 	font-size: 12px;
-	font: "Bradley Hand";
+	font: "Georgia";
 }
 
 svg text {
 	pointer-events: none;
-	font: "Bradley Hand";
+	font: "Georgia";
 }
 
 svg image {
