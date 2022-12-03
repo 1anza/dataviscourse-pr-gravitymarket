@@ -51,6 +51,8 @@ export class Beeswarm {
 		this.sectorControls = new SectorControls(this.gas, svg_width, svg_height);
 		this.sectorControls.updateSectorControls(this.scaleX);
 
+		this.updateBigcompanyLabels();
+
 		// We keep track of the previousSelectedSectors so that we know what was just added
 		this.previousSelectedSectors = structuredClone(this.gas.selectedSectors);
 		this.gas.addEventListenerToEvent("zValueDataRange", (_) => {
@@ -67,7 +69,9 @@ export class Beeswarm {
 
 			this.updateScaleRadius();
 			this.updateRadiusKey();
-			this.circles.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]));
+			this.circles
+				.select("circle")
+				.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]));
 
 			this.updateCollisions();
 			this.updateSimulationX();
@@ -86,6 +90,8 @@ export class Beeswarm {
 			this.updateScaleY();
 			this.drawYAxis();
 			this.updateSimulationY();
+
+			this.updateBigcompanyLabels();
 		});
 
 		// Runs an expensive computation occasionally to replot the y values.
@@ -132,7 +138,6 @@ export class Beeswarm {
 		// By default, the two values plotted are the max/2 and max of the data
 		let ticks = structuredClone(this.gas.zValueDataRange);
 		ticks[0] = ticks[1] / 10;
-		console.log("TICKS", ticks);
 		let rad_key_offset = [-60, -10];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
@@ -273,8 +278,10 @@ export class Beeswarm {
 			tick_step = 1;
 		} else if (domain_distance < 50) {
 			tick_step = 5;
-		} else {
+		} else if (domain_distance < 80) {
 			tick_step = 10;
+		} else {
+			tick_step = 20;
 		}
 		let ticks = d3.range(-200, 200.01, tick_step);
 
@@ -367,12 +374,14 @@ export class Beeswarm {
 		this.circles = d3
 			.select("svg#beeswarm-vis")
 			.select("g#swarm")
-			.selectAll("circle")
+			.selectAll("g#circle")
 			.data(this.gas.data);
 		this.circles.exit().remove();
 		let that = this;
-		this.circles = this.circles
-			.join("circle")
+		this.circles = this.circles.join("g").attr("id", "circle");
+
+		this.circles
+			.append("circle")
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)
@@ -415,6 +424,10 @@ export class Beeswarm {
 				that.gas.set_selectedSingleCompany(clicked_);
 				that.gas.set_selectedSingleCompanyDetails(valuesToDisplay);
 			});
+		this.circles
+			.append("text")
+			.classed("beeswarm-circle-company-label", true)
+			.attr("y", 4);
 	}
 
 	updateTooltip(_data) {
@@ -424,11 +437,13 @@ export class Beeswarm {
 		if (!_data) {
 			return;
 		}
-		let sector = `${_data.sector}`;
 		let close_perc = getPercChange(_data, this.gas.index, this.gas.yValueName);
-		let html = `Ticker: ${_data.ticker} <div> Company: ${_data.company} <div> Market Cap: ${_data.marketcap} <div> Perc.: ${d3.format(
-			".1f"
-		)(close_perc)}%`;
+		let marketcap_format = d3.format(",.3r");
+		let html = `Ticker: ${_data.ticker} <div> Company: ${
+			_data.company
+		} <div> Market Cap: $${marketcap_format(
+			_data.marketcap / 1e9
+		)}B <div> Perc.: ${d3.format(".1f")(close_perc)}%`;
 		// Sets tooltip to be visible
 		this.tooltip.style("opacity", 1).html(html);
 		this._prev_selected_data = _data;
@@ -442,7 +457,7 @@ export class Beeswarm {
 			.alphaTarget(0.07)
 			.velocityDecay(0.15)
 			.on("tick", (_) => {
-				this.circles.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+				this.circles.attr("transform", (d) => `translate(${d.x} ${d.y})`);
 			});
 
 		// Teleports with custom y spread
@@ -458,6 +473,21 @@ export class Beeswarm {
 		this.updateSimulationX();
 		this.updateSimulationY();
 		console.log("simulation", this.simulation);
+	}
+
+	/*
+	 * Updates text labels for companies that have a large radius
+	 */
+	updateBigcompanyLabels() {
+		let thresh = this.gas.zValueDataRange[1] * 0.15;
+		this.circles.selectAll("text.beeswarm-circle-company-label").text((d) => {
+			if (d[this.gas.zValueName] > thresh) {
+				console.log(d.ticker);
+				return d.ticker;
+			} else {
+				("");
+			}
+		});
 	}
 
 	/*

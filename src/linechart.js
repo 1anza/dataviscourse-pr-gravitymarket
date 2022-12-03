@@ -199,9 +199,16 @@ export class Linechart {
 				return d3
 					.line()
 					.x((d_m) => this.scaleX(dateMinuteToDate(d_m.date, d_m.minute)))
-					.y((_, i) => this.scaleY(getPercChange(d, i, this.gas.yValueName)))(
-					d.chart
-				);
+					.y((_, i) =>
+						this.scaleY(
+							getPercChange(
+								d,
+								i,
+								this.gas.yValueName,
+								this.gas.indexPlottedRange[0]
+							)
+						)
+					)(d.chart);
 			});
 	}
 }
