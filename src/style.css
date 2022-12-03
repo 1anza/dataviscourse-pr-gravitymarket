@@ -155,6 +155,7 @@ body {
 
 .tutorial-text {
 	text-anchor: middle;
+	font-size: small;
 }
 
 /* the single ticker that is being shown in the ohlc which has been clicked */

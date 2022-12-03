@@ -58,10 +58,24 @@ export class Linechart {
 			this.updateAxisY();
 		});
 
+		// Positions the tutorial text
+		let tutorial = this.svg
+			.select("g#tutorial")
+			.attr(
+				"transform",
+				`translate(${(this.bounds.maxX - this.bounds.minX) / 2} ${
+					(this.bounds.maxY - this.bounds.minY) / 2
+				})`
+			);
+
 		this.gas.addEventListenerToEvent("selectedSectors", (_) => {
 			this.updateScaleY();
 			this.updateAxisY();
 			this.updateLines();
+			tutorial.attr(
+				"visibility",
+				this.gas.selectedSectors.size === 0 ? "visible" : "hidden"
+			);
 		});
 	}
 
@@ -185,7 +199,7 @@ export class Linechart {
 				);
 			});
 		} else {
-			datatoplot = [this.gas.sp500Data];
+			datatoplot = [];
 		}
 		console.log("linechart datatoplot", datatoplot);
 		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);

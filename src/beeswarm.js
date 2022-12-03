@@ -59,6 +59,7 @@ export class Beeswarm {
 
 		// positions the tutorial in the middle.
 		let tutorial = d3
+			.select("svg#beeswarm-vis")
 			.select("g#tutorial")
 			.attr(
 				"transform",

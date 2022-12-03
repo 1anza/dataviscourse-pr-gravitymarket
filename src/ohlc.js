@@ -26,9 +26,23 @@ export class Ohlc {
 		this.updateXAxis();
 		this.updateYAxis();
 
-		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) =>
-			this.updateOhlcChart(gas.selectedSingleCompany)
-		);
+		// positions tutorial
+		let tutorial = this.svg
+			.select("g#tutorial")
+			.attr(
+				"transform",
+				`translate(${(this.bounds.maxX - this.bounds.minX) / 2 + 60} ${
+					(this.bounds.maxY - this.bounds.minY) / 2
+				})`
+			);
+
+		this.gas.addEventListenerToEvent("selectedSingleCompany", (_) => {
+			tutorial.attr(
+				"visibility",
+				this.selectedSingleCompany ? "visible" : "hidden"
+			);
+			this.updateOhlcChart(gas.selectedSingleCompany);
+		});
 
 		this.gas.addEventListenerToEvent("date", (_) => {
 			this.updatePlayheadLine();
