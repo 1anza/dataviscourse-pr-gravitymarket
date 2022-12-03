@@ -105,7 +105,9 @@ export class SectorControls {
 			.attr("transform", (d, i) => {
 				let x_pos = this.bounds.minX;
 				let y_pos =
-					i * (this.rect_height + this.rect_spacing) + this.rect_height + this.bounds.minY;
+					i * (this.rect_height + this.rect_spacing) +
+					this.rect_height +
+					this.bounds.minY;
 				return `translate(${x_pos}, ${y_pos})`;
 			});
 

@@ -160,7 +160,7 @@ export class Beeswarm {
 		// By default, the two values plotted are the max/2 and max of the data
 		let ticks = structuredClone(this.gas.zValueDataRange);
 		ticks[0] = ticks[1] / 10;
-		let rad_key_offset = [-60, -10];
+		let rad_key_offset = [-75, -10];
 		let rad_key = d3.select("g#radius-key");
 		rad_key
 			.attr(
@@ -186,7 +186,7 @@ export class Beeswarm {
 			.join("text")
 			.attr("x", (d) => this.scaleRadius(d) * Math.cos(theta) + offset[0])
 			.attr("y", (d) => this.scaleRadius(d) * Math.sin(theta) + offset[1])
-			.text((d) => `$${format(d / 1e9)} Billion`)
+			.text((d) => `$${format(d / 1e9)}B`)
 			.attr("id", "beeswarm-key-text");
 	}
 

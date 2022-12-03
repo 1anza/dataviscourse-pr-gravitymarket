@@ -15,11 +15,11 @@ export class Ohlc {
 		let svg_height = parseInt(this.svg.style("height"));
 		this.bounds = {
 			minX: 40,
-			maxX: svg_width - 50,
+			maxX: svg_width - 25,
 			minY: 20,
-			maxY: svg_height - 50,
+			maxY: svg_height - 55,
 		};
-		this.textRotation = 45;
+		this.textRotation = 55;
 
 		this.updateXScale();
 		this.updateYScale();
@@ -79,8 +79,8 @@ export class Ohlc {
 		axisG
 			.call(xAxis)
 			.selectAll("text")
-			.attr("y", 15)
-			.attr("x", 25)
+			.attr("y", 0)
+			.attr("x", 30)
 			.attr("transform", `rotate(${this.textRotation})`)
 			.classed(".dateaxis-text", true);
 	}
