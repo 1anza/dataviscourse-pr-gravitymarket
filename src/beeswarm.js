@@ -37,9 +37,9 @@ export class Beeswarm {
 
 		this.simulationSettings = {
 			globalForceScale: 1.0,
-			forceXScale: 0.3,
+			forceXScale: 0,
 			forceYScale: 0.7,
-			collisionStrength: 1.0,
+			collisionStrength: 1.2,
 		};
 
 		this.startSimulation();
@@ -510,7 +510,7 @@ export class Beeswarm {
 		this.simulation = d3
 			.forceSimulation(this.gas.data)
 			.alphaTarget(0.07)
-			.velocityDecay(0.15)
+			.velocityDecay(0.27)
 			.on("tick", (_) => {
 				this.circles.attr("transform", (d) => `translate(${d.x} ${d.y})`);
 			});
