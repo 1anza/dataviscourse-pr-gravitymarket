@@ -21,3 +21,7 @@ Files `./src/*.js` are built into browser interpretable javascript using Parcel.
 Html files `./*.html` are are served as web pages. 
 
 Additional files in `./res` and `./data/` are served as resource content for the website.
+
+### Project Video
+
+Link to the project video: https://youtu.be/VhVIM8NMe6I
