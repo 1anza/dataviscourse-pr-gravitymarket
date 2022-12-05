@@ -1,218 +1,220 @@
 /* The sidebar menu, from https://www.w3schools.com/howto/howto_css_fixed_sidebar.asp */
 .sidenav {
-	width: 100%; /* Set the width of the sidebar */
-	position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-	z-index: 1; /* Stay on top */
-	top: 0; /* Stay at the top */
-	left: 0;
-	background-color: #111; /* Black */
-	overflow-x: hidden; /* Disable horizontal scroll */
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: stretch;
-	align-content: center;
+  width: 100%; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  align-content: center;
 }
 
 /* The navigation menu links */
 .sidenav a {
-	padding: 6px 8px 6px 16px;
-	text-decoration: none;
-	font-size: 20px;
-	color: #818181;
-	display: block;
+  padding: 4px 8px 2px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
 }
 
 * {
-	font-family: "sans-serif";
-	font-weight: 800;
+  font-family: "sans-serif";
+  font-weight: 800;
 }
 
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover {
-	color: #faf8ed;
+  color: #faf8ed;
 }
 
 .sidenav .title {
-	color: black;
-	font-size: 30px;
+  color: black;
+  font-size: 30px;
 }
 
 body {
-	margin-top: 35px;
-	background-color: #fdfcfa;
-	font-family: sans-serif, Helvetica, sans-serif;
+  margin-top: 35px;
+  background-color: #fdfcfa;
+  font-family: sans-serif, Helvetica, sans-serif;
 }
 
 .column-box {
-	display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
-	align-items: stretch;
-	align-content: center;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  align-content: center;
 }
 
 .row-box {
-	height: 275px;
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: stretch;
-	justify-content: flex-start;
-	align-content: center;
+  height: 275px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  align-content: center;
 }
 
 .table-div {
-	align-items: baseline;
-	display: flex;
-	flex-direction: column;
-	align-content: flex-end;
-	justify-content: flex-end;
-	flex-wrap: wrap;
+  align-items: baseline;
+  display: flex;
+  flex-direction: column;
+  align-content: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .boxitem {
 }
 
 #playback-div {
-	display: flex;
-	flex-direction: row;
-	align-content: flex-end;
-	justify-content: space-around;
-	align-items: center;
-	flex-wrap: nowrap;
+  display: flex;
+  flex-direction: row;
+  align-content: flex-end;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 .playhead-handle {
-	stroke: grey;
-	fill: gray;
-	cursor: pointer;
+  stroke: grey;
+  fill: gray;
+  cursor: pointer;
 }
 
 .open-close-line-up-day {
-	stroke: green;
+  stroke: green;
 }
 
 .open-close-line-down-day {
-	stroke: red;
+  stroke: red;
 }
 
 .linechart-path {
-	fill: none;
-	stroke-width: 1.5pt;
+  fill: none;
+  stroke-width: 1.5pt;
 }
 
 .linechart-positive-tick {
-	fill: green;
-	stroke: green;
+  fill: green;
+  stroke: green;
 }
 
 .linechart-neutral-tick {
-	fill: black;
-	stroke: black;
+  fill: black;
+  stroke: black;
 }
 
 .linechart-negative-tick {
-	fill: red;
-	stroke: red;
+  fill: red;
+  stroke: red;
 }
 
 .beeswarm-gridline {
-	stroke-width: 1px;
+  stroke-width: 1px;
 }
 
 .beeswarm-gridline-0line {
-	stroke: gray;
-	stroke-width: 2px;
+  stroke: gray;
+  stroke-width: 2px;
 }
 
 .candlestick {
-	fill: none;
-	stroke-width: 1.5pt;
+  fill: none;
+  stroke-width: 1.5pt;
 }
 
 .dateaxis-text {
-	text-anchor: start;
-	font: "sans-serif";
+  text-anchor: start;
+  font: "sans-serif";
 }
 
 #beeswarm-tooltip {
-	background-color: white;
-	border: solid;
-	border-width: 2px;
-	border-radius: 5px;
-	padding: 5px;
-	display: block;
-	position: absolute;
+  background-color: white;
+  border: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  padding: 5px;
+  display: block;
+  position: absolute;
 }
 
 #beeswarm-key-circle {
-	stroke: gray;
-	stroke-width: 2;
-	fill: none;
+  stroke: gray;
+  stroke-width: 2;
+  fill: none;
 }
 
 .beeswarm-circle-company-label {
-	text-anchor: middle;
-	font-size: small;
+  text-anchor: middle;
+  font-size: small;
 }
 
 .radius-key-title {
-	font-size: large;
+  font-size: large;
 }
 
 .tutorial-text {
-	text-anchor: middle;
-	font-size: small;
+  text-anchor: middle;
+  font-size: small;
 }
 
 .swarm-circ {
-	stroke-width: 1;
+  stroke-width: 1;
 }
 
 /* the single ticker that is being shown in the ohlc which has been clicked */
 .beeswarm-single-selected-ticker :not(text) {
-	stroke-width: 1;
-	stroke: black;
+  stroke-width: 1;
+  stroke: black;
 }
 
 .yAxis,
 .xAxis {
-	font-size: 1.5em;
+  font-size: 1.5em;
 }
 
 .container {
-	margin-left: 3.5em;
+  margin-left: 3.5em;
 }
 
 .chart-y-axis-background {
-	fill: white;
+  fill: white;
 }
 
 #ohlc-vis {
-	margin-top: 10px;
-	margin-right: 15px;
+  margin-top: 10px;
+  margin-right: 15px;
 }
 
 .title {
-	margin-bottom: 10px;
-	font-size: 4em;
-	font-stretch: extra-expanded;
-	text-anchor: start;
+  font-size: 4em;
+  font-stretch: extra-expanded;
+  text-anchor: start;
 }
 
 .playback-button {
-	padding: 0px 32px;
-	border-radius: 9px;
+  padding: 0px 8px;
+  border-radius: 9px;
 }
 .playback-button:hover {
-	background-color: grey;
+  background-color: grey;
+}
+.playback-button-selected {
+  background-color: yellow;
 }
 
 .playback-line {
-	stroke-width: 2;
-	stroke: black;
+  stroke-width: 2;
+  stroke: black;
 }
 
 .playback-line-hovered {
@@ -222,50 +224,50 @@ body {
 }
 
 .sector-select-rect {
-	stroke: black;
-	stroke-width: 1;
-	fill: beige;
-	cursor: pointer;
+  stroke: black;
+  stroke-width: 1;
+  fill: beige;
+  cursor: pointer;
 }
 
 .sector-select-rect-hovered {
-	stroke-width: 2;
+  stroke-width: 2;
 }
 
 .sector-select-rect-selected {
-	stroke-width: 2;
+  stroke-width: 2;
 }
 
 .sector-select-text-label {
-	text-align: center;
-	font-size: 12px;
-	font: "sans-serif";
+  text-align: center;
+  font-size: 12px;
+  font: "sans-serif";
 }
 
 svg text {
-	pointer-events: none;
-	font: "sans-serif";
+  pointer-events: none;
+  font: "sans-serif";
 }
 
 svg image {
-	pointer-events: none;
+  pointer-events: none;
 }
 
 #details-vis {
-	font-size: 12px;
-	font-weight: normal;
+  font-size: 12px;
+  font-weight: normal;
 }
 
 .daterangerect {
-	fill: lightgray;
-	stroke: black;
+  fill: lightgray;
+  stroke: black;
 }
 
 .daterangeselectedrect {
-	fill: lightblue;
-	stroke: black;
+  fill: lightblue;
+  stroke: black;
 }
 
 .daterangebrush {
-	margin-top: 25px;
+  margin-top: 25px;
 }

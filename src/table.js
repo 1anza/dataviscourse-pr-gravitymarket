@@ -58,6 +58,9 @@ export class Table {
 	}
 
 	updateDetails(data) {
+		if (!data) {
+			return;
+		}
 		let attributesValues = this.svg.selectAll(".values").data(this.attributes);
 
 		attributesValues.exit().remove();

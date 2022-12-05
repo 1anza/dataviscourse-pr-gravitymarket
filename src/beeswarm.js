@@ -28,9 +28,10 @@ export class Beeswarm {
 		this.initTooltip();
 		this.drawCircles();
 
+		let default_force_x = 0.4;
 		this.simulationSettings = {
 			globalForceScale: 1.0,
-			forceXScale: 0.4,
+			forceXScale: default_force_x,
 			forceYScale: 0.7,
 			collisionStrength: 1.2,
 		};
@@ -135,6 +136,27 @@ export class Beeswarm {
 			this.updateScaleY();
 			this.drawYAxis();
 			this.updateSimulationY();
+		});
+
+		this._force_x_disabled = false;
+		// attaches listener to sector forces button
+		let select_forces_button = d3.select("button#sector-forces");
+		select_forces_button.classed(
+			"playback-button-selected",
+			!this._force_x_disabled
+		);
+		select_forces_button.on("click", (_) => {
+			this._force_x_disabled = !this._force_x_disabled;
+			if (this._force_x_disabled) {
+				this.simulationSettings.forceXScale = 0.0;
+			} else {
+				this.simulationSettings.forceXScale = default_force_x;
+			}
+			select_forces_button.classed(
+				"playback-button-selected",
+				!this._force_x_disabled
+			);
+			this.updateSimulationX();
 		});
 	}
 
