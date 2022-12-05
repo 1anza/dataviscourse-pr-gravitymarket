@@ -69,9 +69,11 @@ export class DateRangeBrush {
 		let brushed = function (selection) {
 			let xPosMin = selection.selection[0];
 			let left_index = d3.bisect(rangePoints, xPosMin) - 1;
+			left_index = Math.max(0, left_index);
 
 			let xPosMax = selection.selection[1];
 			let right_index = d3.bisect(rangePoints, xPosMax) - 1;
+			right_index = Math.max(left_index, right_index);
 			that.gas.set_indexPlottedRange([left_index, right_index]);
 		};
 		let brushedHandle = function (selection) {
@@ -126,6 +128,7 @@ export class DateRangeBrush {
 			d.x = Math.max(that.scaleX.range()[0], d.x);
 			d.x = Math.min(d.x, that.bounds.maxX);
 			d3.select(this).attr("transform", `translate(${d.x} 0)`);
+			console.log(index);
 			that.gas.set_index(index);
 		};
 		let drag = d3.drag().on("drag", on_drag);
