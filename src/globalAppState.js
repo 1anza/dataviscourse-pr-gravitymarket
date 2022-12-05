@@ -261,6 +261,9 @@ export class GlobalAppState {
 		// data being plotted. It is not updated every time the index
 		// is incremented to save performance.
 		let update_runningPercentYValueRange_every_n_index = 10;
+		// The amount that runningPercentYValueRange will look ahead
+		// and behind to get the extent of the percent
+		this._percentYValueRangeIndexPadding = 60;
 		let update_runningPercentYValueRange = () => {
 			let data_to_get_range;
 			if (this.groupingBySector) {
@@ -273,12 +276,9 @@ export class GlobalAppState {
 			console.log("data_to_get_range", data_to_get_range);
 			console.log("groupingBySector", this.groupingBySector);
 
-			// The amount that runningPercentYValueRange will look ahead
-			// and behind to get the extent of the percent
-			let index_padding = 70;
 			let index_range = [
-				this.index - index_padding,
-				this.index + index_padding,
+				this.index - this._percentYValueRangeIndexPadding,
+				this.index + this._percentYValueRangeIndexPadding,
 			];
 			if (index_range[0] < 0) {
 				index_range[0] = 0;

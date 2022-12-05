@@ -271,7 +271,7 @@ export class Beeswarm {
 		// this padding gives the width of the rows to include.
 		// Higher values of this will include more future and past data points
 		// in the calculation of the data extent
-		let index_padding = 10;
+		let index_padding = 30;
 		let index_range = [
 			this.gas.index - index_padding,
 			this.gas.index + index_padding,
@@ -334,9 +334,9 @@ export class Beeswarm {
 		let domain_distance = Math.abs(domain[1] - domain[0]);
 		if (domain_distance < 9) {
 			tick_step = 1;
-		} else if (domain_distance < 50) {
+		} else if (domain_distance < 40) {
 			tick_step = 5;
-		} else if (domain_distance < 80) {
+		} else if (domain_distance < 60) {
 			tick_step = 10;
 		} else {
 			tick_step = 20;

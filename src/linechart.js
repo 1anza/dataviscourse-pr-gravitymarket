@@ -64,6 +64,23 @@ export class Linechart {
 		});
 	}
 
+	updateBounds() {
+		let svg_width = parseInt(this.svg.style("width"));
+		let svg_height = parseInt(this.svg.style("height"));
+		this.bounds = {
+			minX: 50,
+			maxX: svg_width - 30,
+			minY: 20,
+			maxY: svg_height - 50,
+			// The linechart uses virtual pixels to render the whole
+			// range of lines, which is really wide and won't fit on
+			// the entire screen at a time. These values are the
+			// min and max virutal X coordinates used
+			virtualMaxX: 1000,
+			virtualMinX: -1000,
+		};
+	}
+
 	/*
 	 * Moves the playhead line to the this.gas.date
 	 *
@@ -107,23 +124,6 @@ export class Linechart {
 			.attr("x", -virt_center_coord);
 	}
 
-	updateBounds() {
-		let svg_width = parseInt(this.svg.style("width"));
-		let svg_height = parseInt(this.svg.style("height"));
-		this.bounds = {
-			minX: 50,
-			maxX: svg_width - 30,
-			minY: 20,
-			maxY: svg_height - 50,
-			// The linechart uses virtual pixels to render the whole
-			// range of lines, which is really wide and won't fit on
-			// the entire screen at a time. These values are the
-			// min and max virutal X coordinates used
-			virtualMaxX: 1000,
-			virtualMinX: -1000,
-		};
-	}
-
 	/*
 	 * updates this.scaleX which takes a date and maps it to the x position
 	 */
@@ -131,6 +131,17 @@ export class Linechart {
 		let scale = this.gas.genDateDomain();
 		let range = [this.bounds.virtualMinX, this.bounds.virtualMaxX];
 		this.scaleX = scale.range(range);
+
+		// finds the index of the farright value in the chart
+		let virt_right_coord =
+			this.bounds.virtualMinX + (this.bounds.maxX + this.bounds.minX)/2;
+		let rangePoints = d3.range(this.scaleX.range()[0], this.scaleX.range()[1], this.scaleX.step());
+		let index = d3.bisect(rangePoints, virt_right_coord);
+		console.log("ZERO X", this.scaleX(dateMinuteToDate(this.gas.data[0].chart[0].date, this.gas.data[0].chart[0].minute)));
+		console.log("Right Date", dateMinuteToDate(this.gas.data[0].chart[index].date, this.gas.data[0].chart[index].minute));
+		if (index > 0) {
+			this.gas._percentYValueRangeIndexPadding = index + 10;
+		}
 	}
 
 	/*
@@ -179,7 +190,7 @@ export class Linechart {
 			.attr("transform", `translate(${this.bounds.maxX} 0)`);
 		let yAxis = d3
 			.axisRight(this.scaleY)
-			.tickSize(-1000)
+			.tickSize(-4000)
 			.ticks(10)
 			.tickFormat((d) => `${d}%`);
 		axisG
