@@ -34,6 +34,9 @@ function main() {
 			beeswarm.updateSimulationY();
 			beeswarm.drawXAxis();
 			beeswarm.drawYAxis();
+			beeswarm.updateRadiusKey();
+
+			beeswarm.sectorControls.updateSectorControls(beeswarm.scaleX);
 
 			linechart.updateBounds();
 			linechart.updateScaleX();
@@ -52,6 +55,7 @@ function main() {
 			daterangebrush.updateBounds();
 			daterangebrush.updateScaleX();
 			daterangebrush.drawXAxis();
+			daterangebrush.setupPlaybackHead();
 			daterangebrush.updatePlaybackHead();
 			daterangebrush.createBrush();
 		};
