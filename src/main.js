@@ -47,6 +47,8 @@ function main() {
 			linechart.updateAxisY();
 
 			ohlc.updateBounds();
+			ohlc.updateXScale();
+			ohlc.updateYScale();
 			ohlc.updateXAxis();
 			ohlc.updateYAxis();
 			ohlc.updatePlayheadLine();
