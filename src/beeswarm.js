@@ -389,10 +389,7 @@ export class Beeswarm {
 
 	initTooltip() {
 		this.tooltip = d3
-			.select("div#beeswarm")
-			.append("div")
-			.attr("id", "beeswarm-tooltip")
-			.attr("class", "tooltip")
+			.select("div#beeswarm-tooltip")
 			.style("opacity", 0)
 			.style("pointer-events", "none");
 	}

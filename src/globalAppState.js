@@ -275,7 +275,7 @@ export class GlobalAppState {
 
 			// The amount that runningPercentYValueRange will look ahead
 			// and behind to get the extent of the percent
-			let index_padding = 50;
+			let index_padding = 70;
 			let index_range = [
 				this.index - index_padding,
 				this.index + index_padding,
