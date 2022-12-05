@@ -11,29 +11,29 @@ a {
 
 /* The sidebar menu, from https://www.w3schools.com/howto/howto_css_fixed_sidebar.asp */
 .sidenav {
-	height: 5%; /* Full-height: remove this if you want "auto" height */
-	width: 100%; /* Set the width of the sidebar */
-	position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-	z-index: 1; /* Stay on top */
-	top: 0; /* Stay at the top */
-	left: 0;
-	background-color: #111; /* Black */
-	overflow-x: hidden; /* Disable horizontal scroll */
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	align-items: stretch;
-	align-content: center;
+  width: 100%; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  align-content: center;
 }
 
 /* The navigation menu links */
 .sidenav a {
-	padding: 6px 8px 6px 16px;
-	text-decoration: none;
-	font-size: 20px;
-	color: #818181;
-	display: block;
+  padding: 4px 8px 2px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
 }
+
 
 * {
 	font-family: "sans-serif";
@@ -95,7 +95,6 @@ html {
 }
 
 .atitle {
-	margin-bottom: 10px;
 	font-size: 4em;
 	font-family: fantasy;
 	font-stretch: extra-expanded;
