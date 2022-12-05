@@ -24,7 +24,7 @@ Additional files in `./res` and `./data/` are served as resource content for the
 
 ### Project Video
 
-Link to the project video: https://youtu.be/VhVIM8NMe6I
+Link to the project video: https://youtu.be/_wZatWJzMlI
 
 ### Website
 
