@@ -11,14 +11,7 @@ export class Ohlc {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#ohlc-vis");
-		let svg_width = parseInt(this.svg.style("width"));
-		let svg_height = parseInt(this.svg.style("height"));
-		this.bounds = {
-			minX: 40,
-			maxX: svg_width - 22,
-			minY: 20,
-			maxY: svg_height - 55,
-		};
+		this.updateBounds();
 		this.textRotation = 55;
 
 		this.updateXScale();
@@ -49,6 +42,17 @@ export class Ohlc {
 		});
 		this.updatePlayheadLine();
 		this.setupPlaybackHead();
+	}
+
+	updateBounds() {
+		let svg_width = parseInt(this.svg.style("width"));
+		let svg_height = parseInt(this.svg.style("height"));
+		this.bounds = {
+			minX: 40,
+			maxX: svg_width - 22,
+			minY: 20,
+			maxY: svg_height - 55,
+		};
 	}
 
 	/*
@@ -94,6 +98,9 @@ export class Ohlc {
 	}
 
 	updateOhlcChart(company) {
+		if (!company) {
+			return;
+		}
 		let domain = d3.extent(company.chart, (d) => d[this.gas.yValueName]);
 		let range = [this.bounds.maxY, this.bounds.minY];
 		this.scaleY = d3.scaleLinear().domain(domain).range(range);

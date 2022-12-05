@@ -19,17 +19,44 @@ function main() {
 
 		createPlaybackControls(gas);
 
-		let update_vis = () => {
-			gas.set_selectedSectors(new Set());
-			let beeswarm = new Beeswarm(gas);
-			let linechart = new Linechart(gas);
-			let ohlc = new Ohlc(gas);
-			let table = new Table(gas);
-			let daterangebrush = new DateRangeBrush(gas);
+		gas.set_selectedSectors(new Set());
+		let beeswarm = new Beeswarm(gas);
+		let linechart = new Linechart(gas);
+		let ohlc = new Ohlc(gas);
+		let table = new Table(gas);
+		let daterangebrush = new DateRangeBrush(gas);
+
+		let resize_vis = (_) => {
+			beeswarm.updateBounds();
+			beeswarm.updateScaleX();
+			beeswarm.updateScaleY();
+			beeswarm.updateSimulationX();
+			beeswarm.updateSimulationY();
+			beeswarm.drawXAxis();
+			beeswarm.drawYAxis();
+
+			linechart.updateBounds();
+			linechart.updateScaleX();
+			linechart.updateScaleY();
+			linechart.updateLines();
+			linechart.updatePlayheadLine();
+			linechart.updateAxisX();
+			linechart.updateAxisY();
+
+			ohlc.updateBounds();
+			ohlc.updateXAxis();
+			ohlc.updateYAxis();
+			ohlc.updatePlayheadLine();
+			ohlc.updateOhlcChart(gas.selectedSingleCompany);
+
+			daterangebrush.updateBounds();
+			daterangebrush.updateScaleX();
+			daterangebrush.drawXAxis();
+			daterangebrush.updatePlaybackHead();
+			daterangebrush.createBrush();
 		};
 
-		window.onresize = (_) => update_vis();
-		update_vis();
+		window.onresize = (_) => resize_vis();
 	});
 }
 

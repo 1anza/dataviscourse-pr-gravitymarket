@@ -12,14 +12,7 @@ export class DateRangeBrush {
 	constructor(gas) {
 		this.gas = gas;
 		this.svg = d3.select("svg#daterangebrush");
-		let svg_width = parseInt(this.svg.style("width"));
-		let svg_height = parseInt(this.svg.style("height"));
-		this.bounds = {
-			minX: 40,
-			maxX: svg_width - 40,
-			minY: 5,
-			maxY: svg_height - 10,
-		};
+		this.updateBounds();
 		this.handleWidth = 20;
 		this.handleHeight = 20;
 		this.svg
@@ -38,6 +31,17 @@ export class DateRangeBrush {
 		this.gas.addEventListenerToEvent("date", (_) => {
 			this.updatePlaybackHead();
 		});
+	}
+
+	updateBounds() {
+		let svg_width = parseInt(this.svg.style("width"));
+		let svg_height = parseInt(this.svg.style("height"));
+		this.bounds = {
+			minX: 40,
+			maxX: svg_width - 40,
+			minY: 5,
+			maxY: svg_height - 10,
+		};
 	}
 
 	updateScaleX() {

@@ -11,14 +11,7 @@ import { SectorControls } from "./sectorControls.js";
 export class Beeswarm {
 	constructor(gas) {
 		this.gas = gas;
-		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
-		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));
-		this.bounds = {
-			minX: 30,
-			maxX: svg_width - 90,
-			minY: 35,
-			maxY: svg_height - 20,
-		};
+		this.updateBounds();
 		this.parseTime = d3.timeParse("%Y-%m-%d %H:%M");
 
 		// When selectedSectors changes we need to redraw the grid, and update the simulation x forces
@@ -37,7 +30,7 @@ export class Beeswarm {
 
 		this.simulationSettings = {
 			globalForceScale: 1.0,
-			forceXScale: 0,
+			forceXScale: 0.4,
 			forceYScale: 0.7,
 			collisionStrength: 1.2,
 		};
@@ -48,7 +41,11 @@ export class Beeswarm {
 			this.updateTooltip();
 		});
 
-		this.sectorControls = new SectorControls(this.gas, svg_width, svg_height);
+		this.sectorControls = new SectorControls(
+			this.gas,
+			this.bounds.maxX,
+			this.bounds.maxY
+		);
 		this.sectorControls.updateSectorControls(this.scaleX);
 
 		this.updateBigcompanyLabels();
@@ -141,6 +138,17 @@ export class Beeswarm {
 		});
 	}
 
+	updateBounds() {
+		let svg_width = parseInt(d3.select("svg#beeswarm-vis").style("width"));
+		let svg_height = parseInt(d3.select("svg#beeswarm-vis").style("height"));
+		this.bounds = {
+			minX: 30,
+			maxX: svg_width - 90,
+			minY: 35,
+			maxY: svg_height - 20,
+		};
+	}
+
 	/*  ----------------Data scales---------------------    */
 
 	/*
@@ -197,7 +205,7 @@ export class Beeswarm {
 	}
 
 	updateScaleX() {
-		if (this.gas.groupingBySector) {
+		if (this.gas.selectedSectors.size > 0) {
 			let step =
 				(this.bounds.maxX - this.bounds.minX) /
 				(this.gas.selectedSectors.size + 1);
@@ -406,7 +414,9 @@ export class Beeswarm {
 		this.circles = this.circles.join("g").attr("id", "circle");
 
 		this.circles
-			.append("circle")
+			.selectAll("circle")
+			.data((d) => [d])
+			.join("circle")
 			.attr("fill", (d) => this.gas.colorFunc(d.sector))
 			.attr("r", (d) => this.scaleRadius(d[this.gas.zValueName]))
 			.classed("swarm-circ", true)
@@ -472,7 +482,9 @@ export class Beeswarm {
 		});
 
 		this.circles
-			.append("text")
+			.selectAll("text.beeswarm-circle-company-label")
+			.data((d) => [d])
+			.join("text")
 			.classed("beeswarm-circle-company-label", true)
 			.attr("y", 4);
 	}

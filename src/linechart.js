@@ -16,20 +16,7 @@ export class Linechart {
 		this.gas = gas;
 		this.svg = d3.select("svg#linechart-vis");
 
-		let svg_width = parseInt(this.svg.style("width"));
-		let svg_height = parseInt(this.svg.style("height"));
-		this.bounds = {
-			minX: 50,
-			maxX: svg_width - 30,
-			minY: 20,
-			maxY: svg_height - 50,
-			// The linechart uses virtual pixels to render the whole
-			// range of lines, which is really wide and won't fit on
-			// the entire screen at a time. These values are the
-			// min and max virutal X coordinates used
-			virtualMaxX: 1000,
-			virtualMinX: -1000,
-		};
+		this.updateBounds();
 
 		this.textRotation = 45;
 
@@ -46,13 +33,11 @@ export class Linechart {
 			this.updatePlayheadLine();
 		});
 		this.gas.addEventListenerToEvent("indexPlottedRange", (_) => {
-			console.log("Updateing scaleY!");
 			this.updateScaleY();
 			this.updateLines();
 			this.updateAxisY();
 		});
 		this.gas.addEventListenerToEvent("runningPercentYValueRange", (_) => {
-			console.log("Updateing scaleY!");
 			this.updateScaleY();
 			this.updateLines();
 			this.updateAxisY();
@@ -120,6 +105,23 @@ export class Linechart {
 			.transition()
 			.duration(this.gas._frequency * delay_compensation)
 			.attr("x", -virt_center_coord);
+	}
+
+	updateBounds() {
+		let svg_width = parseInt(this.svg.style("width"));
+		let svg_height = parseInt(this.svg.style("height"));
+		this.bounds = {
+			minX: 50,
+			maxX: svg_width - 30,
+			minY: 20,
+			maxY: svg_height - 50,
+			// The linechart uses virtual pixels to render the whole
+			// range of lines, which is really wide and won't fit on
+			// the entire screen at a time. These values are the
+			// min and max virutal X coordinates used
+			virtualMaxX: 1000,
+			virtualMinX: -1000,
+		};
 	}
 
 	/*
@@ -201,7 +203,6 @@ export class Linechart {
 		} else {
 			datatoplot = [];
 		}
-		console.log("linechart datatoplot", datatoplot);
 		let paths = this.svg.select("g#lines").selectAll("path").data(datatoplot);
 		paths
 			.join("path")
